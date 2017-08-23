@@ -11,7 +11,7 @@ import jason.util.Config;
  * Run a Jason mas2j project
  *
  * parameters:
- *    /Jason mas2j Project File/
+ * /Jason mas2j Project File/
  *
  * @author jomi
  *
@@ -21,7 +21,7 @@ public class RunJasonProject {
     static MASLauncherInfraTier launcher;
 
     // Run the parser
-    public static void main (String args[]) {
+    public static void main(String args[]) {
 
         String name;
         mas2j parser;
@@ -29,14 +29,14 @@ public class RunJasonProject {
 
         if (args.length == 0) {
             System.out.println("usage must be:");
-            System.out.println("      java "+RunJasonProject.class.getName()+" <MAS2j Project File>");
+            System.out.println("      java " + RunJasonProject.class.getName() + " <MAS2j Project File>");
             return;
         } else {
             name = args[0];
-            System.err.println("reading from file " + name + " ..." );
+            System.err.println("reading from file " + name + " ...");
             try {
                 parser = new mas2j(new java.io.FileInputStream(name));
-            } catch(java.io.FileNotFoundException e) {
+            } catch (java.io.FileNotFoundException e) {
                 System.err.println("file \"" + name + "\" not found.");
                 return;
             }
@@ -52,14 +52,14 @@ public class RunJasonProject {
             }
             project.setProjectFile(file);
             project.setDirectory(file.getAbsoluteFile().getParentFile().getAbsolutePath());
-            System.out.println("file "+name+" parsed successfully!\n");
+            System.out.println("file " + name + " parsed successfully!\n");
 
             launcher = project.getInfrastructureFactory().createMASLauncher();
             launcher.setProject(project);
             launcher.writeScripts(false, false);
 
             new Thread(launcher, "MAS-Launcher").start();
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.err.println("parsing errors found... \n" + e);
         }
     }

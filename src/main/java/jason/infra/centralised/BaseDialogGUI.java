@@ -20,8 +20,8 @@ abstract public class BaseDialogGUI extends JDialog {
     protected JButton ok;
     protected JButton cancel;
 
-    protected JPanel pFields = new JPanel(new GridLayout(0,1));
-    protected JPanel pLabels = new JPanel(new GridLayout(0,1));
+    protected JPanel pFields = new JPanel(new GridLayout(0, 1));
+    protected JPanel pLabels = new JPanel(new GridLayout(0, 1));
 
     public BaseDialogGUI(Frame f, String title) {
         super(f);
@@ -29,7 +29,7 @@ abstract public class BaseDialogGUI extends JDialog {
         initComponents();
         pack();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation((int)( (screenSize.width - getWidth()) / 2),(int) ((screenSize.height - getHeight())/2));
+        setLocation((int) ((screenSize.width - getWidth()) / 2), (int) ((screenSize.height - getHeight()) / 2));
         setVisible(true);
     }
 
@@ -60,7 +60,7 @@ abstract public class BaseDialogGUI extends JDialog {
     }
 
     protected void createField(String label, JComponent tf, String tooltip) {
-        JLabel jl = new JLabel(label+": ");
+        JLabel jl = new JLabel(label + ": ");
         jl.setToolTipText(tooltip);
         tf.setToolTipText(tooltip);
         pLabels.add(jl);
@@ -70,7 +70,7 @@ abstract public class BaseDialogGUI extends JDialog {
     }
 
     protected void createField(String label, JComponent tf1, JComponent tf2, String tooltip) {
-        JLabel jl = new JLabel(label+": ");
+        JLabel jl = new JLabel(label + ": ");
         jl.setToolTipText(tooltip);
         tf1.setToolTipText(tooltip);
         pLabels.add(jl);

@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 /**
  * Represents a list node as in prolog .(t1,.(t2,.(t3,.))).
  *
@@ -56,7 +55,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         try {
             return parser.list();
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing list "+sList,e);
+            logger.log(Level.SEVERE, "Error parsing list " + sList, e);
             return null;
         }
     }
@@ -64,8 +63,10 @@ public class ListTermImpl extends Structure implements ListTerm {
     /** make a hard copy of the terms */
     public ListTerm clone() {
         ListTermImpl t = new ListTermImpl();
-        if (term != null) t.term = this.term.clone();
-        if (next != null) t.next = this.next.clone();
+        if (term != null)
+            t.term = this.term.clone();
+        if (next != null)
+            t.next = this.next.clone();
         t.hashCodeCache = this.hashCodeCache;
         return t;
     }
@@ -79,31 +80,42 @@ public class ListTermImpl extends Structure implements ListTerm {
     @Override
     public ListTerm capply(Unifier u) {
         ListTermImpl t = new ListTermImpl();
-        if (term != null) t.term = this.term.capply(u);
-        if (next != null) t.next = this.next.capply(u);
+        if (term != null)
+            t.term = this.term.capply(u);
+        if (next != null)
+            t.next = this.next.capply(u);
         return t;
     }
 
     /** make a shallow copy of the list (terms are not cloned, only the structure) */
     public ListTerm cloneLTShallow() {
         ListTermImpl t = new ListTermImpl();
-        if (term != null) t.term = this.term;
-        if (next != null) t.next = this.next.clone();
+        if (term != null)
+            t.term = this.term;
+        if (next != null)
+            t.next = this.next.clone();
         return t;
     }
 
     @Override
     public boolean equals(Object t) {
-        if (t == null) return false;
-        if (t == this) return true;
+        if (t == null)
+            return false;
+        if (t == this)
+            return true;
 
-        if (t instanceof Term &&  ((Term)t).isVar() ) return false; // unground var is not equals a list
+        if (t instanceof Term && ((Term) t).isVar())
+            return false; // unground var is not equals a list
         if (t instanceof ListTerm) {
-            ListTerm tAsList = (ListTerm)t;
-            if (term == null && tAsList.getTerm() != null) return false;
-            if (term != null && !term.equals(tAsList.getTerm())) return false;
-            if (next == null && tAsList.getNext() != null) return false;
-            if (next != null) return next.equals(tAsList.getNext());
+            ListTerm tAsList = (ListTerm) t;
+            if (term == null && tAsList.getTerm() != null)
+                return false;
+            if (term != null && !term.equals(tAsList.getTerm()))
+                return false;
+            if (next == null && tAsList.getNext() != null)
+                return false;
+            if (next != null)
+                return next.equals(tAsList.getNext());
             return true;
         }
         return false;
@@ -112,8 +124,10 @@ public class ListTermImpl extends Structure implements ListTerm {
     @Override
     public int calcHashCode() {
         int code = 37;
-        if (term != null) code += term.hashCode();
-        if (next != null) code += next.hashCode();
+        if (term != null)
+            code += term.hashCode();
+        if (next != null)
+            code += next.hashCode();
         return code;
     }
 
@@ -143,7 +157,7 @@ public class ListTermImpl extends Structure implements ListTerm {
 
     public ListTerm getNext() {
         if (next instanceof ListTerm)
-            return (ListTerm)next;
+            return (ListTerm) next;
         else
             return null;
     }
@@ -161,24 +175,30 @@ public class ListTermImpl extends Structure implements ListTerm {
     // for unifier compatibility
     @Override
     public Term getTerm(int i) {
-        if (i == 0) return term;
-        if (i == 1) return next;
+        if (i == 0)
+            return term;
+        if (i == 1)
+            return next;
         return null;
     }
 
     // for unifier compatibility
     @Override
     public void setTerm(int i, Term t) {
-        if (i == 0) term = t;
-        if (i == 1) next = t;
+        if (i == 0)
+            term = t;
+        if (i == 1)
+            next = t;
     }
 
     /** return the this ListTerm elements (0=Term, 1=ListTerm) */
     public List<Term> getTerms() {
         logger.warning("Do not use getTerms in lists!");
         List<Term> l = new ArrayList<Term>(2);
-        if (term != null) l.add(term);
-        if (next != null) l.add(next);
+        if (term != null)
+            l.add(term);
+        if (next != null)
+            l.add(next);
         return l;
     }
 
@@ -214,6 +234,7 @@ public class ListTermImpl extends Structure implements ListTerm {
     public boolean isEmpty() {
         return term == null;
     }
+
     public boolean isEnd() {
         return isEmpty() || isTail();
     }
@@ -230,18 +251,18 @@ public class ListTermImpl extends Structure implements ListTerm {
     }
 
     /*
-    @Override
-    public boolean apply(Unifier u) {
-        if (isEmpty()) {
-            return false;
-        } else if (term != null) {
-            boolean rn = term.apply(u);
-            boolean rt = getNext().apply(u);
-            return rn || rt;
-        }
-        return false;
-    }
-    */
+     * @Override
+     * public boolean apply(Unifier u) {
+     * if (isEmpty()) {
+     * return false;
+     * } else if (term != null) {
+     * boolean rn = term.apply(u);
+     * boolean rt = getNext().apply(u);
+     * return rn || rt;
+     * }
+     * return false;
+     * }
+     */
 
     @Override
     public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un) {
@@ -256,7 +277,7 @@ public class ListTermImpl extends Structure implements ListTerm {
     /** returns this ListTerm's tail element in case the List has the Tail, otherwise, returns null */
     public VarTerm getTail() {
         if (isTail()) {
-            return (VarTerm)next;
+            return (VarTerm) next;
         } else if (next != null) {
             return getNext().getTail();
         } else {
@@ -278,14 +299,15 @@ public class ListTermImpl extends Structure implements ListTerm {
         while (!r.isEnd() && r.getNext() != null)
             r = r.getNext();
         return r;
-        /* recursive implementation
-        if (isEnd()) {
-            return this;
-        } else if (next != null) {
-            return getNext().getLast();
-        }
-        return null; // !!! no last!!!!
-        */
+        /*
+         * recursive implementation
+         * if (isEnd()) {
+         * return this;
+         * } else if (next != null) {
+         * return getNext().getLast();
+         * }
+         * return null; // !!! no last!!!!
+         */
     }
 
     public ListTerm getPenultimate() {
@@ -312,6 +334,7 @@ public class ListTermImpl extends Structure implements ListTerm {
 
     /**
      * Adds a term in the end of the list
+     * 
      * @return the ListTerm where the term was added (i.e. the last ListTerm of the list)
      */
     public ListTerm append(Term t) {
@@ -329,10 +352,11 @@ public class ListTermImpl extends Structure implements ListTerm {
 
     /**
      * insert a term in the begin of this list
+     * 
      * @return the new starter of the list
      */
     public ListTerm insert(Term t) {
-        ListTerm n = new ListTermImpl(term,next);
+        ListTerm n = new ListTermImpl(term, next);
         this.term = t;
         this.next = n;
         return n;
@@ -341,15 +365,16 @@ public class ListTermImpl extends Structure implements ListTerm {
     /**
      * Adds a list in the end of this list.
      * This method do not clone <i>lt</i>.
+     * 
      * @return the last ListTerm of the new list
      */
     public ListTerm concat(ListTerm lt) {
         if (isEmpty()) {
             setValuesFrom(lt);
-        } else if (((ListTerm)next).isEmpty() ) {
+        } else if (((ListTerm) next).isEmpty()) {
             next = lt;
         } else {
-            ((ListTerm)next).concat(lt);
+            ((ListTerm) next).concat(lt);
         }
         return lt.getLast();
     }
@@ -361,15 +386,16 @@ public class ListTermImpl extends Structure implements ListTerm {
     public ListTerm reverse() {
         return reverse_internal(new ListTermImpl());
     }
+
     private ListTerm reverse_internal(ListTerm r) {
         if (isEmpty()) {
             return r;
         } else if (isTail()) {
             r = new ListTermImpl(term.clone(), r);
-            r.setTail((VarTerm)next.clone());
+            r.setTail((VarTerm) next.clone());
             return r;
         } else {
-            return ((ListTermImpl)next).reverse_internal( new ListTermImpl(term.clone(), r) );
+            return ((ListTermImpl) next).reverse_internal(new ListTermImpl(term.clone(), r));
         }
     }
 
@@ -401,7 +427,7 @@ public class ListTermImpl extends Structure implements ListTerm {
     private ListTerm setToList(Set<Term> set) {
         ListTerm result = new ListTermImpl();
         ListTerm tail = result;
-        for (Term t: set)
+        for (Term t : set)
             tail = tail.append(t.clone());
         return result;
     }
@@ -418,7 +444,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             public boolean hasNext() {
                 if (open == null) {
                     open = new LinkedList<SubSetSearchState>(); // states to explore
-                    //open.add(new SubSetSearchState(new ArrayList<Term>(), getAsList(), k)); // initial state (root of search tree)
+                    // open.add(new SubSetSearchState(new ArrayList<Term>(), getAsList(), k)); // initial state (root of search tree)
                     thisAsArray = getAsList().toArray(thisAsArray);
                     open.add(new SubSetSearchState(0, k, null, null)); // initial state (root of search tree)
                 }
@@ -437,7 +463,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             }
 
             void getNext() {
-                while (! open.isEmpty() ) {
+                while (!open.isEmpty()) {
                     SubSetSearchState s = open.removeFirst();
                     if (s.d == 0) {
                         next = s.getAsList();
@@ -449,7 +475,8 @@ public class ListTermImpl extends Structure implements ListTerm {
                 next = null;
             }
 
-            public void remove() { }
+            public void remove() {
+            }
 
             class SubSetSearchState {
                 int pos;
@@ -463,11 +490,12 @@ public class ListTermImpl extends Structure implements ListTerm {
                     this.value = t;
                     this.f = father;
                 }
+
                 void addNexts() {
-                    int pSize = (k-d)+thisAsArray.length;
-                    for (int i = thisAsArray.length-1; i >= pos; i--) {
-                        if (pSize-i >= k) {
-                            open.addFirst(new SubSetSearchState(i+1, d-1, thisAsArray[i], this));
+                    int pSize = (k - d) + thisAsArray.length;
+                    for (int i = thisAsArray.length - 1; i >= pos; i--) {
+                        if (pSize - i >= k) {
+                            open.addFirst(new SubSetSearchState(i + 1, d - 1, thisAsArray[i], this));
                         }
                     }
                 }
@@ -483,64 +511,65 @@ public class ListTermImpl extends Structure implements ListTerm {
                 }
             }
 
-            /*// old code
-            class SubSetSearchState {
-                List<Term> prefix, elements;
-                int d;
-                SubSetSearchState(List<Term> p, List<Term> e, int d) {
-                    prefix = p; elements = e; this.d = d;
-                }
-                void addNexts(List<SubSetSearchState> open) {
-                    int esize = elements.size();
-                    int maxNextSize = prefix.size()+esize;
-                    for (int i = esize-1; i >= 0; i--) {
-                        if (maxNextSize-i >= k) {
-                            List<Term> np = new ArrayList<Term>(prefix);
-                            np.add(elements.get(i));
-                            open.add(0, new SubSetSearchState(np, elements.subList(i+1, esize), d-1));
-                        }
-                    }
-                }
-            }
-            */
+            /*
+             * // old code
+             * class SubSetSearchState {
+             * List<Term> prefix, elements;
+             * int d;
+             * SubSetSearchState(List<Term> p, List<Term> e, int d) {
+             * prefix = p; elements = e; this.d = d;
+             * }
+             * void addNexts(List<SubSetSearchState> open) {
+             * int esize = elements.size();
+             * int maxNextSize = prefix.size()+esize;
+             * for (int i = esize-1; i >= 0; i--) {
+             * if (maxNextSize-i >= k) {
+             * List<Term> np = new ArrayList<Term>(prefix);
+             * np.add(elements.get(i));
+             * open.add(0, new SubSetSearchState(np, elements.subList(i+1, esize), d-1));
+             * }
+             * }
+             * }
+             * }
+             */
         };
     }
 
     /*
-    public List<List<Term>> subSets(int k) {
-        List<List<Term>> result = new ArrayList<List<Term>>();
-        generateSubSets(new ArrayList<Term>(), getAsList(), k, result);
-        return result;
-    }
-    private static void generateSubSets(List<Term> prefix, List<Term> elements, int k, List<List<Term>> result) {
-        if (k == 0) {
-            result.add(prefix);
-        } else {
-            int esize = elements.size();
-            for (int i = 0; i < esize; i++) {
-                List<Term> np = new ArrayList<Term>(prefix); // prepare new prefix
-                np.add(elements.get(i));
-                generateSubSets(np, elements.subList(i+1, esize), k-1, result);
-            }
-        }
-    }
-    */
+     * public List<List<Term>> subSets(int k) {
+     * List<List<Term>> result = new ArrayList<List<Term>>();
+     * generateSubSets(new ArrayList<Term>(), getAsList(), k, result);
+     * return result;
+     * }
+     * private static void generateSubSets(List<Term> prefix, List<Term> elements, int k, List<List<Term>> result) {
+     * if (k == 0) {
+     * result.add(prefix);
+     * } else {
+     * int esize = elements.size();
+     * for (int i = 0; i < esize; i++) {
+     * List<Term> np = new ArrayList<Term>(prefix); // prepare new prefix
+     * np.add(elements.get(i));
+     * generateSubSets(np, elements.subList(i+1, esize), k-1, result);
+     * }
+     * }
+     * }
+     */
 
     /*
-    public List<List<Term>> subSets(int k, Set<PredicateIndicator> types) {
-        List<List<Term>> result = new ArrayList<List<Term>>();
-        List<Term> annots = new ArrayList<Term>();
-        for (Term t: this)
-            if (t.isLiteral()) {
-                if (types.contains( ((Literal)t).getPredicateIndicator() ))
-                    annots.add(t);
-            } else {
-                annots.add(t);
-            }
-
-        generateSubSets(new ArrayList<Term>(), annots, k, result);
-        return result;
-    }
+     * public List<List<Term>> subSets(int k, Set<PredicateIndicator> types) {
+     * List<List<Term>> result = new ArrayList<List<Term>>();
+     * List<Term> annots = new ArrayList<Term>();
+     * for (Term t: this)
+     * if (t.isLiteral()) {
+     * if (types.contains( ((Literal)t).getPredicateIndicator() ))
+     * annots.add(t);
+     * } else {
+     * annots.add(t);
+     * }
+     * 
+     * generateSubSets(new ArrayList<Term>(), annots, k, result);
+     * return result;
+     * }
      */
     /**
      * gives an iterator that includes the final empty list or tail,
@@ -556,7 +585,6 @@ public class ListTermImpl extends Structure implements ListTerm {
         };
     }
 
-
     /**
      * returns an iterator where each element is a Term of this list,
      * the tail of the list is not considered.
@@ -568,6 +596,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             public boolean hasNext() {
                 return nextLT != null && !nextLT.isEmpty() && nextLT.isList();
             }
+
             public Term next() {
                 moveNext();
                 return current.getTerm();
@@ -578,16 +607,20 @@ public class ListTermImpl extends Structure implements ListTerm {
     private abstract class ListTermIterator<T> implements Iterator<T> {
         ListTerm nextLT;
         ListTerm current = null;
+
         public ListTermIterator(ListTerm lt) {
             nextLT = lt;
         }
+
         public boolean hasNext() {
             return nextLT != null;
         }
+
         public void moveNext() {
             current = nextLT;
-            nextLT  = nextLT.getNext();
+            nextLT = nextLT.getNext();
         }
+
         public void remove() {
             if (current != null && nextLT != null) {
                 current.setTerm(nextLT.getTerm());
@@ -597,18 +630,16 @@ public class ListTermImpl extends Structure implements ListTerm {
         }
     }
 
-
     /**
      * Returns this ListTerm as a Java List (implemented by ArrayList).
      * Note: the tail of the list, if any, is not included!
      */
     public List<Term> getAsList() {
         List<Term> l = new ArrayList<Term>();
-        for (Term t: this)
+        for (Term t : this)
             l.add(t);
         return l;
     }
-
 
     public String toString() {
         StringBuilder s = new StringBuilder("[");
@@ -638,16 +669,18 @@ public class ListTermImpl extends Structure implements ListTerm {
         if (index == 0) {
             insert(o);
         } else if (index > 0 && getNext() != null) {
-            getNext().add(index-1,o);
+            getNext().add(index - 1, o);
         }
     }
+
     public boolean add(Term o) {
         return getLast().append(o) != null;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public boolean addAll(Collection c) {
-        if (c == null) return false;
+        if (c == null)
+            return false;
         ListTerm lt = this; // where to add
         Iterator<Term> i = c.iterator();
         while (i.hasNext()) {
@@ -666,6 +699,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         }
         return true;
     }
+
     public void clear() {
         term = null;
         next = null;
@@ -694,7 +728,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         if (index == 0) {
             return this.term;
         } else if (getNext() != null) {
-            return getNext().get(index-1);
+            return getNext().get(index - 1);
         }
         return null;
     }
@@ -705,11 +739,12 @@ public class ListTermImpl extends Structure implements ListTerm {
         } else if (getNext() != null) {
             int n = getNext().indexOf(o);
             if (n >= 0) {
-                return n+1;
+                return n + 1;
             }
         }
         return -1;
     }
+
     public int lastIndexOf(Object arg0) {
         return getAsList().lastIndexOf(arg0);
     }
@@ -730,33 +765,41 @@ public class ListTermImpl extends Structure implements ListTerm {
             int size = size();
 
             public void add(Term o) {
-                list.add(last,o);
+                list.add(last, o);
             }
+
             public boolean hasNext() {
                 return pos < size;
             }
+
             public boolean hasPrevious() {
                 return pos > startIndex;
             }
+
             public Term next() {
                 last = pos;
                 pos++;
                 return get(last);
             }
+
             public int nextIndex() {
-                return pos+1;
+                return pos + 1;
             }
+
             public Term previous() {
                 last = pos;
                 pos--;
                 return get(last);
             }
+
             public int previousIndex() {
-                return pos-1;
+                return pos - 1;
             }
+
             public void remove() {
                 list.remove(last);
             }
+
             public void set(Term o) {
                 remove();
                 add(o);
@@ -779,7 +822,7 @@ public class ListTermImpl extends Structure implements ListTerm {
             }
             return bt;
         } else if (getNext() != null) {
-            return getNext().remove(index-1);
+            return getNext().remove(index - 1);
         }
         return null;
     }
@@ -813,7 +856,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         boolean r = true;
         Iterator i = iterator();
         while (i.hasNext()) {
-            Term t = (Term)i.next();
+            Term t = (Term) i.next();
             if (!c.contains(t)) {
                 r = r && remove(t);
             }
@@ -823,10 +866,10 @@ public class ListTermImpl extends Structure implements ListTerm {
 
     public Term set(int index, Term t) {
         if (index == 0) {
-            this.term = (Term)t;
+            this.term = (Term) t;
             return t;
         } else if (getNext() != null) {
-            return getNext().set(index-1, t);
+            return getNext().set(index - 1, t);
         }
         return null;
     }
@@ -843,11 +886,11 @@ public class ListTermImpl extends Structure implements ListTerm {
     public <T> T[] toArray(T[] a) {
         final int s = size();
         if (a.length < s)
-            a = (T[])java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), s);
+            a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), s);
 
         int i = 0;
-        for (Term t: this) {
-            a[i++] = (T)t;
+        for (Term t : this) {
+            a[i++] = (T) t;
         }
         if (a.length > s)
             a[s] = null;
@@ -858,7 +901,7 @@ public class ListTermImpl extends Structure implements ListTerm {
     public Element getAsDOM(Document document) {
         Element u = (Element) document.createElement("list-term");
         String c = "";
-        for (Term t: this) {
+        for (Term t : this) {
             Element et = t.getAsDOM(document);
             et.setAttribute("sep", c);
             c = ",";

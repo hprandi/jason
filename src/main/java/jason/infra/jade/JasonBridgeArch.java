@@ -31,8 +31,7 @@ public class JasonBridgeArch extends AgArch {
     Logger logger = jade.util.Logger.getMyLogger(this.getClass().getName());
 
     // map of pending actions
-    private Map<String,ActionExec> myPA = new HashMap<String,ActionExec>();
-
+    private Map<String, ActionExec> myPA = new HashMap<String, ActionExec>();
 
     public JasonBridgeArch(JadeAgArch jadeAg) {
         this.jadeAg = jadeAg;
@@ -48,11 +47,13 @@ public class JasonBridgeArch extends AgArch {
             logger.setLevel(getTS().getSettings().logLevel());
     }
 
-    /*@Override
-    public void sleep() {
-        jadeAg.enterInSleepMode();
-        //tsBehaviour.block(1000);
-    }*/
+    /*
+     * @Override
+     * public void sleep() {
+     * jadeAg.enterInSleepMode();
+     * //tsBehaviour.block(1000);
+     * }
+     */
 
     @Override
     public void wake() {
@@ -80,8 +81,10 @@ public class JasonBridgeArch extends AgArch {
     public List<Literal> perceive() {
         super.perceive();
 
-        if (!isRunning()) return null;
-        if (getEnvironmentAg() == null) return null;
+        if (!isRunning())
+            return null;
+        if (getEnvironmentAg() == null)
+            return null;
 
         @SuppressWarnings("rawtypes")
         List percepts = null;
@@ -105,8 +108,6 @@ public class JasonBridgeArch extends AgArch {
         return jadeAg;
     }
 
-
-
     @Override
     public void sendMsg(Message m) throws Exception {
         jadeAg.sendMsg(m);
@@ -124,17 +125,18 @@ public class JasonBridgeArch extends AgArch {
             try {
                 m = jadeAg.receive();
                 if (m != null) {
-                    if (logger.isLoggable(Level.FINE)) logger.fine("Received message: " + m);
+                    if (logger.isLoggable(Level.FINE))
+                        logger.fine("Received message: " + m);
 
                     if (isActionFeedback(m)) {
                         // ignore this message
                         continue;
                     }
 
-                    String ilForce   = JadeAg.aclPerformativeToKqml(m);
-                    String sender    = m.getSender().getLocalName();
+                    String ilForce = JadeAg.aclPerformativeToKqml(m);
+                    String sender = m.getSender().getLocalName();
                     String replyWith = m.getReplyWith();
-                    String irt       = m.getInReplyTo();
+                    String irt = m.getInReplyTo();
 
                     // also remembers conversation ID
                     if (replyWith != null && replyWith.length() > 0) {
@@ -168,8 +170,8 @@ public class JasonBridgeArch extends AgArch {
             if (propCont instanceof String) {
                 // try to parse as term
                 try {
-                    propCont = ASSyntax.parseTerm((String)propCont);
-                } catch (Exception e) {  // no problem
+                    propCont = ASSyntax.parseTerm((String) propCont);
+                } catch (Exception e) { // no problem
                 }
             }
         } catch (UnreadableException e) { // no problem try another thing
@@ -187,17 +189,18 @@ public class JasonBridgeArch extends AgArch {
         return propCont;
     }
 
-
     @Override
     public void act(ActionExec action) {
-        if (!isRunning()) return;
-        if (getEnvironmentAg() == null) return;
+        if (!isRunning())
+            return;
+        if (getEnvironmentAg() == null)
+            return;
 
         try {
             Term acTerm = action.getActionTerm();
             logger.fine("doing: " + acTerm);
 
-            String rw  = "id"+jadeAg.incReplyWithId();
+            String rw = "id" + jadeAg.incReplyWithId();
             ACLMessage m = new ACLMessage(ACLMessage.REQUEST);
             m.addReceiver(environmentAID);
             m.setOntology(JadeEnvironment.actionOntology);
@@ -216,6 +219,7 @@ public class JasonBridgeArch extends AgArch {
     }
 
     private boolean consultEnv = false;
+
     private AID getEnvironmentAg() {
         // get the name of the environment
         if (!consultEnv) {
@@ -227,10 +231,10 @@ public class JasonBridgeArch extends AgArch {
             try {
                 DFAgentDescription[] ans = DFService.search(jadeAg, template);
                 if (ans.length > 0) {
-                    environmentAID =  ans[0].getName();
+                    environmentAID = ans[0].getName();
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE,"Error getting environment from DF.",e);
+                logger.log(Level.SEVERE, "Error getting environment from DF.", e);
             }
             consultEnv = true;
         }
@@ -248,7 +252,7 @@ public class JasonBridgeArch extends AgArch {
                     a.setResult(m.getContent().equals("ok"));
                     actionExecuted(a);
                 } else {
-                    logger.log(Level.SEVERE, "Error: received feedback for an Action that is not pending. The message is "+m);
+                    logger.log(Level.SEVERE, "Error: received feedback for an Action that is not pending. The message is " + m);
                 }
             }
             return true;

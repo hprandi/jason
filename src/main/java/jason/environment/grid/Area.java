@@ -20,7 +20,7 @@ public final class Area implements Serializable {
     }
 
     public Location center() {
-        return new Location( (tl.x + br.x)/2, (tl.y + br.y)/2);
+        return new Location((tl.x + br.x) / 2, (tl.y + br.y) / 2);
     }
 
     /** @deprecated renamed to chebyshevDistanceToBorder */
@@ -32,9 +32,9 @@ public final class Area implements Serializable {
     public int chebyshevDistanceToBorder(Location l) {
         if (contains(l))
             return 0;
-        int x = Math.min( Math.abs(tl.x - l.x), Math.abs(br.x - l.x));
-        int y = Math.min( Math.abs(tl.y - l.y), Math.abs(br.y - l.y));
-        return Math.max(x,y);
+        int x = Math.min(Math.abs(tl.x - l.x), Math.abs(br.x - l.x));
+        int y = Math.min(Math.abs(tl.y - l.y), Math.abs(br.y - l.y));
+        return Math.max(x, y);
     }
 
     @Override
@@ -48,17 +48,22 @@ public final class Area implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (getClass() != obj.getClass()) return false;
-        final Area other = (Area)obj;
-        if (! tl.equals(other.tl)) return false;
-        if (! br.equals(other.br)) return false;
+        if (obj == null)
+            return false;
+        if (this == obj)
+            return true;
+        if (getClass() != obj.getClass())
+            return false;
+        final Area other = (Area) obj;
+        if (!tl.equals(other.tl))
+            return false;
+        if (!br.equals(other.br))
+            return false;
         return true;
     }
 
     public Object clone() {
-        return new Area(tl,br);
+        return new Area(tl, br);
     }
 
     public String toString() {

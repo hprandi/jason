@@ -37,7 +37,7 @@ public class CircumstanceListenerComponents implements CircumstanceListener {
     }
 
     public void intentionResumed(Intention i) {
-        //notifyDeliberate();
+        // notifyDeliberate();
         notifyAct();
     }
 }

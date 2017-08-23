@@ -20,13 +20,13 @@ import javax.swing.text.StyleContext;
 
 /**
  * A quick implementation of a TextPane with default coloring for Jason.
-
+ * 
  * @author Felipe Meneguzzi
  */
 public class MASConsoleColorGUI extends MASConsoleGUI {
-    private Map<String, MASColorTextPane>     agsTextArea       = new HashMap<String, MASColorTextPane>();
-    private Map<String, Color>                agsColours        = new HashMap<String, Color>();
-    private MASColorTextPane                  output;
+    private Map<String, MASColorTextPane> agsTextArea = new HashMap<String, MASColorTextPane>();
+    private Map<String, Color> agsColours = new HashMap<String, Color>();
+    private MASColorTextPane output;
 
     private MASConsoleColorGUI(String title) {
         super(title);
@@ -49,7 +49,7 @@ public class MASConsoleColorGUI extends MASConsoleGUI {
     protected void initOutput() {
         output = new MASColorTextPane(Color.black);
         output.setEditable(false);
-        ((DefaultCaret)output.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        ((DefaultCaret) output.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         if (isTabbed()) {
             tabPane.add(" all", new JScrollPane(output));
         } else {
@@ -80,17 +80,17 @@ public class MASConsoleColorGUI extends MASConsoleGUI {
                     // add new tab for the agent
                     ta = new MASColorTextPane(Color.black);
                     ta.setEditable(false);
-                    ((DefaultCaret)ta.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+                    ((DefaultCaret) ta.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
                     final MASColorTextPane cta = ta;
                     SwingUtilities.invokeAndWait(new Runnable() {
                         public void run() {
                             agsTextArea.put(agName, cta);
                             int i = 0;
-                            for (; i<tabPane.getTabCount(); i++) {
-                                if (agName.toUpperCase().compareTo( tabPane.getTitleAt(i).toUpperCase()) < 0)
+                            for (; i < tabPane.getTabCount(); i++) {
+                                if (agName.toUpperCase().compareTo(tabPane.getTitleAt(i).toUpperCase()) < 0)
                                     break;
                             }
-                            tabPane.add(new JScrollPane(cta),i);
+                            tabPane.add(new JScrollPane(cta), i);
                             tabPane.setTitleAt(i, agName);
                         }
                     });
@@ -117,7 +117,7 @@ public class MASConsoleColorGUI extends MASConsoleGUI {
         } catch (Exception e) {
             try {
                 PrintWriter out = new PrintWriter(new FileWriter("e_r_r_o_r.txt"));
-                out.write("Error that can not be printed in the MAS Console!\n"+e.toString()+"\n");
+                out.write("Error that can not be printed in the MAS Console!\n" + e.toString() + "\n");
                 e.printStackTrace(out);
                 out.close();
             } catch (IOException e1) {
@@ -128,27 +128,24 @@ public class MASConsoleColorGUI extends MASConsoleGUI {
 }
 
 class MASColorTextPane extends JTextPane {
-    protected static final Color seq[] = {//Color.black,
-        Color.blue,
-        Color.red,
-        Color.gray,
-        //Color.cyan,
-        Color.magenta,
-        //Color.orange,
-        //Color.pink,
-        //Color.yellow,
-        Color.green
-    };
+    protected static final Color seq[] = { // Color.black,
+            Color.blue, Color.red, Color.gray,
+            // Color.cyan,
+            Color.magenta,
+            // Color.orange,
+            // Color.pink,
+            // Color.yellow,
+            Color.green };
     protected static int change = 0;
     protected static int lastColor = 0;
 
     public synchronized static Color getNextAvailableColor() {
-        if(change > 0) {
-            seq[lastColor] = (change%2 == 1)?seq[lastColor].brighter():seq[lastColor].darker();
+        if (change > 0) {
+            seq[lastColor] = (change % 2 == 1) ? seq[lastColor].brighter() : seq[lastColor].darker();
         }
         Color c = seq[lastColor];
-        lastColor = (lastColor+1)%seq.length;
-        if(lastColor == 0) {
+        lastColor = (lastColor + 1) % seq.length;
+        if (lastColor == 0) {
             change++;
         }
         return c;
@@ -175,4 +172,3 @@ class MASColorTextPane extends JTextPane {
         }
     }
 }
-

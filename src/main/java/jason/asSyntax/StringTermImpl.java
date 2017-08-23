@@ -31,7 +31,7 @@ public final class StringTermImpl extends DefaultTerm implements StringTerm {
     }
 
     public StringTermImpl(StringTermImpl t) {
-        value   = t.getString();
+        value = t.getString();
         srcInfo = t.srcInfo;
     }
 
@@ -46,9 +46,9 @@ public final class StringTermImpl extends DefaultTerm implements StringTerm {
     public static StringTerm parseString(String sTerm) {
         as2j parser = new as2j(new StringReader(sTerm));
         try {
-            return (StringTerm)parser.term();
+            return (StringTerm) parser.term();
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing string term " + sTerm,e);
+            logger.log(Level.SEVERE, "Error parsing string term " + sTerm, e);
             return null;
         }
     }
@@ -67,10 +67,11 @@ public final class StringTermImpl extends DefaultTerm implements StringTerm {
 
     @Override
     public boolean equals(Object t) {
-        if (t == this) return true;
+        if (t == this)
+            return true;
 
         if (t != null && t instanceof StringTerm) {
-            StringTerm st = (StringTerm)t;
+            StringTerm st = (StringTerm) t;
             if (value == null)
                 return st.getString() == null;
             else
@@ -96,9 +97,8 @@ public final class StringTermImpl extends DefaultTerm implements StringTerm {
         return super.compareTo(o);
     }
 
-
     public String toString() {
-        return "\""+value+"\"";
+        return "\"" + value + "\"";
     }
 
     /** get as XML */

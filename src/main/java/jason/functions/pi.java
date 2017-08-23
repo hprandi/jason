@@ -5,15 +5,18 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Term;
 
 /**
-  <p>Function: <b><code>math.pi</code></b>: encapsulates java Math.PI.
-
-  <p>Example:<ul>
-  <li> <code>math.pi</code>: returns 3.14.</li>
-  </ul>
-
-  @author Jomi
-*/
-public class pi extends DefaultArithFunction  {
+ * <p>
+ * Function: <b><code>math.pi</code></b>: encapsulates java Math.PI.
+ * 
+ * <p>
+ * Example:
+ * <ul>
+ * <li><code>math.pi</code>: returns 3.14.</li>
+ * </ul>
+ * 
+ * @author Jomi
+ */
+public class pi extends DefaultArithFunction {
 
     public String getName() {
         return "math.pi";

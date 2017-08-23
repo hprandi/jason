@@ -11,16 +11,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- *  Represents a plan body item (achieve, test, action, ...) and its successors.
+ * Represents a plan body item (achieve, test, action, ...) and its successors.
  *
- *  A plan body like <code>a1; ?t; !g</code> is represented by the following structure
- *  <code>(a1, (?t, (!g)))</code>.
+ * A plan body like <code>a1; ?t; !g</code> is represented by the following structure
+ * <code>(a1, (?t, (!g)))</code>.
  *
  *
- *  @navassoc - next - PlanBody
- *  @navassoc - type - PlanBody.BodyType
+ * @navassoc - next - PlanBody
+ * @navassoc - type - PlanBody.BodyType
  *
- *  @author Jomi
+ * @author Jomi
  */
 public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBody> {
 
@@ -29,11 +29,11 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
 
     public static final String BODY_PLAN_FUNCTOR = ";";
 
-    private Term        term     = null;
-    private PlanBody    next     = null;
-    private BodyType    formType = BodyType.none;
+    private Term term = null;
+    private PlanBody next = null;
+    private BodyType formType = BodyType.none;
 
-    private boolean     isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
+    private boolean isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
 
     /** constructor for empty plan body */
     public PlanBodyImpl() {
@@ -46,7 +46,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     }
 
     public PlanBodyImpl(BodyType t, Term b) {
-        this(t,b,false);
+        this(t, b, false);
     }
 
     public PlanBodyImpl(BodyType t, Term b, boolean planTerm) {
@@ -56,31 +56,31 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
             srcInfo = b.getSrcInfo();
 
             /*
-            // add source(self) in some commands (it is preferred to do this at compile time than runtime)
-            // DOES NOT work with variables (see the case of kqmlPlans.asl and the bug reported by Alexandro)
-            if (b instanceof Literal) {
-                switch (formType) {
-                case achieve:
-                case achieveNF:
-                case addBel:
-                case addBelBegin:
-                case addBelEnd:
-                case addBelNewFocus:
-                case delBel:
-                case delAddBel:
-
-                    Literal l = (Literal)b;
-                    l = l.forceFullLiteralImpl();
-                    if (!l.hasSource()) { // do not add source(self) in case the programmer set the source
-                        l.addAnnot(BeliefBase.TSelf);
-                    }
-                    b = l;
-
-                default:
-                    break;
-                }
-            }
-            */
+             * // add source(self) in some commands (it is preferred to do this at compile time than runtime)
+             * // DOES NOT work with variables (see the case of kqmlPlans.asl and the bug reported by Alexandro)
+             * if (b instanceof Literal) {
+             * switch (formType) {
+             * case achieve:
+             * case achieveNF:
+             * case addBel:
+             * case addBelBegin:
+             * case addBelEnd:
+             * case addBelNewFocus:
+             * case delBel:
+             * case delAddBel:
+             * 
+             * Literal l = (Literal)b;
+             * l = l.forceFullLiteralImpl();
+             * if (!l.hasSource()) { // do not add source(self) in case the programmer set the source
+             * l.addAnnot(BeliefBase.TSelf);
+             * }
+             * b = l;
+             * 
+             * default:
+             * break;
+             * }
+             * }
+             */
         }
         term = b;
     }
@@ -88,6 +88,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     public void setBodyNext(PlanBody next) {
         this.next = next;
     }
+
     public PlanBody getBodyNext() {
         return next;
     }
@@ -99,6 +100,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     public BodyType getBodyType() {
         return formType;
     }
+
     public void setBodyType(BodyType bt) {
         formType = bt;
     }
@@ -136,16 +138,20 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     public Iterator<PlanBody> iterator() {
         return new Iterator<PlanBody>() {
             PlanBody current = PlanBodyImpl.this;
+
             public boolean hasNext() {
                 return current != null && current.getBodyTerm() != null;
             }
+
             public PlanBody next() {
                 PlanBody r = current;
                 if (current != null)
                     current = current.getBodyNext();
                 return r;
             }
-            public void remove() { }
+
+            public void remove() {
+            }
         };
     }
 
@@ -176,7 +182,8 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
 
     @Override
     public void setTerm(int i, Term t) {
-        if (i == 0) term = t;
+        if (i == 0)
+            term = t;
         if (i == 1) { // (NIDE) if next is the last VAR...
             if (next != null && next.getBodyTerm().isVar() && next.getBodyNext() == null)
                 next.setBodyTerm(t);
@@ -186,38 +193,38 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
     }
 
     /*
-    private boolean applyHead(Unifier u) {
-        if (term != null && term.apply(u)) {
-            if (term.isPlanBody()) { // we cannot have "inner" body literals
-                PlanBody baknext = next;
-                formType = ((PlanBody)term).getBodyType();
-                next     = ((PlanBody)term).getBodyNext();
-                term     = ((PlanBody)term).getBodyTerm();
-                if (baknext != null) {
-                    baknext.apply(u);
-                    getLastBody().add(baknext);
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-    */
+     * private boolean applyHead(Unifier u) {
+     * if (term != null && term.apply(u)) {
+     * if (term.isPlanBody()) { // we cannot have "inner" body literals
+     * PlanBody baknext = next;
+     * formType = ((PlanBody)term).getBodyType();
+     * next = ((PlanBody)term).getBodyNext();
+     * term = ((PlanBody)term).getBodyTerm();
+     * if (baknext != null) {
+     * baknext.apply(u);
+     * getLastBody().add(baknext);
+     * }
+     * }
+     * return true;
+     * }
+     * return false;
+     * }
+     */
 
     /*
-    @Override
-    public boolean apply(Unifier u) {
-        boolean ok = next != null && next.apply(u);
-
-        if (applyHead(u))
-            ok = true;
-
-        if (ok)
-            resetHashCodeCache();
-
-        return ok;
-    }
-    */
+     * @Override
+     * public boolean apply(Unifier u) {
+     * boolean ok = next != null && next.apply(u);
+     * 
+     * if (applyHead(u))
+     * ok = true;
+     * 
+     * if (ok)
+     * resetHashCodeCache();
+     * 
+     * return ok;
+     * }
+     */
 
     @Override
     public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un) {
@@ -227,11 +234,13 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (o == this) return true;
+        if (o == null)
+            return false;
+        if (o == this)
+            return true;
 
         if (o instanceof PlanBody) {
-            PlanBody b = (PlanBody)o;
+            PlanBody b = (PlanBody) o;
             return formType == b.getBodyType() && super.equals(o);
         }
         return false;
@@ -316,7 +325,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
 
     @Override
     public PlanBody capply(Unifier u) {
-        //System.out.println(this+" with "+u);
+        // System.out.println(this+" with "+u);
         PlanBodyImpl c;
         if (term == null) { // (NIDE) must copy c.isTerm even if cloning empty plan
             c = new PlanBodyImpl();
@@ -324,22 +333,22 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
         } else {
             c = new PlanBodyImpl(formType, term.capply(u), isTerm);
             if (c.term.isPlanBody()) { // we cannot have "inner" body literals
-                c.formType = ((PlanBody)c.term).getBodyType();
-                c.next     = ((PlanBody)c.term).getBodyNext();
-                c.term     = ((PlanBody)c.term).getBodyTerm();
+                c.formType = ((PlanBody) c.term).getBodyType();
+                c.next = ((PlanBody) c.term).getBodyNext();
+                c.term = ((PlanBody) c.term).getBodyTerm();
             }
         }
 
         if (next != null)
-            c.add((PlanBody)next.capply(u));
+            c.add((PlanBody) next.capply(u));
 
-        //System.out.println(this+" = "+c+" using "+u+" term="+c.term+"/"+term.capply(u));
+        // System.out.println(this+" = "+c+" using "+u+" term="+c.term+"/"+term.capply(u));
         return c;
     }
 
     public PlanBody clone() {
         PlanBodyImpl c;
-        if (term == null)  // (NIDE) must copy c.isTerm even if cloning empty plan
+        if (term == null) // (NIDE) must copy c.isTerm even if cloning empty plan
             c = new PlanBodyImpl();
         else
             c = new PlanBodyImpl(formType, term.clone(), isTerm);
@@ -385,7 +394,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
             if (bl.getBodyType().toString().length() > 0) {
                 u.setAttribute("type", bl.getBodyType().toString());
             }
-            u.appendChild( ((Structure)bl.getBodyTerm()).getAsDOM(document));
+            u.appendChild(((Structure) bl.getBodyTerm()).getAsDOM(document));
             eb.appendChild(u);
 
             bl = bl.getBodyNext();

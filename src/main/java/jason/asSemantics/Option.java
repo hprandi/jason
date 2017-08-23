@@ -15,7 +15,7 @@ public class Option implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Plan    plan;
+    private Plan plan;
     private Unifier unif;
 
     public Option(Plan p, Unifier u) {
@@ -34,6 +34,7 @@ public class Option implements Serializable {
     public void setPlan(Plan p) {
         plan = p;
     }
+
     public Plan getPlan() {
         return plan;
     }
@@ -41,6 +42,7 @@ public class Option implements Serializable {
     public void setUnifier(Unifier u) {
         unif = u;
     }
+
     public Unifier getUnifier() {
         return unif;
     }

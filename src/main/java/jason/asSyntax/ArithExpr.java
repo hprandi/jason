@@ -13,9 +13,9 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.parser.as2j;
 
 /**
-  Represents and solve arithmetic expressions like "10 + 30".
-
-  @navassoc - op - ArithmeticOp
+ * Represents and solve arithmetic expressions like "10 + 30".
+ * 
+ * @navassoc - op - ArithmeticOp
  */
 public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
 
@@ -99,10 +99,10 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
         abstract double eval(double x, double y);
     }
 
-    private ArithmeticOp  op = ArithmeticOp.none;
+    private ArithmeticOp op = ArithmeticOp.none;
 
     public ArithExpr(NumberTerm t1, ArithmeticOp oper, NumberTerm t2) {
-        super(oper.toString(),2);
+        super(oper.toString(), 2);
         addTerm(t1);
         addTerm(t2);
         op = oper;
@@ -113,7 +113,7 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
     }
 
     public ArithExpr(ArithmeticOp oper, NumberTerm t1) {
-        super(oper.toString(),1);
+        super(oper.toString(), 1);
         addTerm(t1);
         op = oper;
         srcInfo = t1.getSrcInfo();
@@ -145,7 +145,7 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
     @Override
     public Term capply(Unifier u) {
         try {
-            double l = ((NumberTerm)getTerm(0).capply(u)).solve();
+            double l = ((NumberTerm) getTerm(0).capply(u)).solve();
             if (isUnary()) {
                 if (op == ArithmeticOp.minus) {
                     value = new NumberTermImpl(-l);
@@ -153,12 +153,12 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
                     value = new NumberTermImpl(l);
                 }
             } else {
-                double r = ((NumberTerm)getTerm(1).capply(u)).solve();
+                double r = ((NumberTerm) getTerm(1).capply(u)).solve();
                 value = new NumberTermImpl(op.eval(l, r));
             }
             return value;
         } catch (ClassCastException e) {
-            logger.warning("The value of "+this+" is not a number! Unifier = "+u+". Code: "+getSrcInfo());
+            logger.warning("The value of " + this + " is not a number! Unifier = " + u + ". Code: " + getSrcInfo());
             return new NumberTermImpl(Double.NaN);
         } catch (NoValueException e) {
             return clone();
@@ -181,12 +181,12 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
 
     /** gets the LHS of this Expression */
     public NumberTerm getLHS() {
-        return (NumberTerm)getTerm(0);
+        return (NumberTerm) getTerm(0);
     }
 
     /** gets the RHS of this Expression */
     public NumberTerm getRHS() {
-        return (NumberTerm)getTerm(1);
+        return (NumberTerm) getTerm(1);
     }
 
     @Override

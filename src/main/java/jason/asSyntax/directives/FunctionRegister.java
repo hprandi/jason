@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 public class FunctionRegister extends DefaultDirective implements Directive {
     static Logger logger = Logger.getLogger(FunctionRegister.class.getName());
 
-    private static Map<String,ArithFunction> functions = new HashMap<String,ArithFunction>();
+    private static Map<String, ArithFunction> functions = new HashMap<String, ArithFunction>();
 
     // add known global functions (can be computed without an agent reference)
     static {
@@ -62,7 +62,7 @@ public class FunctionRegister extends DefaultDirective implements Directive {
             ArithFunction af = c.newInstance();
             functions.put(af.getName(), af);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error registering function "+c.getName(),e);
+            logger.log(Level.SEVERE, "Error registering function " + c.getName(), e);
         }
     }
 
@@ -76,17 +76,17 @@ public class FunctionRegister extends DefaultDirective implements Directive {
             else
                 functions.put(af.getName(), af);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error registering function "+c.getName(),e);
+            logger.log(Level.SEVERE, "Error registering function " + c.getName(), e);
         }
     }
 
     public static String checkFunctionName(String fName) {
         if (functions.get(fName) != null)
-            return "Can not register the function "+fName+"  twice!";
+            return "Can not register the function " + fName + "  twice!";
         else if (fName.indexOf(".") < 0)
-            return "The function "+fName+" was not registered! A function must have a '.' in its name.";
+            return "The function " + fName + " was not registered! A function must have a '.' in its name.";
         else if (fName.startsWith("."))
-            return "The function "+fName+" was not registered! An user function name can not start with '.'.";
+            return "The function " + fName + " was not registered! An user function name can not start with '.'.";
         else
             return null;
     }
@@ -105,21 +105,21 @@ public class FunctionRegister extends DefaultDirective implements Directive {
         if (outerContent == null)
             return null;
         try {
-            String id = ((StringTerm)directive.getTerm(0)).getString();
+            String id = ((StringTerm) directive.getTerm(0)).getString();
             if (directive.getArity() == 1) {
                 // it is implemented in java
-                outerContent.addFunction((Class<ArithFunction>)Class.forName(id));
+                outerContent.addFunction((Class<ArithFunction>) Class.forName(id));
             } else if (directive.getArity() == 3) {
                 // is is implemented in AS
-                int arity = (int)((NumberTerm)directive.getTerm(1)).solve();
-                String predicate = ((StringTerm)directive.getTerm(2)).getString();
+                int arity = (int) ((NumberTerm) directive.getTerm(1)).solve();
+                String predicate = ((StringTerm) directive.getTerm(2)).getString();
                 outerContent.addFunction(id, arity, predicate);
             } else {
                 // error
-                logger.log(Level.SEVERE, "Wrong number of arguments for register_function "+directive);
+                logger.log(Level.SEVERE, "Wrong number of arguments for register_function " + directive);
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error processing directive register_function.",e);
+            logger.log(Level.SEVERE, "Error processing directive register_function.", e);
         }
         return null;
     }

@@ -1,11 +1,10 @@
 package jason.jeditplugin;
 
-
 import jason.util.ConfigGUI;
 
 import org.gjt.sp.jedit.AbstractOptionPane;
 
-public class JasonIDOptionPanel extends AbstractOptionPane  {
+public class JasonIDOptionPanel extends AbstractOptionPane {
 
     static ConfigGUI gui = new ConfigGUI();
 

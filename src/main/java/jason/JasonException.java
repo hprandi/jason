@@ -8,12 +8,11 @@ import jason.asSyntax.ListTerm;
 import jason.asSyntax.ListTermImpl;
 import jason.asSyntax.Term;
 
-
 public class JasonException extends java.lang.Exception {
 
     private static final long serialVersionUID = 1L;
 
-    public static final Term WRONG_ARGS   = new Atom("wrong_arguments");
+    public static final Term WRONG_ARGS = new Atom("wrong_arguments");
     public static final Term UNKNOW_ERROR = new Atom("unknown");
 
     private static final Term defaultError = new Atom("internal_action");
@@ -29,6 +28,7 @@ public class JasonException extends java.lang.Exception {
 
     /**
      * Constructs an instance of <code>JasonException</code> with the specified detail message.
+     * 
      * @param msg the detail message.
      */
     public JasonException(String msg) {
@@ -77,22 +77,21 @@ public class JasonException extends java.lang.Exception {
             if (ia.getMinArgs() == 1)
                 msg = " One argument is expected.";
             else
-                msg = " "+ia.getMinArgs()+" arguments are expected.";
+                msg = " " + ia.getMinArgs() + " arguments are expected.";
         else
-            msg = " From "+ia.getMinArgs()+" to "+ia.getMaxArgs()+" arguments are expected.";
-        return new JasonException("The internal action '"+ia.getClass().getSimpleName()+"' has not received the required number of argument(s)."+msg, WRONG_ARGS);
+            msg = " From " + ia.getMinArgs() + " to " + ia.getMaxArgs() + " arguments are expected.";
+        return new JasonException("The internal action '" + ia.getClass().getSimpleName() + "' has not received the required number of argument(s)." + msg, WRONG_ARGS);
     }
 
     public static JasonException createWrongArgument(InternalAction ia, String reason) {
-        return new JasonException("Wrong argument for internal action '"+ia.getClass().getSimpleName()+"': "+reason, WRONG_ARGS);
+        return new JasonException("Wrong argument for internal action '" + ia.getClass().getSimpleName() + "': " + reason, WRONG_ARGS);
     }
 
     public static ListTerm createBasicErrorAnnots(String id, String msg) {
         return createBasicErrorAnnots(new Atom(id), msg);
     }
+
     public static ListTerm createBasicErrorAnnots(Term id, String msg) {
-        return ASSyntax.createList(
-                   ASSyntax.createStructure("error", id),
-                   ASSyntax.createStructure("error_msg", ASSyntax.createString(msg)));
+        return ASSyntax.createList(ASSyntax.createStructure("error", id), ASSyntax.createStructure("error_msg", ASSyntax.createString(msg)));
     }
 }

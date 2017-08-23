@@ -13,24 +13,24 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.PredicateIndicator;
 
 /**
-
- This class is to be extended by customised belief bases that may be
- used in chains (of responsibility).
-
- For example, the code
- <pre>
- BeliefBase bb =
-    new MyBB1(
-       new MyBB2());
-      // DefaultBeliefBase is the next of the last element of the chain
- </pre>
- will chain 3 BBs: MyBB1, myBB2, and the DefaultBeliefBase. So, for any operation of
- the BB interface, the operation is firstly called in MyBB1, then in MyBB2 and finally
- in the DefaultBeliefBase.
-
- The code of MyBB1 looks like:
-
- <pre>
+ * 
+ * This class is to be extended by customised belief bases that may be
+ * used in chains (of responsibility).
+ * 
+ * For example, the code
+ * 
+ * <pre>
+ * BeliefBase bb = new MyBB1(new MyBB2());
+ * // DefaultBeliefBase is the next of the last element of the chain
+ * </pre>
+ * 
+ * will chain 3 BBs: MyBB1, myBB2, and the DefaultBeliefBase. So, for any operation of
+ * the BB interface, the operation is firstly called in MyBB1, then in MyBB2 and finally
+ * in the DefaultBeliefBase.
+ * 
+ * The code of MyBB1 looks like:
+ * 
+ * <pre>
  class MyBB1 extends ChainBBAdapter {
     public MyBB1() { }
     public MyBB1(BeliefBase next) {
@@ -44,12 +44,12 @@ import jason.asSyntax.PredicateIndicator;
 
     ... customisation of other operations ...
  }
- </pre>
-
- @navassoc - nextBB - BeliefBase
-
- @author Jomi
-
+ * </pre>
+ * 
+ * @navassoc - nextBB - BeliefBase
+ * 
+ * @author Jomi
+ * 
  */
 public abstract class ChainBBAdapter extends BeliefBase {
 
@@ -58,6 +58,7 @@ public abstract class ChainBBAdapter extends BeliefBase {
     public ChainBBAdapter() {
         nextBB = new DefaultBeliefBase();
     }
+
     public ChainBBAdapter(BeliefBase bb) {
         nextBB = bb;
     }
@@ -67,14 +68,14 @@ public abstract class ChainBBAdapter extends BeliefBase {
     }
 
     public ChainBBAdapter getNextAdapter() {
-        return nextBB instanceof ChainBBAdapter ? (ChainBBAdapter)nextBB : null;
+        return nextBB instanceof ChainBBAdapter ? (ChainBBAdapter) nextBB : null;
     }
 
     public BeliefBase getLastBB() {
         if (nextBB == null)
             return this;
         else if (nextBB instanceof ChainBBAdapter)
-            return ((ChainBBAdapter)nextBB).getLastBB();
+            return ((ChainBBAdapter) nextBB).getLastBB();
         else
             return nextBB;
     }
@@ -85,6 +86,7 @@ public abstract class ChainBBAdapter extends BeliefBase {
     public void init(Agent ag, String[] args) {
         nextBB.init(ag, args);
     }
+
     @Override
     public void stop() {
         nextBB.stop();

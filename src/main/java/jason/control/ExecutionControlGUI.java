@@ -54,23 +54,22 @@ import jason.util.asl2xml;
 public class ExecutionControlGUI extends ExecutionControl {
 
     String currentAgState = "";
-    String currentAgName  = "";
-    int    agShownState   = 0;
+    String currentAgName = "";
+    int agShownState = 0;
 
-    private Map<String,Map<Integer,Document>> agsHistory = new HashMap<String,Map<Integer,Document>>();
+    private Map<String, Map<Integer, Document>> agsHistory = new HashMap<String, Map<Integer, Document>>();
 
     private int countCycles = 0; // cycles since last "Run"
-    private int maxCycles = 0;   // cycles to run
-    private boolean waitAllAgs     = false; // run cycles in all agents
+    private int maxCycles = 0; // cycles to run
+    private boolean waitAllAgs = false; // run cycles in all agents
     private boolean waitSelectedAg = false; // run cycles in selected agent
-    private boolean breakpoint     = false;
+    private boolean breakpoint = false;
 
     // xml components
-    asl2xml  agTransformerXML  = new asl2xml();
-    asl2tex  agTransformerTex  = new asl2tex("/xml/ag2tex.xsl");
+    asl2xml agTransformerXML = new asl2xml();
+    asl2tex agTransformerTex = new asl2tex("/xml/ag2tex.xsl");
     asl2html agTransformerHtml = new asl2html("/xml/agInspection.xsl");
-    asl2xml  agTransformer     = null;
-
+    asl2xml agTransformer = null;
 
     public ExecutionControlGUI() {
         agTransformer = agTransformerHtml;
@@ -84,15 +83,15 @@ public class ExecutionControlGUI extends ExecutionControl {
     }
 
     // Interface components
-    JFrame     frame;
+    JFrame frame;
     JTextField jTfSteps = null;
-    JComboBox  jCbWho = null;
-    JButton    jBtRun = null;
-    JComboBox  jCbViewAs = null;
-    JSlider    jHistory = null;
-    JTextPane  jTA = null;
-    JList      jList = null;
-    JPanel     spList;
+    JComboBox jCbWho = null;
+    JButton jBtRun = null;
+    JComboBox jCbViewAs = null;
+    JSlider jHistory = null;
+    JTextPane jTA = null;
+    JList jList = null;
+    JPanel spList;
 
     DefaultListModel listModel;
 
@@ -100,7 +99,7 @@ public class ExecutionControlGUI extends ExecutionControl {
     Document agState = null;
 
     // Which item is to be shown in HTML interface
-    Map<String,Boolean> show = new HashMap<String,Boolean>();
+    Map<String, Boolean> show = new HashMap<String, Boolean>();
 
     public static String title = "..:: Mind Inspector ::..";
 
@@ -151,26 +150,26 @@ public class ExecutionControlGUI extends ExecutionControl {
                     mime = "xml";
                     agTransformer = agTransformerTex;
                 }
-                jTA.setContentType("text/"+mime);
+                jTA.setContentType("text/" + mime);
                 previousMind = "--";
                 showAgState();
             }
         });
 
         /*
-        JButton jBtRefresh = new JButton("Show extra info");
-        jBtRefresh.setEnabled(true);
-        jBtRefresh.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                agsHistory.clear();
-                showAgState();
-                System.out.println("***"+BaseCentralisedMAS.getRunner().sleepingAgs);
-                for (CentralisedAgArch ar: BaseCentralisedMAS.getRunner().sleepingAgs) {
-                    System.out.println(ar+":"+ar.canSleep());
-                }
-            }
-        });*/
-
+         * JButton jBtRefresh = new JButton("Show extra info");
+         * jBtRefresh.setEnabled(true);
+         * jBtRefresh.addActionListener(new ActionListener() {
+         * public void actionPerformed(ActionEvent e) {
+         * agsHistory.clear();
+         * showAgState();
+         * System.out.println("***"+BaseCentralisedMAS.getRunner().sleepingAgs);
+         * for (CentralisedAgArch ar: BaseCentralisedMAS.getRunner().sleepingAgs) {
+         * System.out.println(ar+":"+ar.canSleep());
+         * }
+         * }
+         * });
+         */
 
         jTA = new JTextPane();
         jTA.setEditable(false);
@@ -185,14 +184,12 @@ public class ExecutionControlGUI extends ExecutionControl {
 
         JPanel spTA = new JPanel(new BorderLayout());
         JScrollPane scpTA = new JScrollPane(jTA);
-        //scpTA.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        // scpTA.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         spTA.add(BorderLayout.CENTER, scpTA);
-        spTA.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                       .createEtchedBorder(), "Agent Inspection", TitledBorder.LEFT, TitledBorder.TOP));
+        spTA.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Agent Inspection", TitledBorder.LEFT, TitledBorder.TOP));
 
-        JPanel pHistory = new JPanel(new BorderLayout());//new FlowLayout(FlowLayout.CENTER));
-        pHistory.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                           .createEtchedBorder(), "Agent History", TitledBorder.LEFT, TitledBorder.TOP));
+        JPanel pHistory = new JPanel(new BorderLayout());// new FlowLayout(FlowLayout.CENTER));
+        pHistory.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Agent History", TitledBorder.LEFT, TitledBorder.TOP));
         jHistory = new JSlider();
         jHistory.setMaximum(1);
         jHistory.setMinimum(0);
@@ -204,18 +201,18 @@ public class ExecutionControlGUI extends ExecutionControl {
         setupSlider();
         jHistory.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                int c = (int)jHistory.getValue();
+                int c = (int) jHistory.getValue();
                 try {
                     agState = agsHistory.get(currentAgName).get(c);
                     showAgState();
-                } catch (Exception ex) { }
+                } catch (Exception ex) {
+                }
             }
         });
         pHistory.add(BorderLayout.CENTER, jHistory);
         JPanel pAg = new JPanel(new BorderLayout());
         pAg.add(BorderLayout.CENTER, spTA);
         pAg.add(BorderLayout.SOUTH, pHistory);
-
 
         listModel = new DefaultListModel();
         jList = new JList(listModel);
@@ -236,7 +233,6 @@ public class ExecutionControlGUI extends ExecutionControl {
             }
         });
 
-
         JPanel pButtons = new JPanel(new FlowLayout(FlowLayout.CENTER));
         pButtons.add(jBtRun);
         pButtons.add(jTfSteps);
@@ -244,34 +240,34 @@ public class ExecutionControlGUI extends ExecutionControl {
         pButtons.add(jCbWho);
         pButtons.add(new JLabel("        view as:"));
         pButtons.add(jCbViewAs);
-        //pButtons.add(jBtRefresh);
+        // pButtons.add(jBtRefresh);
 
         JSplitPane splitPaneHor = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPaneHor.setTopComponent(spList);
         splitPaneHor.setDividerLocation(100);
         splitPaneHor.setBottomComponent(pAg);
         splitPaneHor.setOneTouchExpandable(true);
-        //splitPane.setPreferredSize(new Dimension(600, 300));
+        // splitPane.setPreferredSize(new Dimension(600, 300));
 
-        //JSplitPane splitPaneVer = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        //splitPaneVer.setTopComponent(splitPaneHor);
-        //splitPaneVer.setBottomComponent(spConsole);
-        //splitPaneVer.setOneTouchExpandable(true);
+        // JSplitPane splitPaneVer = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        // splitPaneVer.setTopComponent(splitPaneHor);
+        // splitPaneVer.setBottomComponent(spConsole);
+        // splitPaneVer.setOneTouchExpandable(true);
 
         frame.getContentPane().add(BorderLayout.SOUTH, pButtons);
-        frame.getContentPane().add(BorderLayout.CENTER, splitPaneHor);//splitPaneVer);
+        frame.getContentPane().add(BorderLayout.CENTER, splitPaneHor);// splitPaneVer);
         frame.pack();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int height = (int)(screenSize.height * 0.618);
-        frame.setBounds(80, 30, (int)(height*1.618), height);
-        //splitPaneVer.setDividerLocation((int)(splitPaneVer.getHeight()*0.618));
-        //splitPaneVer.setDividerLocation(height - 200);
+        int height = (int) (screenSize.height * 0.618);
+        frame.setBounds(80, 30, (int) (height * 1.618), height);
+        // splitPaneVer.setDividerLocation((int)(splitPaneVer.getHeight()*0.618));
+        // splitPaneVer.setDividerLocation(height - 200);
 
         frame.setVisible(true);
 
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                //close();
+                // close();
             }
         });
 
@@ -289,20 +285,20 @@ public class ExecutionControlGUI extends ExecutionControl {
     void setListOfAgsFromInfra() {
         try {
             Set<String> ags = new TreeSet<String>(getExecutionControlInfraTier().getRuntimeServices().getAgentsNames());
-            for (String ag: ags) { //getExecutionControlInfraTier().getRuntimeServices().getAgentsNames()) {
+            for (String ag : ags) { // getExecutionControlInfraTier().getRuntimeServices().getAgentsNames()) {
                 listModel.addElement(ag);
             }
         } catch (Exception e) {
-            System.err.println("Error getting list of agents from infrasructure. "+e);
+            System.err.println("Error getting list of agents from infrasructure. " + e);
         }
     }
 
     private void setupSlider() {
         int size = getCycleNumber();
-        Hashtable<Integer,Component> labelTable = new Hashtable<Integer,Component>();
-        labelTable.put( 0, new JLabel("Cycle 0") );
-        labelTable.put( size, new JLabel("Cycle "+size) );
-        jHistory.setLabelTable( labelTable );
+        Hashtable<Integer, Component> labelTable = new Hashtable<Integer, Component>();
+        labelTable.put(0, new JLabel("Cycle 0"));
+        labelTable.put(size, new JLabel("Cycle " + size));
+        jHistory.setLabelTable(labelTable);
         jHistory.setMaximum(size);
         jHistory.setValue(size);
     }
@@ -327,7 +323,8 @@ public class ExecutionControlGUI extends ExecutionControl {
         // try to get the state from the history
         try {
             agState = agsHistory.get(currentAgName).get(getCycleNumber());
-        } catch (Exception et) {}
+        } catch (Exception et) {
+        }
 
         // if no state from history, ask the agent
         if (agState == null) {
@@ -336,8 +333,8 @@ public class ExecutionControlGUI extends ExecutionControl {
                 agState = infraControl.getAgState(currentAgName);
                 storeAgHistory(currentAgName, getCycleNumber(), agState);
             } catch (Exception e) {
-                jTA.setText("Error getting the state of agent "+currentAgName);
-                logger.log(Level.SEVERE,"Error:",e);
+                jTA.setText("Error getting the state of agent " + currentAgName);
+                logger.log(Level.SEVERE, "Error:", e);
             }
         }
 
@@ -355,8 +352,8 @@ public class ExecutionControlGUI extends ExecutionControl {
                 // set parameters
                 if (jCbViewAs.getSelectedItem().toString().equals("html")) {
                     // as HTML
-                    for (String p: show.keySet()) {
-                        agTransformer.getTransformer().setParameter("show-"+p, show.get(p)+"");
+                    for (String p : show.keySet()) {
+                        agTransformer.getTransformer().setParameter("show-" + p, show.get(p) + "");
                     }
                 }
                 sMind = agTransformer.transform(agState);
@@ -366,34 +363,31 @@ public class ExecutionControlGUI extends ExecutionControl {
                 }
                 previousMind = sMind;
             } catch (Exception e) {
-                jTA.setText("Error in XML transformation!" + e + "\nText="+sMind);
+                jTA.setText("Error in XML transformation!" + e + "\nText=" + sMind);
                 e.printStackTrace();
             }
         }
     }
 
-
     private void hyperLink(HyperlinkEvent evt) {
         if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-            //System.out.println("*evt="+evt.getDescription());
+            // System.out.println("*evt="+evt.getDescription());
             String uri = "show?";
             int pos = evt.getDescription().indexOf(uri);
             if (pos >= 0) {
-                String par = evt.getDescription().substring(pos+uri.length());
-                show.put(par,true);
+                String par = evt.getDescription().substring(pos + uri.length());
+                show.put(par, true);
             } else {
                 uri = "hide?";
                 pos = evt.getDescription().indexOf(uri);
                 if (pos >= 0) {
-                    String par = evt.getDescription().substring(pos+uri.length());
-                    show.put(par,false);
+                    String par = evt.getDescription().substring(pos + uri.length());
+                    show.put(par, false);
                 }
             }
             showAgState();
         }
     }
-
-
 
     protected void startRun() {
         jBtRun.setEnabled(false);
@@ -401,10 +395,10 @@ public class ExecutionControlGUI extends ExecutionControl {
         maxCycles = Integer.parseInt(jTfSteps.getText());
         breakpoint = false;
         if (jCbWho.getSelectedIndex() == 0) {
-            waitAllAgs     = true;
+            waitAllAgs = true;
             waitSelectedAg = false;
         } else {
-            waitAllAgs     = false;
+            waitAllAgs = false;
             waitSelectedAg = true;
         }
         if (BaseCentralisedMAS.getRunner() != null && BaseCentralisedMAS.getRunner().hasDebugControl()) {
@@ -417,7 +411,7 @@ public class ExecutionControlGUI extends ExecutionControl {
 
     /** stop the execution */
     protected void stopRun() {
-        waitAllAgs     = false;
+        waitAllAgs = false;
         waitSelectedAg = false;
         inspectAgent(currentAgName);
         jBtRun.setEnabled(true);
@@ -443,10 +437,10 @@ public class ExecutionControlGUI extends ExecutionControl {
      * Called when the agent <i>agName</i> has finished its reasoning cycle.
      * <i>breakpoint</i> is true in case the agent selected one plan with "breakpoint"
      * annotation.
-      */
+     */
     public void receiveFinishedCycle(final String agName, boolean breakpoint, final int cycle) {
         if (!listModel.contains(agName)) {
-            logger.fine("New agent "+agName);
+            logger.fine("New agent " + agName);
             listModel.addElement(agName);
         }
 
@@ -454,14 +448,14 @@ public class ExecutionControlGUI extends ExecutionControl {
         try {
             storeAgHistory(agName, cycle, infraControl.getAgState(agName));
         } catch (Exception e) {
-            jTA.setText("Error getting the state of agent "+agName);
-            logger.log(Level.SEVERE,"Error:",e);
+            jTA.setText("Error getting the state of agent " + agName);
+            logger.log(Level.SEVERE, "Error:", e);
         }
 
         this.breakpoint = breakpoint;
         if (waitSelectedAg) {
             countCycles++;
-            logger.info("Agent "+agName+" has finished cycle "+cycle);
+            logger.info("Agent " + agName + " has finished cycle " + cycle);
             if (testStop()) {
                 stopRun();
             } else {
@@ -473,17 +467,16 @@ public class ExecutionControlGUI extends ExecutionControl {
         }
     }
 
-
     /** called when all agents have finished the current cycle */
     protected void allAgsFinished() {
         if (waitAllAgs) {
-            logger.fine("All agents have finished cycle "+getCycleNumber());
+            logger.fine("All agents have finished cycle " + getCycleNumber());
             countCycles++;
             if (testStop()) {
                 stopRun();
             } else {
                 startNewCycle();
-                frame.setTitle(title + " cycle "+getCycleNumber()+" ::");
+                frame.setTitle(title + " cycle " + getCycleNumber() + " ::");
                 continueRun();
             }
         }
@@ -495,12 +488,13 @@ public class ExecutionControlGUI extends ExecutionControl {
     }
 
     protected void storeAgHistory(String agName, int cycle, Document doc) {
-        if (doc == null) return;
-        Map<Integer,Document> lag = agsHistory.get(agName);
+        if (doc == null)
+            return;
+        Map<Integer, Document> lag = agsHistory.get(agName);
         if (lag == null) {
-            lag = new HashMap<Integer,Document>();
+            lag = new HashMap<Integer, Document>();
             agsHistory.put(agName, lag);
         }
-        lag.put(cycle,doc);
+        lag.put(cycle, doc);
     }
 }

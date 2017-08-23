@@ -3,7 +3,7 @@ package jason.infra;
 import jason.runtime.RuntimeServicesInfraTier;
 
 /**
- * Every infrastructure for Jason must implement this interface.  The
+ * Every infrastructure for Jason must implement this interface. The
  * interface provides methods for JasonIDE and user's runtime classes,
  * etc.
  *

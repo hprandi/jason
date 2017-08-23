@@ -18,9 +18,10 @@ public class DefaultInternalAction implements InternalAction, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public boolean suspendIntention()   {
+    public boolean suspendIntention() {
         return false;
     }
+
     public boolean canBeUsedInContext() {
         return true;
     }
@@ -28,6 +29,7 @@ public class DefaultInternalAction implements InternalAction, Serializable {
     public int getMinArgs() {
         return 0;
     }
+
     public int getMaxArgs() {
         return Integer.MAX_VALUE;
     }
@@ -39,7 +41,7 @@ public class DefaultInternalAction implements InternalAction, Serializable {
 
     public Term[] prepareArguments(Literal body, Unifier un) {
         Term[] terms = new Term[body.getArity()];
-        for (int i=0; i<terms.length; i++) {
+        for (int i = 0; i < terms.length; i++) {
             terms[i] = body.getTerm(i).capply(un);
         }
         return terms;

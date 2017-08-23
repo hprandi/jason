@@ -29,7 +29,7 @@ public class MASConsoleLogFormatter extends java.util.logging.Formatter {
         String lname = l.getLoggerName();
         int posd = lname.lastIndexOf('.');
         if (posd > 0) {
-            return lname.substring(posd+1);
+            return lname.substring(posd + 1);
         }
         return lname;
     }

@@ -33,15 +33,15 @@ public class DG extends DefaultDirective implements Directive {
             Literal goal = Literal.parseLiteral(directive.getTerm(0).toString());
 
             // add +!g : g <- true.
-            newAg.getPL().add(ASSyntax.parsePlan("+!"+goal+" : " +goal+"."));
+            newAg.getPL().add(ASSyntax.parsePlan("+!" + goal + " : " + goal + "."));
 
             // add ?g in the end of all inner plans
-            for (Plan p: innerContent.getPL()) {
+            for (Plan p : innerContent.getPL()) {
                 // only for +!g plans
                 if (p.getTrigger().isAchvGoal()) {
                     Literal planGoal = p.getTrigger().getLiteral();
                     if (new Unifier().unifies(planGoal, goal)) { // if the plan goal unifier the pattern goal
-                        PlanBody b = new PlanBodyImpl(BodyType.test, planGoal.copy()); //goal.copy());
+                        PlanBody b = new PlanBodyImpl(BodyType.test, planGoal.copy()); // goal.copy());
                         p.getBody().add(b);
                     }
                 }
@@ -49,11 +49,11 @@ public class DG extends DefaultDirective implements Directive {
             }
 
             // add +g : true <- .succeed_goal(g).
-            newAg.getPL().add(ASSyntax.parsePlan("+"+goal+" <- .succeed_goal("+goal+")."));
+            newAg.getPL().add(ASSyntax.parsePlan("+" + goal + " <- .succeed_goal(" + goal + ")."));
 
             return newAg;
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive error.", e);
+            logger.log(Level.SEVERE, "Directive error.", e);
         }
         return null;
     }

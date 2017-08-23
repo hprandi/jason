@@ -11,35 +11,36 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-/** Represents an AgentSpack plan
-    (it extends structure to be used as a term)
-
- @navassoc - label - Pred
- @navassoc - event - Trigger
- @navassoc - context - LogicalFormula
- @navassoc - body - PlanBody
- @navassoc - source - SourceInfo
-
+/**
+ * Represents an AgentSpack plan
+ * (it extends structure to be used as a term)
+ * 
+ * @navassoc - label - Pred
+ * @navassoc - event - Trigger
+ * @navassoc - context - LogicalFormula
+ * @navassoc - body - PlanBody
+ * @navassoc - source - SourceInfo
+ * 
  */
 public class Plan extends Structure implements Cloneable, Serializable {
 
     private static final long serialVersionUID = 1L;
-    private static final Term TAtomic         = ASSyntax.createAtom("atomic");
-    private static final Term TBreakPoint     = ASSyntax.createAtom("breakpoint");
-    private static final Term TAllUnifs       = ASSyntax.createAtom("all_unifs");
+    private static final Term TAtomic = ASSyntax.createAtom("atomic");
+    private static final Term TBreakPoint = ASSyntax.createAtom("breakpoint");
+    private static final Term TAllUnifs = ASSyntax.createAtom("all_unifs");
 
-    private static Logger     logger          = Logger.getLogger(Plan.class.getName());
+    private static Logger logger = Logger.getLogger(Plan.class.getName());
 
-    private Pred              label  = null;
-    private Trigger           tevent = null;
-    private LogicalFormula    context;
-    private PlanBody          body;
+    private Pred label = null;
+    private Trigger tevent = null;
+    private LogicalFormula context;
+    private PlanBody body;
 
-    private boolean isAtomic      = false;
-    private boolean isAllUnifs    = false;
+    private boolean isAtomic = false;
+    private boolean isAllUnifs = false;
     private boolean hasBreakpoint = false;
 
-    private boolean     isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
+    private boolean isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
 
     // used by clone
     public Plan() {
@@ -88,16 +89,16 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public void setTerm(int i, Term t) {
         switch (i) {
         case 0:
-            label   = (Pred)t;
+            label = (Pred) t;
             break;
         case 1:
-            tevent  = (Trigger)t;
+            tevent = (Trigger) t;
             break;
         case 2:
-            context = (LogicalFormula)t;
+            context = (LogicalFormula) t;
             break;
         case 3:
-            body    = (PlanBody)t;
+            body = (PlanBody) t;
             break;
         }
     }
@@ -105,7 +106,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public void setLabel(Pred p) {
         label = p;
         if (p != null && p.hasAnnot()) {
-            for (Term t: label.getAnnots()) {
+            for (Term t : label.getAnnots()) {
                 if (t.equals(TAtomic))
                     isAtomic = true;
                 if (t.equals(TBreakPoint))
@@ -171,9 +172,10 @@ public class Plan extends Structure implements Cloneable, Serializable {
         return isAllUnifs;
     }
 
-    /** returns an unifier if this plan is relevant for the event <i>te</i>,
-        returns null otherwise.
-    */
+    /**
+     * returns an unifier if this plan is relevant for the event <i>te</i>,
+     * returns null otherwise.
+     */
     public Unifier isRelevant(Trigger te) {
         // annots in plan's TE must be a subset of the ones in the event!
         // (see definition of Unifier.unifies for 2 Preds)
@@ -186,12 +188,15 @@ public class Plan extends Structure implements Cloneable, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
+        if (o == this)
+            return true;
 
         if (o != null && o instanceof Plan) {
             Plan p = (Plan) o;
-            if (context == null && p.context != null) return false;
-            if (context != null && p.context != null && !context.equals(p.context)) return false;
+            if (context == null && p.context != null)
+                return false;
+            if (context != null && p.context != null && !context.equals(p.context))
+                return false;
             return tevent.equals(p.tevent) && body.equals(p.body);
         }
         return false;
@@ -200,16 +205,16 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public Plan capply(Unifier u) {
         Plan p = new Plan();
         if (label != null) {
-            p.label         = (Pred) label.capply(u);
-            p.isAtomic      = isAtomic;
+            p.label = (Pred) label.capply(u);
+            p.isAtomic = isAtomic;
             p.hasBreakpoint = hasBreakpoint;
-            p.isAllUnifs    = isAllUnifs;
+            p.isAllUnifs = isAllUnifs;
         }
 
         p.tevent = tevent.capply(u);
         if (context != null)
-            p.context = (LogicalFormula)context.capply(u);
-        p.body = (PlanBody)body.capply(u);
+            p.context = (LogicalFormula) context.capply(u);
+        p.body = (PlanBody) body.capply(u);
         p.setSrcInfo(srcInfo);
         p.isTerm = isTerm;
 
@@ -219,15 +224,15 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public Term clone() {
         Plan p = new Plan();
         if (label != null) {
-            p.label         = (Pred) label.clone();
-            p.isAtomic      = isAtomic;
+            p.label = (Pred) label.clone();
+            p.isAtomic = isAtomic;
             p.hasBreakpoint = hasBreakpoint;
-            p.isAllUnifs    = isAllUnifs;
+            p.isAllUnifs = isAllUnifs;
         }
 
         p.tevent = tevent.clone();
         if (context != null)
-            p.context = (LogicalFormula)context.clone();
+            p.context = (LogicalFormula) context.clone();
         p.body = body.clonePB();
         p.setSrcInfo(srcInfo);
         p.isTerm = isTerm;
@@ -239,15 +244,15 @@ public class Plan extends Structure implements Cloneable, Serializable {
     public Plan cloneOnlyBody() {
         Plan p = new Plan();
         if (label != null) {
-            p.label         = label;
-            p.isAtomic      = isAtomic;
+            p.label = label;
+            p.isAtomic = isAtomic;
             p.hasBreakpoint = hasBreakpoint;
-            p.isAllUnifs    = isAllUnifs;
+            p.isAllUnifs = isAllUnifs;
         }
 
-        p.tevent  = tevent.clone();
+        p.tevent = tevent.clone();
         p.context = context;
-        p.body    = body.clonePB();
+        p.body = body.clonePB();
 
         p.setSrcInfo(srcInfo);
         p.isTerm = isTerm;
@@ -269,10 +274,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
             b = "";
             e = ".";
         }
-        return b+((label == null) ? "" : "@" + label + " ") +
-               tevent + ((context == null) ? "" : " : " + context) +
-               (body.isEmptyBody() ? "" : " <- " + body) +
-               e;
+        return b + ((label == null) ? "" : "@" + label + " ") + tevent + ((context == null) ? "" : " : " + context) + (body.isEmptyBody() ? "" : " <- " + body) + e;
     }
 
     /** get as XML */

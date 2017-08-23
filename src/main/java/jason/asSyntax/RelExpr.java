@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 /**
  * Represents a relational expression like 10 > 20.
  *
@@ -23,10 +22,10 @@ import org.w3c.dom.Element;
  * </code>
  * Examples:
  * <ul>
- * <li> X =.. [~p, [t1, t2], [a1,a2]]<br>
- *      X is ~p(t1,t2)[a1,a2]
- * <li> ~p(t1,t2)[a1,a2] =.. X<br>
- *      X is [~p, [t1, t2], [a1,a2]]
+ * <li>X =.. [~p, [t1, t2], [a1,a2]]<br>
+ * X is ~p(t1,t2)[a1,a2]
+ * <li>~p(t1,t2)[a1,a2] =.. X<br>
+ * X is [~p, [t1, t2], [a1,a2]]
  * </ul>
  *
  * @navassoc - op - RelationalOp
@@ -39,39 +38,48 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
     private static Logger logger = Logger.getLogger(RelExpr.class.getName());
 
     public enum RelationalOp {
-        none   { public String toString() {
+        none {
+            public String toString() {
                 return "";
             }
         },
-        gt     { public String toString() {
+        gt {
+            public String toString() {
                 return " > ";
             }
         },
-        gte    { public String toString() {
+        gte {
+            public String toString() {
                 return " >= ";
             }
         },
-        lt     { public String toString() {
+        lt {
+            public String toString() {
                 return " < ";
             }
         },
-        lte    { public String toString() {
+        lte {
+            public String toString() {
                 return " <= ";
             }
         },
-        eq     { public String toString() {
+        eq {
+            public String toString() {
                 return " == ";
             }
         },
-        dif    { public String toString() {
+        dif {
+            public String toString() {
                 return " \\== ";
             }
         },
-        unify          { public String toString() {
+        unify {
+            public String toString() {
                 return " = ";
             }
         },
-        literalBuilder { public String toString() {
+        literalBuilder {
+            public String toString() {
                 return " =.. ";
             }
         };
@@ -80,7 +88,7 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
     private RelationalOp op = RelationalOp.none;
 
     public RelExpr(Term t1, RelationalOp oper, Term t2) {
-        super(t1,oper.toString(),t2);
+        super(t1, oper.toString(), t2);
         op = oper;
     }
 
@@ -93,33 +101,40 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
         case none:
             break;
 
-        case gt :
-            if (xp.compareTo(yp)  >  0) return LogExpr.createUnifIterator(un);
+        case gt:
+            if (xp.compareTo(yp) > 0)
+                return LogExpr.createUnifIterator(un);
             break;
         case gte:
-            if (xp.compareTo(yp)  >= 0) return LogExpr.createUnifIterator(un);
+            if (xp.compareTo(yp) >= 0)
+                return LogExpr.createUnifIterator(un);
             break;
-        case lt :
-            if (xp.compareTo(yp)  <  0) return LogExpr.createUnifIterator(un);
+        case lt:
+            if (xp.compareTo(yp) < 0)
+                return LogExpr.createUnifIterator(un);
             break;
         case lte:
-            if (xp.compareTo(yp)  <= 0) return LogExpr.createUnifIterator(un);
+            if (xp.compareTo(yp) <= 0)
+                return LogExpr.createUnifIterator(un);
             break;
-        case eq :
-            if (xp.equals(yp))          return LogExpr.createUnifIterator(un);
+        case eq:
+            if (xp.equals(yp))
+                return LogExpr.createUnifIterator(un);
             break;
         case dif:
-            if (!xp.equals(yp))         return LogExpr.createUnifIterator(un);
+            if (!xp.equals(yp))
+                return LogExpr.createUnifIterator(un);
             break;
         case unify:
-            if (un.unifies(xp,yp))    return LogExpr.createUnifIterator(un);
+            if (un.unifies(xp, yp))
+                return LogExpr.createUnifIterator(un);
             break;
 
         case literalBuilder:
             try {
-                Literal  p = (Literal)xp;  // lhs clone
-                ListTerm l = (ListTerm)yp; // rhs clone
-                //logger.info(p+" test "+l+" un="+un);
+                Literal p = (Literal) xp; // lhs clone
+                ListTerm l = (ListTerm) yp; // rhs clone
+                // logger.info(p+" test "+l+" un="+un);
 
                 // both are not vars, using normal unification
                 if (!p.isVar() && !l.isVar()) {
@@ -149,7 +164,7 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
                     }
 
                     // both are vars, error
-                    logger.log(Level.SEVERE, "Both arguments of "+getTerm(0)+" =.. "+getTerm(1)+" are variables!");
+                    logger.log(Level.SEVERE, "Both arguments of " + getTerm(0) + " =.. " + getTerm(1) + " are variables!");
                 }
 
             } catch (Exception e) {
@@ -158,16 +173,16 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
             break;
         }
 
-        return LogExpr.EMPTY_UNIF_LIST.iterator();  // empty iterator for unifier
+        return LogExpr.EMPTY_UNIF_LIST.iterator(); // empty iterator for unifier
     }
 
     /** returns some LogicalFormula that can be evaluated */
     public static LogicalFormula parseExpr(String sExpr) {
         as2j parser = new as2j(new StringReader(sExpr));
         try {
-            return (LogicalFormula)parser.rel_expr();
+            return (LogicalFormula) parser.rel_expr();
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing expression "+sExpr,e);
+            logger.log(Level.SEVERE, "Error parsing expression " + sExpr, e);
         }
         return null;
     }
@@ -184,17 +199,18 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
 
     @Override
     public Literal cloneNS(Atom newnamespace) {
-        return (Literal)clone();
+        return (Literal) clone();
     }
 
     /** gets the Operation of this Expression */
     public RelationalOp getOp() {
         return op;
     }
+
     /** get as XML */
     public Element getAsDOM(Document document) {
         Element u = super.getAsDOM(document);
-        u.setAttribute("type","relational");
+        u.setAttribute("type", "relational");
         return u;
     }
 }

@@ -7,8 +7,9 @@ import jason.asSyntax.Term;
 
 public class clear extends DefaultInternalAction {
 
-    @Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-        ReplAg ag = (ReplAg)ts.getAg();
+    @Override
+    public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
+        ReplAg ag = (ReplAg) ts.getAg();
         ag.clear();
         return true;
     }

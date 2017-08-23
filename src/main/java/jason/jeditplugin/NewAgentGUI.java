@@ -18,7 +18,7 @@ public class NewAgentGUI extends StartNewAgentGUI {
 
     Buffer buffer = null;
 
-    View   view;
+    View view;
 
     public NewAgentGUI(String title, Buffer b, View view, String openDir) {
         super(view, title, openDir);
@@ -47,7 +47,7 @@ public class NewAgentGUI extends StartNewAgentGUI {
                 pos = proj.lastIndexOf("}");
             }
             pos--;
-            buffer.insert(pos, "\n        " + agDecl.getAsInMASProject()+"\n");
+            buffer.insert(pos, "\n        " + agDecl.getAsInMASProject() + "\n");
         } finally {
             buffer.writeUnlock();
         }
@@ -57,7 +57,7 @@ public class NewAgentGUI extends StartNewAgentGUI {
         if (newFile) {
             try {
                 String agcode = Config.get().getTemplate("agent");
-                agcode = agcode.replace("<AG_NAME>",agName.getText());
+                agcode = agcode.replace("<AG_NAME>", agName.getText());
                 agcode = agcode.replace("<PROJECT_NAME>", buffer.getName());
                 nb.writeLock();
                 nb.insert(0, agcode);

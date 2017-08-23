@@ -11,28 +11,33 @@ import java.util.Iterator;
 
 public class namespace extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
-        return 1;
-    }
-    @Override public int getMaxArgs() {
+    @Override
+    public int getMinArgs() {
         return 1;
     }
 
-    @Override protected void checkArguments(Term[] args) throws JasonException {
+    @Override
+    public int getMaxArgs() {
+        return 1;
+    }
+
+    @Override
+    protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if (!args[0].isAtom() & !args[0].isVar())
-            throw JasonException.createWrongArgument(this,"first argument must be an atom or variable.");
+            throw JasonException.createWrongArgument(this, "first argument must be an atom or variable.");
     }
 
-    @Override public Object execute(final TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
+    @Override
+    public Object execute(final TransitionSystem ts, final Unifier un, final Term[] args) throws Exception {
         checkArguments(args);
 
         if (!args[0].isVar()) {
             return ts.getAg().getBB().getNameSpaces().contains(args[0]);
         } else {
             return new Iterator<Unifier>() {
-                Iterator<Atom> i  = ts.getAg().getBB().getNameSpaces().iterator();
-                Unifier        n  = null;
+                Iterator<Atom> i = ts.getAg().getBB().getNameSpaces().iterator();
+                Unifier n = null;
 
                 {
                     next(); // consume the first (and set first n value, i.e. the first solution)
@@ -56,7 +61,8 @@ public class namespace extends DefaultInternalAction {
                     return c;
                 }
 
-                public void remove() {}
+                public void remove() {
+                }
             };
         }
     }

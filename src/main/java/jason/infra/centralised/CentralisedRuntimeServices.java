@@ -49,7 +49,7 @@ public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
         String nb = "";
         synchronized (logger) { // to avoid problems related to concurrent executions of .create_agent
             int n = 1;
-            while (masRunner.getAg(agName+nb) != null)
+            while (masRunner.getAg(agName + nb) != null)
                 nb = "_" + (n++);
             agName = agName + nb;
 

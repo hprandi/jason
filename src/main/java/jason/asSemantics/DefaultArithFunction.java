@@ -31,7 +31,7 @@ public abstract class DefaultArithFunction implements ArithFunction, Serializabl
 
     @Override
     public String toString() {
-        return "function "+getName();
+        return "function " + getName();
     }
 
 }

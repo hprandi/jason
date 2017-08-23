@@ -26,7 +26,6 @@ import jason.mas2j.ClassParameters;
 import jason.mas2j.MAS2JProject;
 import jason.mas2j.parser.ParseException;
 
-
 /**
  * Implementation of the Jade Architecture to run Jason agents
  *
@@ -35,15 +34,15 @@ import jason.mas2j.parser.ParseException;
 public class JadeAgArch extends JadeAg {
 
     /** name of the "jason agent" service in DF */
-    public  static String dfName = "j_agent";
+    public static String dfName = "j_agent";
 
     private static final long serialVersionUID = 1L;
 
     protected JasonBridgeArch jasonBridgeAgArch;
 
-    //private boolean enterInSleepMode = false;
+    // private boolean enterInSleepMode = false;
 
-    AID controllerAID  = new AID(RunJadeMAS.controllerName, AID.ISLOCALNAME);
+    AID controllerAID = new AID(RunJadeMAS.controllerName, AID.ISLOCALNAME);
 
     Behaviour tsBehaviour;
 
@@ -58,7 +57,7 @@ public class JadeAgArch extends JadeAg {
         if (BaseCentralisedMAS.getRunner() != null)
             BaseCentralisedMAS.getRunner().setupLogger();
         logger = jade.util.Logger.getMyLogger(this.getClass().getName() + "." + getLocalName());
-        logger.info("starting "+getLocalName());
+        logger.info("starting " + getLocalName());
         try {
             AgentParameters ap = parseParameters();
             if (ap != null) {
@@ -73,23 +72,25 @@ public class JadeAgArch extends JadeAg {
                 tsBehaviour = new JasonTSReasoner();
                 addBehaviour(tsBehaviour);
 
-                logger.fine("Created from source "+ap.asSource);
+                logger.fine("Created from source " + ap.asSource);
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error creating JADE architecture.",e);
+            logger.log(Level.SEVERE, "Error creating JADE architecture.", e);
         }
     }
 
     /*
-    @Override
-    protected void afterMove() {
-        super.afterMove();
-    }
-    */
+     * @Override
+     * protected void afterMove() {
+     * super.afterMove();
+     * }
+     */
 
-    /*void enterInSleepMode() {
-        enterInSleepMode = true;
-    }*/
+    /*
+     * void enterInSleepMode() {
+     * enterInSleepMode = true;
+     * }
+     */
 
     void wakeUp() {
         if (tsBehaviour != null) // it can happen that the setup was not run before this method...
@@ -106,18 +107,18 @@ public class JadeAgArch extends JadeAg {
 
         // read arguments
         // if [0] is an instance of AgentParameters
-        //    read parameters from [0]
+        // read parameters from [0]
         // else if [0] is j-project
-        //    read all parameters form [1] (including aslSource and directives)
-        //    create the agent indicated by [2]
+        // read all parameters form [1] (including aslSource and directives)
+        // create the agent indicated by [2]
         // else
-        //    [0] is the file with AS source for the agent
-        //    arch <arch class>
-        //    ag <agent class>
-        //    bb < belief base class >
-        //    option < options >
+        // [0] is the file with AS source for the agent
+        // arch <arch class>
+        // ag <agent class>
+        // bb < belief base class >
+        // option < options >
         if (args[0] instanceof AgentParameters) {
-            return (AgentParameters)args[0];
+            return (AgentParameters) args[0];
         } else {
             args = args[0].toString().split(" ");
             if (args[0].toString().equals("j-project")) { // load parameters from .mas2j
@@ -130,15 +131,15 @@ public class JadeAgArch extends JadeAg {
                 project.setupDefault();
 
                 project.registerDirectives();
-                ((Include)DirectiveProcessor.getDirective("include")).setSourcePath(project.getSourcePaths());
+                ((Include) DirectiveProcessor.getDirective("include")).setSourcePath(project.getSourcePaths());
 
                 AgentParameters ap = project.getAg(args[2].toString());
                 if (ap == null) {
-                    logger.log(Level.SEVERE, "There is no agent '"+args[2]+"' in project '"+args[1]+"'.");
+                    logger.log(Level.SEVERE, "There is no agent '" + args[2] + "' in project '" + args[1] + "'.");
                 } else {
                     ap.asSource = new File(project.getSourcePaths().fixPath(ap.asSource.toString()));
-                    //if (ap.qty > 1)
-                    //    logger.warning("Ignoring quantity of agents from mas2j, jade arch creates only ONE agent.");
+                    // if (ap.qty > 1)
+                    // logger.warning("Ignoring quantity of agents from mas2j, jade arch creates only ONE agent.");
                 }
 
                 // The case CARTAGO+JADE
@@ -151,7 +152,7 @@ public class JadeAgArch extends JadeAg {
                 AgentParameters ap = new AgentParameters();
                 ap.asSource = new File(args[0].toString());
 
-                int i=1;
+                int i = 1;
                 while (i < args.length) {
                     if (args[i].toString().equals("arch")) {
                         i++;
@@ -168,19 +169,17 @@ public class JadeAgArch extends JadeAg {
     }
 
     public static boolean isCartagoJadeCase(MAS2JProject project) {
-        return
-            project.getEnvClass() != null &&
-            project.getEnvClass().getClassName().equals("c4jason.CartagoEnvironment") &&
-            project.isJade();
+        return project.getEnvClass() != null && project.getEnvClass().getClassName().equals("c4jason.CartagoEnvironment") && project.isJade();
     }
 
     private static boolean cartagoStarted = false;
+
     public static synchronized void startCartagoNode(String[] args) {
         if (!cartagoStarted) {
             System.out.print("Starting cartago node....");
-            //CartagoEnvironment env = new CartagoEnvironment();
-            //env.init(args);
-            //System.out.println("ok.");
+            // CartagoEnvironment env = new CartagoEnvironment();
+            // env.init(args);
+            // System.out.println("ok.");
             System.out.println("**** not implemented!!!! ****");
         }
         cartagoStarted = true;
@@ -195,11 +194,11 @@ public class JadeAgArch extends JadeAg {
         vc.setName(dfName);
         dfa.addServices(vc);
         try {
-            DFService.register(this,dfa);
+            DFService.register(this, dfa);
         } catch (FIPAException e) {
             try {
                 DFService.deregister(this);
-                DFService.register(this,dfa);
+                DFService.register(this, dfa);
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, "Error registering agent in DF", e);
                 logger.log(Level.SEVERE, "Error unregistering agent in DF", ex);
@@ -209,6 +208,7 @@ public class JadeAgArch extends JadeAg {
 
     class JasonTSReasoner extends CyclicBehaviour {
         TransitionSystem ts = jasonBridgeAgArch.getTS();
+
         public void action() {
             if (ts.getSettings().isSync()) {
                 if (processExecutionControlOntologyMsg()) {
@@ -217,7 +217,8 @@ public class JadeAgArch extends JadeAg {
                     boolean isBreakPoint = false;
                     try {
                         isBreakPoint = ts.getC().getSelectedOption().getPlan().hasBreakpoint();
-                        if (logger.isLoggable(Level.FINE)) logger.fine("Informing controller that I finished a reasoning cycle "+jasonBridgeAgArch.getCycleNumber()+". Breakpoint is " + isBreakPoint);
+                        if (logger.isLoggable(Level.FINE))
+                            logger.fine("Informing controller that I finished a reasoning cycle " + jasonBridgeAgArch.getCycleNumber() + ". Breakpoint is " + isBreakPoint);
                     } catch (NullPointerException e) {
                         // no problem, there is no sel opt, no plan ....
                     }
@@ -230,7 +231,7 @@ public class JadeAgArch extends JadeAg {
                 ts.reasoningCycle();
                 if (ts.canSleep()) {
                     block(1000);
-                    //enterInSleepMode = false;
+                    // enterInSleepMode = false;
                 }
             }
         }
@@ -244,7 +245,7 @@ public class JadeAgArch extends JadeAg {
                 jasonBridgeAgArch.getFirstAgArch().stop();
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error in doDelete.",e);
+            logger.log(Level.SEVERE, "Error in doDelete.", e);
         } finally {
             super.doDelete();
         }
@@ -255,13 +256,8 @@ public class JadeAgArch extends JadeAg {
         logger.info("Finished!");
     }
 
-
-    private MessageTemplate ts = MessageTemplate.and(
-                                     MessageTemplate.MatchContent("agState"),
-                                     MessageTemplate.MatchOntology(JadeExecutionControl.controllerOntology));
-    private MessageTemplate tc = MessageTemplate.and(
-                                     MessageTemplate.MatchContent("performCycle"),
-                                     MessageTemplate.MatchOntology(JadeExecutionControl.controllerOntology));
+    private MessageTemplate ts = MessageTemplate.and(MessageTemplate.MatchContent("agState"), MessageTemplate.MatchOntology(JadeExecutionControl.controllerOntology));
+    private MessageTemplate tc = MessageTemplate.and(MessageTemplate.MatchContent("performCycle"), MessageTemplate.MatchOntology(JadeExecutionControl.controllerOntology));
 
     boolean processExecutionControlOntologyMsg() {
         ACLMessage m = receive(ts);
@@ -271,7 +267,7 @@ public class JadeAgArch extends JadeAg {
             r.setPerformative(ACLMessage.INFORM);
             try {
                 Document agStateDoc = jasonBridgeAgArch.getTS().getAg().getAgState();
-                r.setContentObject((Serializable)agStateDoc);
+                r.setContentObject((Serializable) agStateDoc);
                 send(r);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "Error sending message " + r, e);
@@ -281,7 +277,7 @@ public class JadeAgArch extends JadeAg {
         m = receive(tc);
         if (m != null) {
             int cycle = Integer.parseInt(m.getUserDefinedParameter("cycle"));
-            logger.fine("new cycle: "+cycle);
+            logger.fine("new cycle: " + cycle);
             jasonBridgeAgArch.setCycleNumber(cycle);
             return true;
         }
@@ -289,25 +285,25 @@ public class JadeAgArch extends JadeAg {
     }
 
     /*
-    boolean isPerceptionOntology(ACLMessage m) {
-        return m.getOntology() != null && m.getOntology().equals(JadeEnvironment.perceptionOntology);
-    }
-    */
-
+     * boolean isPerceptionOntology(ACLMessage m) {
+     * return m.getOntology() != null && m.getOntology().equals(JadeEnvironment.perceptionOntology);
+     * }
+     */
 
     /**
-     *  Informs the infrastructure tier controller that the agent
-     *  has finished its reasoning cycle (used in sync mode).
+     * Informs the infrastructure tier controller that the agent
+     * has finished its reasoning cycle (used in sync mode).
      *
-     *  <p><i>breakpoint</i> is true in case the agent selected one plan
-     *  with the "breakpoint" annotation.
+     * <p>
+     * <i>breakpoint</i> is true in case the agent selected one plan
+     * with the "breakpoint" annotation.
      */
     public void informCycleFinished(boolean breakpoint, int cycle) {
         try {
             ACLMessage m = new ACLMessage(ACLMessage.INFORM);
             m.addReceiver(controllerAID);
             m.setOntology(JadeExecutionControl.controllerOntology);
-            m.setContent(breakpoint+","+cycle);
+            m.setContent(breakpoint + "," + cycle);
             send(m);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error sending cycle finished.", e);

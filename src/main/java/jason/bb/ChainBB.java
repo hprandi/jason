@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  *
  * A wrapper for a chain of belief bases customisations.
@@ -21,14 +20,15 @@ import java.util.logging.Logger;
  *
  * where each BB is bbclass(bb parameters)
  *
- *  e.g.:
- *  <pre>
+ * e.g.:
+ * 
+ * <pre>
  *  agents:
         bob beliefBaseClass jason.bb.ChainBB(
               jason.bb.TextPersistentBB,
               jason.bb.IndexedBB("student(key,_)", "depot(_,_,_)")
             );
- *  </pre>
+ * </pre>
  */
 public class ChainBB extends ChainBBAdapter {
 
@@ -39,7 +39,7 @@ public class ChainBB extends ChainBBAdapter {
         setNext(null); // remove DefaultBB
         try {
             // create all chain BBs
-            for (String s: args) {
+            for (String s : args) {
                 Structure bbs = Structure.parse(s);
                 BeliefBase bb = (ChainBBAdapter) Class.forName(bbs.getFunctor()).newInstance();
                 addInChain(bb);
@@ -47,21 +47,21 @@ public class ChainBB extends ChainBBAdapter {
 
             // init BB
             ChainBBAdapter bb = getNextAdapter();
-            for (String s: args) {
+            for (String s : args) {
                 // translate the terms to String[]
                 Structure bbs = Structure.parse(s);
                 String[] bbargs = new String[bbs.getArity()];
                 int i = 0;
                 if (bbs.hasTerm()) {
-                    for (Term t: bbs.getTerms()) {
-                        bbargs[i++] = t.isString() ? ((StringTerm)t).getString(): t.toString();
+                    for (Term t : bbs.getTerms()) {
+                        bbargs[i++] = t.isString() ? ((StringTerm) t).getString() : t.toString();
                     }
                 }
                 bb.init(ag, bbargs);
                 bb = bb.getNextAdapter();
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error creating ChainBB",e);
+            logger.log(Level.SEVERE, "Error creating ChainBB", e);
         }
     }
 

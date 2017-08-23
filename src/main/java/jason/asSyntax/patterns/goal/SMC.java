@@ -25,8 +25,8 @@ public class SMC extends DefaultDirective implements Directive {
         try {
             Term goal = directive.getTerm(0);
             Term fail = directive.getTerm(1);
-            Pred subDir = Pred.parsePred("bc("+goal+")");
-            //logger.fine("parameters="+goal+","+fail+","+subDir);
+            Pred subDir = Pred.parsePred("bc(" + goal + ")");
+            // logger.fine("parameters="+goal+","+fail+","+subDir);
             Directive sd = DirectiveProcessor.getDirective(subDir.getFunctor());
 
             // apply sub directive
@@ -34,12 +34,12 @@ public class SMC extends DefaultDirective implements Directive {
             if (newAg != null) {
 
                 // add +f : true <- .fail_goal(g).
-                newAg.getPL().add(ASSyntax.parsePlan("+"+fail+" <- .fail_goal("+goal+")."));
+                newAg.getPL().add(ASSyntax.parsePlan("+" + fail + " <- .fail_goal(" + goal + ")."));
 
                 return newAg;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive error.", e);
+            logger.log(Level.SEVERE, "Directive error.", e);
         }
         return null;
     }

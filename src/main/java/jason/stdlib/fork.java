@@ -26,73 +26,82 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
-Implementation of <b>.fort</b> (used for |& and || operators).
-
-<p>Syntax:
-<pre>
+ * Implementation of <b>.fort</b> (used for |& and || operators).
+ * 
+ * <p>
+ * Syntax:
+ * 
+ * <pre>
   <i>plan_body1</i> "|&" | "||" <i>plan_body2</i> ....
-</pre>
-</p>
-
-|& is concurrent and: both   plan_body1 and plan_body2 have to finishes successfully
-|| is concurrent or : either plan_body1 or  plan_body2 have to finishes successfully
-
-
-<p>Example:
-<pre>
-</pre>
-</p>
-
-*/
+ * </pre>
+ * </p>
+ * 
+ * |& is concurrent and: both plan_body1 and plan_body2 have to finishes successfully
+ * || is concurrent or : either plan_body1 or plan_body2 have to finishes successfully
+ * 
+ * 
+ * <p>
+ * Example:
+ * 
+ * <pre>
+ * </pre>
+ * </p>
+ * 
+ */
 public class fork extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
+
     public static InternalAction create() {
         if (singleton == null)
             singleton = new fork();
         return singleton;
     }
 
-    @Override public Term[] prepareArguments(Literal body, Unifier un) {
+    @Override
+    public Term[] prepareArguments(Literal body, Unifier un) {
         return body.getTermsArray();
     }
 
-    @Override public int getMinArgs() {
+    @Override
+    public int getMinArgs() {
         return 2;
     }
 
-    @Override protected void checkArguments(Term[] args) throws JasonException {
+    @Override
+    protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
-        if ( !(args[0] instanceof Atom))
-            throw JasonException.createWrongArgument(this,"first argument must be 'and' or 'or'.");
+        if (!(args[0] instanceof Atom))
+            throw JasonException.createWrongArgument(this, "first argument must be 'and' or 'or'.");
     }
 
-    @Override public boolean suspendIntention() {
+    @Override
+    public boolean suspendIntention() {
         return true;
     }
 
-    @Override public boolean canBeUsedInContext() {
+    @Override
+    public boolean canBeUsedInContext() {
         return false;
     }
 
     private static final Structure joinS = new Structure(".join");
 
     public static final Atom aAnd = new Atom("and");
-    public static final Atom aOr  = new Atom("or");
-
+    public static final Atom aOr = new Atom("or");
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
 
-        ForkData fd = new ForkData( ((Atom)args[0]).equals(aAnd)) ;
+        ForkData fd = new ForkData(((Atom) args[0]).equals(aAnd));
 
         Intention currentInt = ts.getC().getSelectedIntention();
         for (int iPlans = 1; iPlans < args.length; iPlans++) {
             Intention i = new ForkIntention(currentInt, fd);
             fd.addIntention(i);
             i.pop(); // remove the top IM, it will be introduced back later (modified)
-            IntendedMeans im = (IntendedMeans)currentInt.peek().clone();
+            IntendedMeans im = (IntendedMeans) currentInt.peek().clone();
 
             // adds the .join in the plan
             InternalActionLiteral joinL = new InternalActionLiteral(joinS, ts.getAg());
@@ -101,7 +110,7 @@ public class fork extends DefaultInternalAction {
             joinPB.setBodyNext(im.getCurrentStep().getBodyNext());
 
             // adds the argument in the plan (before join)
-            PlanBody whattoadd = (PlanBody)args[iPlans].clone();
+            PlanBody whattoadd = (PlanBody) args[iPlans].clone();
             whattoadd.add(joinPB);
             whattoadd.setAsBodyTerm(false);
             im.insertAsNextStep(whattoadd);
@@ -110,14 +119,13 @@ public class fork extends DefaultInternalAction {
             ts.getC().addIntention(i);
         }
 
-
         return true;
     }
 
     class ForkData {
-        boolean        isAnd = true;
+        boolean isAnd = true;
         Set<Intention> intentions = new HashSet<Intention>();
-        int            toFinish = 0;
+        int toFinish = 0;
 
         public ForkData(boolean isAnd) {
             this.isAnd = isAnd;
@@ -136,10 +144,10 @@ public class fork extends DefaultInternalAction {
             else
                 s.append(" (or) ");
             s.append(" intentions = { ");
-            for (Intention i: intentions) {
-                s.append(" "+i.getId());
+            for (Intention i : intentions) {
+                s.append(" " + i.getId());
             }
-            s.append(" } waiting for "+toFinish);
+            s.append(" } waiting for " + toFinish);
             return s.toString();
         }
     }
@@ -158,14 +166,14 @@ public class fork extends DefaultInternalAction {
         public boolean dropGoal(Trigger te, Unifier un) {
             boolean r = super.dropGoal(te, un);
             if (r && size() < forkPoint) {
-                //System.out.println("drop "+te+" i.size = "+size()+" fork point "+forkPoint+" to f "+fd+"\n"+this);
+                // System.out.println("drop "+te+" i.size = "+size()+" fork point "+forkPoint+" to f "+fd+"\n"+this);
                 if (fd.toFinish > 0) { // the first intentions of the fork being dropped, keep it and ignore the rest
                     fd.toFinish = 0;
-                    //System.out.println("put it back");
+                    // System.out.println("put it back");
                     return true;
                 } else {
                     clearIM();
-                    //System.out.println("ignore intention");
+                    // System.out.println("ignore intention");
                     return false;
                 }
             }
@@ -175,7 +183,7 @@ public class fork extends DefaultInternalAction {
         @Override
         public void fail(Circumstance c) {
             if (size() >= forkPoint && fd.isAnd) { // the fail is above fork, is an fork and, remove the others
-                for (Intention ifo: fd.intentions) {
+                for (Intention ifo : fd.intentions) {
                     drop_intention.dropInt(c, ifo);
                 }
             }
@@ -186,13 +194,13 @@ public class fork extends DefaultInternalAction {
             Pair<Event, Integer> p = super.findEventForFailure(tevent, pl, c);
             if (p.getSecond() <= forkPoint) {
                 if (fd.isAnd) {
-                    //System.out.println("*** remove other forks");
+                    // System.out.println("*** remove other forks");
                     fd.intentions.remove(this);
-                    for (Intention ifo: fd.intentions) {
+                    for (Intention ifo : fd.intentions) {
                         drop_intention.dropInt(c, ifo);
                     }
                 } else {
-                    //System.out.println("*** case or, do not search for fail plan below fork point");
+                    // System.out.println("*** case or, do not search for fail plan below fork point");
                     return new Pair<Event, Integer>(null, p.getSecond());
                 }
             }

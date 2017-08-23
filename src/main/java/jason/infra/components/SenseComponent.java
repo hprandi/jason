@@ -22,14 +22,15 @@ public class SenseComponent extends AgentComponent {
     }
 
     /*
-    public void wakeUp(boolean ts) {
-        synchronized (ag.objSense) {
-            if (ts || sleeping) {
-                sleeping = false;
-                enqueueExecutor(ts);
-            }
-        }
-    }*/
+     * public void wakeUp(boolean ts) {
+     * synchronized (ag.objSense) {
+     * if (ts || sleeping) {
+     * sleeping = false;
+     * enqueueExecutor(ts);
+     * }
+     * }
+     * }
+     */
 
     public void enqueueExecutor(boolean ts) {
         if (!inQueue || ts) {
@@ -40,7 +41,7 @@ public class SenseComponent extends AgentComponent {
 
     public void run() {
         int cycles = ag.getCyclesSense();
-        //int number_cycles = 1;
+        // int number_cycles = 1;
         int i = 0;
 
         while (ag.isRunning() && i < cycles) {

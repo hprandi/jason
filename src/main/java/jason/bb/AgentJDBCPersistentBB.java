@@ -24,8 +24,8 @@ public class AgentJDBCPersistentBB extends JDBCPersistentBB {
 
     @Override
     protected String getCreateTable(String table, int arity, Structure columns) throws SQLException {
-        StringBuilder q = new StringBuilder(super.getCreateTable(table,arity,columns));
-        q.insert(q.length()-1, ", " + COL_AGENT + " varchar(100)");
+        StringBuilder q = new StringBuilder(super.getCreateTable(table, arity, columns));
+        q.insert(q.length() - 1, ", " + COL_AGENT + " varchar(100)");
         return q.toString();
     }
 
@@ -37,7 +37,6 @@ public class AgentJDBCPersistentBB extends JDBCPersistentBB {
     protected String getDeleteAll(PredicateIndicator pi) throws SQLException {
         return super.getDeleteAll(pi) + " where " + getAgWhere();
     }
-
 
     @Override
     protected String getCountQuery(PredicateIndicator pi) throws SQLException {
@@ -62,7 +61,7 @@ public class AgentJDBCPersistentBB extends JDBCPersistentBB {
     protected String getInsert(Literal l) throws Exception {
         StringBuilder q = new StringBuilder(super.getInsert(l));
         if (isCreatedByJason(l.getPredicateIndicator())) {
-            q.insert(q.length()-1, ", '" + agentName + "'");
+            q.insert(q.length() - 1, ", '" + agentName + "'");
         }
         return q.toString();
     }

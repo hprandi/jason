@@ -14,46 +14,50 @@ import jason.asSyntax.Pred;
 import jason.asSyntax.PredicateIndicator;
 import jason.asSyntax.Term;
 
-
 /**
  * Common interface for all kinds of Jason Belief bases, even those
  * customised by the user.
  */
 public abstract class BeliefBase implements Iterable<Literal>, Cloneable {
 
-    public static final Term ASelf    = new Atom("self");
+    public static final Term ASelf = new Atom("self");
     public static final Term APercept = new Atom("percept");
 
     /** represents the structure 'source(percept)' */
     public static final Term TPercept = Pred.createSource(APercept);
 
     /** represents the structure 'source(self)' */
-    public static final Term TSelf    = Pred.createSource(ASelf);
+    public static final Term TSelf = Pred.createSource(ASelf);
 
     /**
      * Called before the MAS execution with the agent that uses this
      * BB and the args informed in .mas2j project.<br>
      * Example in .mas2j:<br>
-     *     <code>agent BeliefBaseClass(1,bla);</code><br>
+     * <code>agent BeliefBaseClass(1,bla);</code><br>
      * the init args will be ["1", "bla"].
      */
-    public void init(Agent ag, String[] args) {}
+    public void init(Agent ag, String[] args) {
+    }
 
     /** Called just before the end of MAS execution */
-    public void stop() {}
+    public void stop() {
+    }
 
     /** removes all beliefs from BB */
-    public void clear() {}
+    public void clear() {
+    }
 
     public Set<Atom> getNameSpaces() {
         return null;
     }
 
-    /** Adds a belief in the end of the BB, returns true if succeed.
-     *  The annots of l may be changed to reflect what was changed in the BB,
-     *  for example, if l is p[a,b] in a BB with p[a], l will be changed to
-     *  p[b] to produce the event +p[b], since only the annotation b is changed
-     *  in the BB. */
+    /**
+     * Adds a belief in the end of the BB, returns true if succeed.
+     * The annots of l may be changed to reflect what was changed in the BB,
+     * for example, if l is p[a,b] in a BB with p[a], l will be changed to
+     * p[b] to produce the event +p[b], since only the annotation b is changed
+     * in the BB.
+     */
     public boolean add(Literal l) {
         return false;
     }
@@ -62,7 +66,6 @@ public abstract class BeliefBase implements Iterable<Literal>, Cloneable {
     public boolean add(int index, Literal l) {
         return false;
     }
-
 
     /** Returns an iterator for all beliefs. */
     public abstract Iterator<Literal> iterator();
@@ -91,7 +94,8 @@ public abstract class BeliefBase implements Iterable<Literal>, Cloneable {
 
     /**
      * Returns the literal l as it is in BB, this method does not
-     * consider annotations in the search. <br> Example, if
+     * consider annotations in the search. <br>
+     * Example, if
      * BB={a(10)[a,b]}, <code>contains(a(10)[d])</code> returns
      * a(10)[a,b].
      */
@@ -118,6 +122,7 @@ public abstract class BeliefBase implements Iterable<Literal>, Cloneable {
     public boolean abolish(PredicateIndicator pi) {
         return abolish(Literal.DefaultNS, pi);
     }
+
     public boolean abolish(Atom namespace, PredicateIndicator pi) {
         return false;
     }

@@ -5,15 +5,18 @@ import jason.asSemantics.TransitionSystem;
 import jason.asSyntax.Term;
 
 /**
-  <p>Function: <b><code>math.e</code></b>: encapsulates java Math.E.
-
-  <p>Example:<ul>
-  <li> <code>math.e</code>: returns 2.718.</li>
-  </ul>
-
-  @author Jomi
-*/
-public class e extends DefaultArithFunction  {
+ * <p>
+ * Function: <b><code>math.e</code></b>: encapsulates java Math.E.
+ * 
+ * <p>
+ * Example:
+ * <ul>
+ * <li><code>math.e</code>: returns 2.718.</li>
+ * </ul>
+ * 
+ * @author Jomi
+ */
+public class e extends DefaultArithFunction {
 
     public String getName() {
         return "math.e";

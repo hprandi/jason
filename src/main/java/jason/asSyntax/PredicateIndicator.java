@@ -10,9 +10,9 @@ import java.io.Serializable;
 public final class PredicateIndicator implements Comparable<PredicateIndicator>, Serializable {
 
     private final String functor;
-    private final int    arity;
-    private final int    hash;
-    private final Atom   ns;
+    private final int arity;
+    private final int hash;
+    private final Atom ns;
 
     public PredicateIndicator(String functor, int arity) {
         this(Literal.DefaultNS, functor, arity);
@@ -20,9 +20,9 @@ public final class PredicateIndicator implements Comparable<PredicateIndicator>,
 
     public PredicateIndicator(Atom ns, String functor, int arity) {
         this.functor = functor;
-        this.arity   = arity;
-        this.ns      = ns;
-        hash         = calcHash();
+        this.arity = arity;
+        this.ns = ns;
+        hash = calcHash();
     }
 
     public String getFunctor() {
@@ -39,9 +39,10 @@ public final class PredicateIndicator implements Comparable<PredicateIndicator>,
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
+        if (o == this)
+            return true;
         if (o != null && o instanceof PredicateIndicator && o.hashCode() == this.hashCode()) {
-            final PredicateIndicator pi = (PredicateIndicator)o;
+            final PredicateIndicator pi = (PredicateIndicator) o;
             return arity == pi.arity && functor.equals(pi.functor) && ns.equals(pi.ns);
         }
         return false;
@@ -55,19 +56,24 @@ public final class PredicateIndicator implements Comparable<PredicateIndicator>,
     @Override
     public int compareTo(PredicateIndicator pi) {
         int c = this.ns.compareTo(pi.ns);
-        if (c != 0) return c;
+        if (c != 0)
+            return c;
 
         c = this.functor.compareTo(pi.functor);
-        if (c != 0) return c;
+        if (c != 0)
+            return c;
 
-        if (pi.arity > this.arity) return -1;
-        if (this.arity > pi.arity) return 1;
+        if (pi.arity > this.arity)
+            return -1;
+        if (this.arity > pi.arity)
+            return 1;
         return 0;
     }
 
     private int calcHash() {
-        int t  = 31 * arity * ns.hashCode();
-        if (functor != null) t = 31 * t + functor.hashCode();
+        int t = 31 * arity * ns.hashCode();
+        if (functor != null)
+            t = 31 * t + functor.hashCode();
         return t;
     }
 

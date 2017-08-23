@@ -14,65 +14,70 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
-  Represents an AgentSpeak trigger (like +!g, +p, ...).
-
-  It is composed by:
-     an operator (+ or -);
-     a type (<empty>, !, or ?);
-     a literal
-
-  (it extends structure to be used as a term)
-
-  @opt attributes
-  @navassoc - literal  - Literal
-  @navassoc - operator - TEOperator
-  @navassoc - type     - TEType
-*/
+ * Represents an AgentSpeak trigger (like +!g, +p, ...).
+ * 
+ * It is composed by:
+ * an operator (+ or -);
+ * a type (<empty>, !, or ?);
+ * a literal
+ * 
+ * (it extends structure to be used as a term)
+ * 
+ * @opt attributes
+ * @navassoc - literal - Literal
+ * @navassoc - operator - TEOperator
+ * @navassoc - type - TEType
+ */
 public class Trigger extends Structure implements Cloneable {
 
     private static Logger logger = Logger.getLogger(Trigger.class.getName());
 
     public enum TEOperator {
-        add        { public String toString() {
+        add {
+            public String toString() {
                 return "+";
             }
         },
-        del        { public String toString() {
+        del {
+            public String toString() {
                 return "-";
             }
         },
-        goalState  { public String toString() {
+        goalState {
+            public String toString() {
                 return "^";
             }
         },
     };
 
     public enum TEType {
-        belief  { public String toString() {
+        belief {
+            public String toString() {
                 return "";
             }
         },
-        achieve { public String toString() {
+        achieve {
+            public String toString() {
                 return "!";
             }
         },
-        test    { public String toString() {
+        test {
+            public String toString() {
                 return "?";
             }
         }
     };
 
-
     private TEOperator operator = TEOperator.add;
-    private TEType     type     = TEType.belief;
-    private Literal    literal;
+    private TEType type = TEType.belief;
+    private Literal literal;
 
-    private boolean     isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
+    private boolean isTerm = false; // it is true when the plan body is used as a term instead of an element of a plan
 
     public Trigger(TEOperator op, TEType t, Literal l) {
         super("te", 0);
         literal = l;
-        type    = t;
+        type = t;
         setTrigOp(op);
         setSrcInfo(l.getSrcInfo());
     }
@@ -83,7 +88,7 @@ public class Trigger extends Structure implements Cloneable {
         try {
             return parser.trigger();
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing trigger" + sTe,e);
+            logger.log(Level.SEVERE, "Error parsing trigger" + sTe, e);
             return null;
         }
     }
@@ -112,17 +117,16 @@ public class Trigger extends Structure implements Cloneable {
         case 0:
             logger.warning("setTerm(i,t) for i=0 -- the operator -- , IS NOT IMPLEMENTED YET!!!");
             break;
-        case  1:
-            literal = (Literal)t;
+        case 1:
+            literal = (Literal) t;
             break;
         }
     }
 
     public void setTrigOp(TEOperator op) {
         operator = op;
-        predicateIndicatorCache  = null;
+        predicateIndicatorCache = null;
     }
-
 
     public boolean sameType(Trigger e) {
         return operator == e.operator && type == e.type;
@@ -170,12 +174,11 @@ public class Trigger extends Structure implements Cloneable {
 
     @Override
     public Trigger capply(Unifier u) {
-        Trigger c = new Trigger(operator, type, (Literal)literal.capply(u));
+        Trigger c = new Trigger(operator, type, (Literal) literal.capply(u));
         c.predicateIndicatorCache = this.predicateIndicatorCache;
         c.isTerm = isTerm;
         return c;
     }
-
 
     /** return [+|-][!|?] super.getPredicateIndicator */
     @Override
@@ -186,9 +189,11 @@ public class Trigger extends Structure implements Cloneable {
         return predicateIndicatorCache;
     }
 
-    /*public boolean apply(Unifier u) {
-        return literal.apply(u);
-    }*/
+    /*
+     * public boolean apply(Unifier u) {
+     * return literal.apply(u);
+     * }
+     */
 
     public Literal getLiteral() {
         return literal;
@@ -212,16 +217,16 @@ public class Trigger extends Structure implements Cloneable {
             b = "";
             e = "";
         }
-        return b + operator+ type + literal + e;
+        return b + operator + type + literal + e;
     }
 
     /** try to convert the term t into a trigger, in case t is a trigger term, a string that can be parsed to a trigger, a var with value trigger, .... */
     public static Trigger tryToGetTrigger(Term t) throws ParseException {
         if (t instanceof Trigger) {
-            return (Trigger)t;
+            return (Trigger) t;
         }
         if (t.isPlanBody()) {
-            PlanBody p = (PlanBody)t;
+            PlanBody p = (PlanBody) t;
             if (p.getPlanSize() == 1) {
                 TEOperator op = null;
                 if (p.getBodyType() == BodyType.addBel)
@@ -229,7 +234,7 @@ public class Trigger extends Structure implements Cloneable {
                 else if (p.getBodyType() == BodyType.delBel)
                     op = TEOperator.del;
                 if (op != null) {
-                    Literal l = (Literal)p.getBodyTerm().clone();
+                    Literal l = (Literal) p.getBodyTerm().clone();
                     l.delAnnot(BeliefBase.TSelf); // remove the eventual auto added annotation of source
                     return new Trigger(op, TEType.belief, l);
 
@@ -237,7 +242,7 @@ public class Trigger extends Structure implements Cloneable {
             }
         }
         if (t.isString()) {
-            return ASSyntax.parseTrigger(((StringTerm)t).getString());
+            return ASSyntax.parseTrigger(((StringTerm) t).getString());
         }
         return null;
     }

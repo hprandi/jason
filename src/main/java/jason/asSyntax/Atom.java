@@ -17,7 +17,7 @@ public class Atom extends Literal {
     private static Logger logger = Logger.getLogger(Atom.class.getName());
 
     private final String functor; // immutable field
-    private final Atom   ns; // name space
+    private final Atom ns; // name space
 
     public Atom(String functor) {
         this(DefaultNS, functor);
@@ -27,7 +27,7 @@ public class Atom extends Literal {
         if (functor == null)
             logger.log(Level.WARNING, "The functor of an atom functor should not be null!", new Exception());
         this.functor = functor;
-        this.ns      = namespace;
+        this.ns = namespace;
     }
 
     public Atom(Literal l) {
@@ -35,15 +35,15 @@ public class Atom extends Literal {
     }
 
     public Atom(Literal l, Unifier u) {
-        this((Atom)l.getNS().capply(u), l);
+        this((Atom) l.getNS().capply(u), l);
     }
 
     public Atom(Atom namespace, Literal l) {
-        this.functor            = l.getFunctor();
-        this.ns                 = namespace;
-        //predicateIndicatorCache = l.predicateIndicatorCache;
-        //hashCodeCache           = l.hashCodeCache;
-        srcInfo                 = l.srcInfo;
+        this.functor = l.getFunctor();
+        this.ns = namespace;
+        // predicateIndicatorCache = l.predicateIndicatorCache;
+        // hashCodeCache = l.hashCodeCache;
+        srcInfo = l.srcInfo;
     }
 
     public String getFunctor() {
@@ -78,40 +78,48 @@ public class Atom extends Literal {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (o == this) return true;
+        if (o == null)
+            return false;
+        if (o == this)
+            return true;
         if (o instanceof Atom) {
-            Atom a = (Atom)o;
-            //System.out.println(getFunctor() +" ==== " + a.getFunctor() + " atom "+ a.isAtom() + " ns " + getNS() + "/" + a.getNS()); // && getFunctor().equals(a.getFunctor())));
+            Atom a = (Atom) o;
+            // System.out.println(getFunctor() +" ==== " + a.getFunctor() + " atom "+ a.isAtom() + " ns " + getNS() + "/" + a.getNS()); // && getFunctor().equals(a.getFunctor())));
             return a.isAtom() && getFunctor().equals(a.getFunctor()) && getNS().equals(a.getNS());
         }
         return false;
     }
 
     public int compareTo(Term t) {
-        if (t == null) return -1; // null should be first (required for addAnnot)
-        if (t.isNumeric()) return 1;
+        if (t == null)
+            return -1; // null should be first (required for addAnnot)
+        if (t.isNumeric())
+            return 1;
 
         // this is a list and the other not
-        if (isList() && !t.isList()) return -1;
+        if (isList() && !t.isList())
+            return -1;
 
         // this is not a list and the other is
-        if (!isList() && t.isList()) return 1;
+        if (!isList() && t.isList())
+            return 1;
 
         // both are lists, check the size
         if (isList() && t.isList()) {
-            ListTerm l1 = (ListTerm)this;
-            ListTerm l2 = (ListTerm)t;
+            ListTerm l1 = (ListTerm) this;
+            ListTerm l2 = (ListTerm) t;
             final int l1s = l1.size();
             final int l2s = l2.size();
-            if (l1s > l2s) return 1;
-            if (l2s > l1s) return -1;
+            if (l1s > l2s)
+                return 1;
+            if (l2s > l1s)
+                return -1;
             return 0; // need to check elements (in Structure class)
         }
         if (t.isVar())
             return -1;
         if (t instanceof Literal) {
-            Literal tAsLit = (Literal)t;
+            Literal tAsLit = (Literal) t;
             if (getNS().equals(tAsLit.getNS())) { // same ns
                 final int ma = getArity();
                 final int oa = tAsLit.getArity();
@@ -145,7 +153,7 @@ public class Atom extends Literal {
     /** get as XML */
     public Element getAsDOM(Document document) {
         Element u = (Element) document.createElement("structure");
-        u.setAttribute("functor",getFunctor());
+        u.setAttribute("functor", getFunctor());
         u.setAttribute("name-space", getNS().getFunctor());
         return u;
     }

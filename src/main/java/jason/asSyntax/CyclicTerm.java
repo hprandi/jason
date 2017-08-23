@@ -5,12 +5,10 @@ import org.w3c.dom.Element;
 
 import jason.asSemantics.Unifier;
 
-
-
 /**
  * A term with recursion (cyclic), created by code like X = f(X).
  */
-public class CyclicTerm extends LiteralImpl  {
+public class CyclicTerm extends LiteralImpl {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,7 +21,7 @@ public class CyclicTerm extends LiteralImpl  {
     }
 
     public CyclicTerm(Literal t, VarTerm v, Unifier u) {
-        super(t,u);
+        super(t, u);
         cyclicVar = v;
     }
 
@@ -38,8 +36,10 @@ public class CyclicTerm extends LiteralImpl  {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (o == this) return true;
+        if (o == null)
+            return false;
+        if (o == this)
+            return true;
 
         if (o instanceof CyclicTerm) {
             final CyclicTerm l = (CyclicTerm) o;
@@ -57,29 +57,28 @@ public class CyclicTerm extends LiteralImpl  {
         return this;
     }
 
-
     /*
-    @Override
-    public boolean apply(Unifier u) {
-        Term v = u.remove(cyclicVar);
-        boolean b = super.apply(u);
-        if (v != null)
-            u.bind(cyclicVar, v);
-        return b;
-    }
-    */
+     * @Override
+     * public boolean apply(Unifier u) {
+     * Term v = u.remove(cyclicVar);
+     * boolean b = super.apply(u);
+     * if (v != null)
+     * u.bind(cyclicVar, v);
+     * return b;
+     * }
+     */
 
     @Override
     public Term capply(Unifier u) {
         Term v = u.remove(cyclicVar);
-        Term r = new CyclicTerm(this, (VarTerm)cyclicVar.clone(), u);
+        Term r = new CyclicTerm(this, (VarTerm) cyclicVar.clone(), u);
         if (v != null)
             u.bind(cyclicVar, v);
         return r;
     }
 
     public Term clone() {
-        return new CyclicTerm(this, (VarTerm)cyclicVar.clone());
+        return new CyclicTerm(this, (VarTerm) cyclicVar.clone());
     }
 
     @Override
@@ -88,7 +87,7 @@ public class CyclicTerm extends LiteralImpl  {
     }
 
     public String toString() {
-        return "..."+super.toString()+"/"+cyclicVar;
+        return "..." + super.toString() + "/" + cyclicVar;
     }
 
     @Override

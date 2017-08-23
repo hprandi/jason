@@ -13,11 +13,9 @@ import jason.asSyntax.Trigger;
 
 public abstract class ReplAg extends Agent {
 
-    String[] replCmds = {
-        clear.class.getName(),
-        //verbose.class.getName(),
-        mi.class.getName()
-    };
+    String[] replCmds = { clear.class.getName(),
+            // verbose.class.getName(),
+            mi.class.getName() };
 
     int cmdCounter = 0;
 
@@ -29,18 +27,20 @@ public abstract class ReplAg extends Agent {
     @Override
     public void load(String asSrc) throws JasonException {
         super.load(null);
-        /*try {
-            getPL().add(ASSyntax.parsePlan("+!run_repl_expr(Cmd__TR) <- Cmd__TR; jason.infra.repl.print_unifier."));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }*/
+        /*
+         * try {
+         * getPL().add(ASSyntax.parsePlan("+!run_repl_expr(Cmd__TR) <- Cmd__TR; jason.infra.repl.print_unifier."));
+         * } catch (ParseException e) {
+         * e.printStackTrace();
+         * }
+         */
     }
 
     void execCmd(String sCmd) {
         try {
             if (sCmd.endsWith("."))
-                sCmd = sCmd.substring(0,sCmd.length()-1);
-            for (String c: replCmds) {
+                sCmd = sCmd.substring(0, sCmd.length() - 1);
+            for (String c : replCmds) {
                 if (c.endsWith(sCmd) && sCmd.startsWith(".")) {
                     sCmd = c;
                     break;
@@ -49,29 +49,25 @@ public abstract class ReplAg extends Agent {
             if (sCmd.startsWith(".verbose")) {
                 sCmd = verbose.class.getPackage().getName() + sCmd;
             }
-            sCmd += ";"+print_unifier.class.getName();
+            sCmd += ";" + print_unifier.class.getName();
             PlanBody lCmd = ASSyntax.parsePlanBody(sCmd);
-            Trigger  te   = ASSyntax.parseTrigger("+!run_repl_expr");
-            Intention i   = new Intention();
-            i.push(new IntendedMeans(
-                       new Option(
-                           new Plan(null,te,null,lCmd),
-                           new Unifier()),
-                       te));
-            //Literal g = ASSyntax.createLiteral("run_repl_expr", lCmd);
-            //getTS().getLogger().info("running "+i);
-            //getTS().getC().addAchvGoal(g, null);
+            Trigger te = ASSyntax.parseTrigger("+!run_repl_expr");
+            Intention i = new Intention();
+            i.push(new IntendedMeans(new Option(new Plan(null, te, null, lCmd), new Unifier()), te));
+            // Literal g = ASSyntax.createLiteral("run_repl_expr", lCmd);
+            // getTS().getLogger().info("running "+i);
+            // getTS().getC().addAchvGoal(g, null);
             getTS().getC().addIntention(i);
             cmdCounter++;
             clear();
             getTS().getUserAgArch().wake();
         } catch (Exception e) {
-            print("Error parsing "+sCmd+"\n"+e);
+            print("Error parsing " + sCmd + "\n" + e);
         }
     }
 
     public void print(String s) {
-        System.out.println(s+"\n");
+        System.out.println(s + "\n");
     }
 
     public void clear() {

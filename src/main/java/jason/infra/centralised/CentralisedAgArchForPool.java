@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 
 /** an agent architecture for the infra based on thread pool */
 public final class CentralisedAgArchForPool extends CentralisedAgArch {
-    private volatile boolean isSleeping  = false;
+    private volatile boolean isSleeping = false;
     private ExecutorService executor;
 
     public void setExecutor(ExecutorService e) {
@@ -14,11 +14,13 @@ public final class CentralisedAgArchForPool extends CentralisedAgArch {
     @Override
     public void sleep() {
         isSleeping = true;
-        /*Agent.getScheduler().schedule(new Runnable() {
-            public void run() {
-                wake();
-            }
-        }, MAX_SLEEP, TimeUnit.MILLISECONDS);*/
+        /*
+         * Agent.getScheduler().schedule(new Runnable() {
+         * public void run() {
+         * wake();
+         * }
+         * }, MAX_SLEEP, TimeUnit.MILLISECONDS);
+         */
     }
 
     @Override
@@ -50,4 +52,3 @@ public final class CentralisedAgArchForPool extends CentralisedAgArch {
         }
     }
 }
-

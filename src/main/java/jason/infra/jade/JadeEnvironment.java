@@ -31,7 +31,7 @@ import jason.runtime.RuntimeServicesInfraTier;
 @SuppressWarnings("serial")
 public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
 
-    public static String actionOntology     = "AS-actions";
+    public static String actionOntology = "AS-actions";
     public static String perceptionOntology = "AS-perception";
 
     private Environment userEnv;
@@ -40,7 +40,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
     }
 
     @Override
-    public void setup()  {
+    public void setup() {
         // create the user environment
         if (BaseCentralisedMAS.getRunner() != null)
             BaseCentralisedMAS.getRunner().setupLogger();
@@ -49,14 +49,14 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
             Object[] args = getArguments();
             if (args != null && args.length > 0) {
                 if (args[0] instanceof ClassParameters) { // it is an mas2j parameter
-                    ClassParameters ep = (ClassParameters)args[0];
+                    ClassParameters ep = (ClassParameters) args[0];
                     userEnv = (Environment) Class.forName(ep.getClassName()).newInstance();
                     userEnv.setEnvironmentInfraTier(this);
                     userEnv.init(ep.getParametersArray());
 
                 } else {
                     args = args[0].toString().split(" ");
-                    //for (Object o: args) System.out.println("*** "+o);
+                    // for (Object o: args) System.out.println("*** "+o);
                     if (args[0].toString().equals("j-project")) { // load parameters from .mas2j
                         if (args.length != 2) {
                             logger.log(Level.SEVERE, "To start the environment from .mas2j file, you have to provide as parameters: (j-project <file.mas2j>)");
@@ -76,9 +76,9 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
                         userEnv = (Environment) Class.forName(args[0].toString()).newInstance();
                         userEnv.setEnvironmentInfraTier(this);
 
-                        String[] envArgs = new String[args.length-1];
-                        for (int i=1; i<args.length; i++)
-                            envArgs[i-1] = args[1].toString();
+                        String[] envArgs = new String[args.length - 1];
+                        for (int i = 1; i < args.length; i++)
+                            envArgs[i - 1] = args[1].toString();
                         userEnv.init(envArgs);
                     }
                 }
@@ -99,7 +99,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
         vc.setName(RunJadeMAS.environmentName);
         dfa.addServices(vc);
         try {
-            DFService.register(this,dfa);
+            DFService.register(this, dfa);
         } catch (FIPAException e) {
             logger.log(Level.SEVERE, "Error registering environment in DF", e);
         }
@@ -110,6 +110,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
             // and actions asks
             addBehaviour(new CyclicBehaviour() {
                 ACLMessage m;
+
                 public void action() {
                     m = receive();
                     if (m == null) {
@@ -156,12 +157,13 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
 
     @Override
     protected void takeDown() {
-        if (userEnv != null) userEnv.stop();
+        if (userEnv != null)
+            userEnv.stop();
     }
 
     public void actionExecuted(String agName, Structure actTerm, boolean success, Object infraData) {
         try {
-            ACLMessage r = (ACLMessage)infraData;
+            ACLMessage r = (ACLMessage) infraData;
             if (success) {
                 r.setContent("ok");
             } else {
@@ -187,7 +189,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
             } else {
                 ACLMessage m = new ACLMessage(ACLMessage.INFORM);
                 m.setContent("environmentChanged");
-                for (String ag: agentsToNotify) {
+                for (String ag : agentsToNotify) {
                     m.addReceiver(new AID(ag, AID.ISLOCALNAME));
                 }
                 send(m);

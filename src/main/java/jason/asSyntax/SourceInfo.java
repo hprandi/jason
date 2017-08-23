@@ -8,29 +8,31 @@ import java.io.Serializable;
  */
 public class SourceInfo implements Serializable {
 
-    private final String      source;
-    private final int         beginSrcLine; // the line this literal appears in the source
-    private final int         endSrcLine;
+    private final String source;
+    private final int beginSrcLine; // the line this literal appears in the source
+    private final int endSrcLine;
 
     public SourceInfo(String file, int beginLine) {
-        source       = file;
+        source = file;
         beginSrcLine = beginLine;
-        endSrcLine   = beginLine;
+        endSrcLine = beginLine;
     }
+
     public SourceInfo(String file, int beginLine, int endLine) {
-        source       = file;
+        source = file;
         beginSrcLine = beginLine;
-        endSrcLine   = endLine;
+        endSrcLine = endLine;
     }
+
     public SourceInfo(SourceInfo o) {
         if (o == null) {
-            source       = null;
+            source = null;
             beginSrcLine = 0;
-            endSrcLine   = 0;
+            endSrcLine = 0;
         } else {
-            source       = o.source;
+            source = o.source;
             beginSrcLine = o.beginSrcLine;
-            endSrcLine   = o.endSrcLine;
+            endSrcLine = o.endSrcLine;
         }
     }
 
@@ -54,8 +56,7 @@ public class SourceInfo implements Serializable {
         return endSrcLine;
     }
 
-    public  String toString() {
-        return (source == null ? "nofile" : source)
-               + (beginSrcLine >= 0 ? ":"+beginSrcLine : "");
+    public String toString() {
+        return (source == null ? "nofile" : source) + (beginSrcLine >= 0 ? ":" + beginSrcLine : "");
     }
 }

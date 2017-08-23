@@ -44,6 +44,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     public Iterator<VarTerm> iterator() {
         return function.keySet().iterator();
     }
+
     /**
      * gets the value for a Var, if it is unified with another var, gets this
      * other's value
@@ -51,27 +52,28 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     public Term get(VarTerm vtp) {
         Term vl = function.get(vtp);
         if (vl != null && vl.isVar()) { // optimised deref
-            return get((VarTerm)vl);
+            return get((VarTerm) vl);
         }
-        /* vars in unifier are not negated anymore! (works like namespace)
-        if (vl == null) { // try negated value of the var
-            //System.out.println("for "+vtp+" try "+new VarTerm(vtp.negated(), vtp.getFunctor())+" in "+this);
-            vl = function.get( new VarTerm(vtp.negated(), vtp.getFunctor()) );
-            //System.out.println(" and found "+vl);
-            if (vl != null && vl.isVar()) {
-                vl = get((VarTerm)vl);
-            }
-            if (vl != null && vl.isLiteral()) {
-                vl = vl.clone();
-                ((Literal)vl).setNegated(((Literal)vl).negated());
-            }
-        }
-        */
+        /*
+         * vars in unifier are not negated anymore! (works like namespace)
+         * if (vl == null) { // try negated value of the var
+         * //System.out.println("for "+vtp+" try "+new VarTerm(vtp.negated(), vtp.getFunctor())+" in "+this);
+         * vl = function.get( new VarTerm(vtp.negated(), vtp.getFunctor()) );
+         * //System.out.println(" and found "+vl);
+         * if (vl != null && vl.isVar()) {
+         * vl = get((VarTerm)vl);
+         * }
+         * if (vl != null && vl.isLiteral()) {
+         * vl = vl.clone();
+         * ((Literal)vl).setNegated(((Literal)vl).negated());
+         * }
+         * }
+         */
         return vl;
     }
 
     public VarTerm getVarFromValue(Term vl) {
-        for (VarTerm v: function.keySet()) {
+        for (VarTerm v : function.keySet()) {
             Term vvl = function.get(v);
             if (vvl.equals(vl)) {
                 return v;
@@ -90,16 +92,17 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
 
     // ----- Unify for Predicates/Literals
 
-    /** this version of unifies undo the variables' mapping
-        if the unification fails.
-        E.g.
-          u.unifier( a(X,10), a(1,1) );
-        does not change u, i.e., u = {}
+    /**
+     * this version of unifies undo the variables' mapping
+     * if the unification fails.
+     * E.g.
+     * u.unifier( a(X,10), a(1,1) );
+     * does not change u, i.e., u = {}
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public boolean unifies(Term t1, Term t2) {
         Map cfunction = cloneFunction();
-        if (unifiesNoUndo(t1,t2)) {
+        if (unifiesNoUndo(t1, t2)) {
             return true;
         } else {
             function = cfunction;
@@ -109,25 +112,26 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Map<VarTerm, Term> cloneFunction() {
-        return (Map<VarTerm, Term>)((HashMap)function).clone();
-        //return new HashMap<VarTerm, Term>(function);
+        return (Map<VarTerm, Term>) ((HashMap) function).clone();
+        // return new HashMap<VarTerm, Term>(function);
     }
 
-    /** this version of unifies does not undo the variables' mapping
-        in case of failure. It is however faster than the version with
-        undo.
-        E.g.
-          u.unifier( a(X,10), a(1,1) );
-        fails, but changes u to {X = 10}
-    */
+    /**
+     * this version of unifies does not undo the variables' mapping
+     * in case of failure. It is however faster than the version with
+     * undo.
+     * E.g.
+     * u.unifier( a(X,10), a(1,1) );
+     * fails, but changes u to {X = 10}
+     */
     public boolean unifiesNoUndo(Term t1g, Term t2g) {
 
         Pred np1 = null;
         Pred np2 = null;
 
         if (t1g instanceof Pred && t2g instanceof Pred) {
-            np1 = (Pred)t1g;
-            np2 = (Pred)t2g;
+            np1 = (Pred) t1g;
+            np2 = (Pred) t2g;
 
             // tests when np1 or np2 are Vars with annots
             if ((np1.isVar() && np1.hasAnnot()) || np2.isVar() && np2.hasAnnot()) {
@@ -145,7 +149,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
             remove(v1);
             remove(v2);
             try {
-                return unifiesNoUndo(new LiteralImpl((Literal)t1g), new LiteralImpl((Literal)t2g));
+                return unifiesNoUndo(new LiteralImpl((Literal) t1g), new LiteralImpl((Literal) t2g));
             } finally {
                 function.put(v1, t1g);
                 function.put(v2, t1g);
@@ -162,26 +166,26 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         boolean ok = unifyTerms(t1g, t2g);
 
         // if np1 is a var that was unified, clear its annots, as in
-        //      X[An] = p(1)[a,b]
+        // X[An] = p(1)[a,b]
         // X is mapped to p(1) and not p(1)[a,b]
         // (if the user wants the "remaining" annots, s/he should write
-        //      X[An|R] = p(1)[a,b]
+        // X[An|R] = p(1)[a,b]
         // X = p(1), An = a, R=[b]
         if (ok && np1 != null) { // they are predicates
             if (np1.isVar() && np1.hasAnnot()) {
-                np1 = deref( (VarTerm)np1);
-                Term np1vl = function.get( (VarTerm) np1);
+                np1 = deref((VarTerm) np1);
+                Term np1vl = function.get((VarTerm) np1);
                 if (np1vl != null && np1vl.isPred()) {
-                    Pred pvl = (Pred)np1vl.clone();
+                    Pred pvl = (Pred) np1vl.clone();
                     pvl.clearAnnots();
                     bind((VarTerm) np1, pvl);
                 }
             }
             if (np2.isVar() && np2.hasAnnot()) {
-                np2 = deref( (VarTerm)np2);
+                np2 = deref((VarTerm) np2);
                 Term np2vl = function.get((VarTerm) np2);
                 if (np2vl != null && np2vl.isPred()) {
-                    Pred pvl = (Pred)np2vl.clone();
+                    Pred pvl = (Pred) np2vl.clone();
                     pvl.clearAnnots();
                     bind((VarTerm) np2, pvl);
                 }
@@ -190,7 +194,6 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
 
         return ok;
     }
-
 
     // ----- Unify for Terms
 
@@ -206,8 +209,8 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
 
         // one of the args is a var
         if (t1gisvar || t2gisvar) {
-            final VarTerm t1gv = t1gisvar ? (VarTerm)t1g : null;
-            final VarTerm t2gv = t2gisvar ? (VarTerm)t2g : null;
+            final VarTerm t1gv = t1gisvar ? (VarTerm) t1g : null;
+            final VarTerm t2gv = t2gisvar ? (VarTerm) t2g : null;
 
             // get their values
             final Term t1vl = t1gisvar ? get(t1gv) : t1g;
@@ -219,8 +222,8 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
                 return bind(t2gv, t1vl);
             } else if (t2vl != null) {
                 return bind(t1gv, t2vl);
-            } else {                 // unify two vars
-                if (! t1gv.getNS().equals(t2gv.getNS()))
+            } else { // unify two vars
+                if (!t1gv.getNS().equals(t2gv.getNS()))
                     return false;
 
                 if (t1gv.negated() != t2gv.negated())
@@ -241,8 +244,8 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
 
         // both terms are literal
 
-        Literal t1s = (Literal)t1g;
-        Literal t2s = (Literal)t2g;
+        Literal t1s = (Literal) t1g;
+        Literal t2s = (Literal) t2g;
 
         // different arities
         final int ts = t1s.getArity();
@@ -268,14 +271,14 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
                 return false;
 
         // the first's annots must be subset of the second's annots
-        if ( ! t1s.hasSubsetAnnot(t2s, this))
+        if (!t1s.hasSubsetAnnot(t2s, this))
             return false;
 
         return true;
     }
 
     private boolean unifiesNamespace(Literal t1s, Literal t2s) {
-        if (t1s == Literal.DefaultNS && t2s == Literal.DefaultNS)  // if both are the default NS
+        if (t1s == Literal.DefaultNS && t2s == Literal.DefaultNS) // if both are the default NS
             return true;
 
         // compares the name spaces of t1s and t2s
@@ -289,13 +292,13 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     public VarTerm deref(VarTerm v) {
         Term vl = function.get(v);
         // original def (before optimise)
-        //   if (vl != null && vl.isVar())
-        //      return deref(vl);
-        //   return v;
+        // if (vl != null && vl.isVar())
+        // return deref(vl);
+        // return v;
 
         VarTerm first = v;
         while (vl != null && vl.isVar()) {
-            v  = (VarTerm)vl;
+            v = (VarTerm) vl;
             vl = function.get(v);
         }
         if (first != v) {
@@ -308,7 +311,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         vt1 = getVarForUnifier(vt1);
         vt2 = getVarForUnifier(vt2);
         final int comp = vt1.compareTo(vt2);
-        //System.out.println(vt1+"="+vt2+" ==> "+getVarForUnifier(vt1) +"="+ getVarForUnifier(vt2)+" in "+this+" cmp="+comp);
+        // System.out.println(vt1+"="+vt2+" ==> "+getVarForUnifier(vt1) +"="+ getVarForUnifier(vt2)+" in "+this+" cmp="+comp);
         if (comp < 0) {
             function.put(vt1, vt2);
         } else if (comp > 0) {
@@ -318,17 +321,17 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
 
     public boolean bind(VarTerm vt, Term vl) {
         if (vt.negated()) { // negated vars unifies only with negated literals
-            if (!vl.isLiteral() || !((Literal)vl).negated()) {
+            if (!vl.isLiteral() || !((Literal) vl).negated()) {
                 return false;
             }
-            vl = (Literal)vl.clone();
-            ((Literal)vl).setNegated(Literal.LPos);
+            vl = (Literal) vl.clone();
+            ((Literal) vl).setNegated(Literal.LPos);
         }
 
         // namespace
         if (vl.isLiteral()) {
-            Literal lvl = (Literal)vl;
-            if (! unifiesNamespace(vt, lvl) )
+            Literal lvl = (Literal) vl;
+            if (!unifiesNamespace(vt, lvl))
                 return false;
             if (lvl.getFunctor().startsWith(NameSpace.LOCAL_PREFIX)) // cannot unify a var with a local namespace
                 return false;
@@ -337,7 +340,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         }
 
         if (!vl.isCyclicTerm() && vl.hasVar(vt, this)) {
-            vl = new CyclicTerm((Literal)vl, (VarTerm)vt.clone());
+            vl = new CyclicTerm((Literal) vl, (VarTerm) vt.clone());
         }
 
         function.put(getVarForUnifier(vt), vl);
@@ -345,7 +348,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     }
 
     private VarTerm getVarForUnifier(VarTerm v) {
-        v = (VarTerm)deref(v).cloneNS(Literal.DefaultNS);
+        v = (VarTerm) deref(v).cloneNS(Literal.DefaultNS);
         v.setNegated(Literal.LPos);
         return v;
     }
@@ -361,10 +364,10 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     public Term getAsTerm() {
         ListTerm lf = new ListTermImpl();
         ListTerm tail = lf;
-        for (VarTerm k: function.keySet()) {
+        for (VarTerm k : function.keySet()) {
             Term vl = function.get(k).clone();
             if (vl instanceof Literal)
-                ((Literal)vl).makeVarsAnnon();
+                ((Literal) vl).makeVarsAnnon();
             Structure pair = ASSyntax.createStructure("map", UnnamedVar.create(k.toString()), vl); // the var must be changed to avoid cyclic references latter
             tail = tail.append(pair);
         }
@@ -377,13 +380,13 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
 
     /** add all unifications from u */
     public void compose(Unifier u) {
-        for (VarTerm k: u.function.keySet()) {
+        for (VarTerm k : u.function.keySet()) {
             Term current = get(k);
             Term kValue = u.function.get(k);
             if (current != null && (current.isVar() || kValue.isVar())) { // current unifier has the new var
                 unifies(kValue, current);
             } else {
-                function.put( (VarTerm)k.clone(), kValue.clone());
+                function.put((VarTerm) k.clone(), kValue.clone());
             }
         }
     }
@@ -392,10 +395,10 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
         try {
             Unifier newUn = new Unifier();
             newUn.function = cloneFunction();
-            //newUn.compose(this);
+            // newUn.compose(this);
             return newUn;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error cloning unifier.",e);
+            logger.log(Level.SEVERE, "Error cloning unifier.", e);
             return null;
         }
     }
@@ -403,26 +406,29 @@ public class Unifier implements Cloneable, Iterable<VarTerm> {
     @Override
     public int hashCode() {
         int s = 0;
-        for (VarTerm v: function.keySet()) {
+        for (VarTerm v : function.keySet()) {
             s += v.hashCode();
         }
         return s * 31;
     }
 
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (o == this) return true;
-        if (o instanceof Unifier) return function.equals( ((Unifier)o).function);
+        if (o == null)
+            return false;
+        if (o == this)
+            return true;
+        if (o instanceof Unifier)
+            return function.equals(((Unifier) o).function);
         return false;
     }
 
     /** get as XML */
     public Element getAsDOM(Document document) {
         Element u = (Element) document.createElement("unifier");
-        for (VarTerm v: function.keySet()) {
+        for (VarTerm v : function.keySet()) {
             Element ev = v.getAsDOM(document);
             Element vl = (Element) document.createElement("value");
-            vl.appendChild( function.get(v).getAsDOM(document));
+            vl.appendChild(function.get(v).getAsDOM(document));
             Element map = (Element) document.createElement("map");
             map.appendChild(ev);
             map.appendChild(vl);

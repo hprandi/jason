@@ -7,12 +7,13 @@ import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 
 /**
-  <p>Function: <b><code>math.sin(N)</code></b>: encapsulates java Math.sin(N),
-  returns the trigonometric sine of an angle.
-
-  @author Jomi
-*/
-public class sin extends DefaultArithFunction  {
+ * <p>
+ * Function: <b><code>math.sin(N)</code></b>: encapsulates java Math.sin(N),
+ * returns the trigonometric sine of an angle.
+ * 
+ * @author Jomi
+ */
+public class sin extends DefaultArithFunction {
 
     public String getName() {
         return "math.sin";
@@ -21,9 +22,9 @@ public class sin extends DefaultArithFunction  {
     @Override
     public double evaluate(TransitionSystem ts, Term[] args) throws Exception {
         if (args[0].isNumeric()) {
-            return Math.sin(((NumberTerm)args[0]).solve());
+            return Math.sin(((NumberTerm) args[0]).solve());
         } else {
-            throw new JasonException("The argument '"+args[0]+"' is not numeric!");
+            throw new JasonException("The argument '" + args[0] + "' is not numeric!");
         }
     }
 

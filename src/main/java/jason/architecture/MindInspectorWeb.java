@@ -9,14 +9,14 @@ public abstract class MindInspectorWeb {
 
     private static MindInspectorWeb singleton = null;
 
-    protected String     httpServerURL = "http://localhost:3272";
-    protected int        httpServerPort = 3272;
-    protected int        refreshInterval = 5;
+    protected String httpServerURL = "http://localhost:3272";
+    protected int httpServerPort = 3272;
+    protected int refreshInterval = 5;
 
     public static synchronized MindInspectorWeb get() {
         if (singleton == null) {
             try {
-                singleton = (MindInspectorWeb) Class.forName( Config.get().getMindInspectorWebServerClassName()).newInstance();
+                singleton = (MindInspectorWeb) Class.forName(Config.get().getMindInspectorWebServerClassName()).newInstance();
                 singleton.startHttpServer();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -42,6 +42,7 @@ public abstract class MindInspectorWeb {
     public abstract void registerAg(Agent ag);
 
     public abstract void removeAg(Agent ag);
+
     public abstract void addAgState(Agent ag, Document mind, boolean hasHistory);
 
 }

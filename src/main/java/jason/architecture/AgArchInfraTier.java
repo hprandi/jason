@@ -7,8 +7,6 @@ import jason.asSemantics.Message;
 import jason.asSyntax.Literal;
 import jason.runtime.RuntimeServicesInfraTier;
 
-
-
 /**
  * This interface is implemented by the infrastructure tier (Saci/Jade/Centralised/...)
  * to provide concrete perception, action, and communication to the agent architecture.
@@ -42,10 +40,10 @@ public interface AgArchInfraTier {
     public boolean isRunning();
 
     /** Stops the agent */
-    //public void stopAg();
+    // public void stopAg();
 
     /** Put the agent in "sleep" mode */
-    //public void sleep();
+    // public void sleep();
 
     /** Removes the agent from the "sleep" mode */
     public void wake();

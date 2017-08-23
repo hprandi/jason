@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 public class JadeRuntimeServices implements RuntimeServicesInfraTier {
 
-    private static Logger logger  = Logger.getLogger(JadeRuntimeServices.class.getName());
+    private static Logger logger = Logger.getLogger(JadeRuntimeServices.class.getName());
 
     private ContainerController cc;
 
@@ -34,7 +34,8 @@ public class JadeRuntimeServices implements RuntimeServicesInfraTier {
         jadeAgent = ag;
     }
 
-    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, jason.asSemantics.Agent father) throws Exception {
+    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, jason.asSemantics.Agent father)
+            throws Exception {
         try {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("Creating jade agent " + agName + "from source " + agSource + "(agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
@@ -46,7 +47,8 @@ public class JadeRuntimeServices implements RuntimeServicesInfraTier {
             ap.setBB(bbPars);
             ap.asSource = new File(agSource);
 
-            if (stts == null) stts = new Settings();
+            if (stts == null)
+                stts = new Settings();
 
             cc.createNewAgent(agName, JadeAgArch.class.getName(), new Object[] { ap, false, false }).start();
 
@@ -67,7 +69,8 @@ public class JadeRuntimeServices implements RuntimeServicesInfraTier {
 
     public Set<String> getAgentsNames() {
         // TODO: make a cache list and update it when a new agent enters the system
-        if (jadeAgent == null) return null;
+        if (jadeAgent == null)
+            return null;
         try {
             Set<String> ags = new HashSet<String>();
             DFAgentDescription template = new DFAgentDescription();
@@ -76,26 +79,26 @@ public class JadeRuntimeServices implements RuntimeServicesInfraTier {
             sd.setName(JadeAgArch.dfName);
             template.addServices(sd);
             DFAgentDescription[] ans = DFService.search(jadeAgent, template);
-            for (int i=0; i<ans.length; i++) {
+            for (int i = 0; i < ans.length; i++) {
                 ags.add(ans[i].getName().getLocalName());
             }
             /*
-            SearchConstraints c = new SearchConstraints();
-            c.setMaxResults( new Long(-1) );
-            AMSAgentDescription[] all = AMSService.search( jadeAgent, new AMSAgentDescription(), c);
-            for (AMSAgentDescription ad: all) {
-                AID agentID = ad.getName();
-                if (    !agentID.getName().startsWith("ams@") &&
-                        !agentID.getName().startsWith("df@") &&
-                        !agentID.getName().startsWith(RunJadeMAS.environmentName) &&
-                        !agentID.getName().startsWith(RunJadeMAS.controllerName)
-                   ) {
-                    ags.add(agentID.getLocalName());
-                }
-            }
-            */
+             * SearchConstraints c = new SearchConstraints();
+             * c.setMaxResults( new Long(-1) );
+             * AMSAgentDescription[] all = AMSService.search( jadeAgent, new AMSAgentDescription(), c);
+             * for (AMSAgentDescription ad: all) {
+             * AID agentID = ad.getName();
+             * if ( !agentID.getName().startsWith("ams@") &&
+             * !agentID.getName().startsWith("df@") &&
+             * !agentID.getName().startsWith(RunJadeMAS.environmentName) &&
+             * !agentID.getName().startsWith(RunJadeMAS.controllerName)
+             * ) {
+             * ags.add(agentID.getLocalName());
+             * }
+             * }
+             */
             return ags;
-            //logger.warning("getAgentsName is not implemented yet!");
+            // logger.warning("getAgentsName is not implemented yet!");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error getting agents' name", e);
         }
@@ -115,7 +118,7 @@ public class JadeRuntimeServices implements RuntimeServicesInfraTier {
         try {
             AgentController ac = cc.getAgent(agName);
             if (ac == null) {
-                logger.warning("Agent "+agName+" does not exist!");
+                logger.warning("Agent " + agName + " does not exist!");
             } else {
                 // TODO: if (ag.getTS().getAg().canBeKilledBy(byAg))
                 ac.kill();
@@ -127,7 +130,6 @@ public class JadeRuntimeServices implements RuntimeServicesInfraTier {
         return false;
     }
 
-
     public void stopMAS() throws Exception {
         if (cc != null) {
             new Thread() { // this command should not block the agent!
@@ -138,7 +140,7 @@ public class JadeRuntimeServices implements RuntimeServicesInfraTier {
                         e.printStackTrace();
                     }
                 }
-            } .start();
+            }.start();
         }
     }
 

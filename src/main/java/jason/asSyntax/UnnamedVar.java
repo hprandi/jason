@@ -21,6 +21,7 @@ public class UnnamedVar extends VarTerm {
     public UnnamedVar(Atom ns) {
         this(ns, varCont.incrementAndGet());
     }
+
     public UnnamedVar(Atom ns, int id) {
         super(ns, "_" + id);
         myId = id;
@@ -36,6 +37,7 @@ public class UnnamedVar extends VarTerm {
     private UnnamedVar(String name) {
         super(name);
     }
+
     private UnnamedVar(Atom ns, String name) {
         super(ns, name);
     }
@@ -43,12 +45,13 @@ public class UnnamedVar extends VarTerm {
     public static UnnamedVar create(String name) {
         return create(Literal.DefaultNS, name);
     }
+
     public static UnnamedVar create(Atom ns, String name) {
         if (name.length() == 1) { // the case of "_"
             return new UnnamedVar(ns);
         } else {
             int id = varCont.incrementAndGet();
-            UnnamedVar v = new UnnamedVar(ns, "_"+id+name);
+            UnnamedVar v = new UnnamedVar(ns, "_" + id + name);
             v.myId = id;
             return v;
         }
@@ -70,17 +73,20 @@ public class UnnamedVar extends VarTerm {
 
     @Override
     public boolean equals(Object t) {
-        if (t == null) return false;
-        if (t == this) return true;
-        if (t instanceof UnnamedVar) return ((UnnamedVar)t).myId == this.myId;
+        if (t == null)
+            return false;
+        if (t == this)
+            return true;
+        if (t instanceof UnnamedVar)
+            return ((UnnamedVar) t).myId == this.myId;
         return false;
     }
 
     public int compareTo(Term t) {
         if (t instanceof UnnamedVar) {
-            if (myId > ((UnnamedVar)t).myId)
+            if (myId > ((UnnamedVar) t).myId)
                 return 1;
-            else if (myId < ((UnnamedVar)t).myId)
+            else if (myId < ((UnnamedVar) t).myId)
                 return -1;
             else
                 return 0;

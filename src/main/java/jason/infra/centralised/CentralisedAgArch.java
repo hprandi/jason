@@ -41,22 +41,24 @@ import jason.util.Config;
  */
 public class CentralisedAgArch extends AgArch implements Runnable {
 
-    protected CentralisedEnvironment    infraEnv     = null;
+    protected CentralisedEnvironment infraEnv = null;
     private CentralisedExecutionControl infraControl = null;
-    private BaseCentralisedMAS           masRunner    = BaseCentralisedMAS.getRunner();
+    private BaseCentralisedMAS masRunner = BaseCentralisedMAS.getRunner();
 
-    private String           agName  = "";
+    private String agName = "";
     private volatile boolean running = true;
-    private Queue<Message>   mbox    = new ConcurrentLinkedQueue<Message>();
-    protected Logger         logger  = Logger.getLogger(CentralisedAgArch.class.getName());
+    private Queue<Message> mbox = new ConcurrentLinkedQueue<Message>();
+    protected Logger logger = Logger.getLogger(CentralisedAgArch.class.getName());
 
     private static List<MsgListener> msgListeners = null;
+
     public static void addMsgListener(MsgListener l) {
         if (msgListeners == null) {
             msgListeners = new ArrayList<MsgListener>();
         }
         msgListeners.add(l);
     }
+
     public static void removeMsgListener(MsgListener l) {
         msgListeners.remove(l);
     }
@@ -76,14 +78,14 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
             // mind inspector arch
             if (stts.getUserParameter(Settings.MIND_INSPECTOR) != null) {
-                insertAgArch( (AgArch)Class.forName( Config.get().getMindInspectorArchClassName()).newInstance() );
+                insertAgArch((AgArch) Class.forName(Config.get().getMindInspectorArchClassName()).newInstance());
                 getFirstAgArch().init();
             }
 
             setLogger();
         } catch (Exception e) {
             running = false;
-            throw new JasonException("as2j: error creating the agent class! - "+e.getMessage(), e);
+            throw new JasonException("as2j: error creating the agent class! - " + e.getMessage(), e);
         }
     }
 
@@ -103,7 +105,6 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         }
     }
 
-
     public void stopAg() {
         running = false;
         wake(); // so that it leaves the run loop
@@ -112,7 +113,6 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         getTS().getAg().stopAg();
         getUserAgArch().stop(); // stops all archs
     }
-
 
     public void setLogger() {
         logger = Logger.getLogger(CentralisedAgArch.class.getName() + "." + getAgName());
@@ -157,6 +157,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     }
 
     private Thread myThread = null;
+
     public void setThread(Thread t) {
         myThread = t;
         myThread.setName(agName);
@@ -179,18 +180,18 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         } while (running && ++i < cyclesSense && !ts.canSleepSense());
     }
 
-    //int sumDel = 0; int nbDel = 0;
+    // int sumDel = 0; int nbDel = 0;
     protected void deliberate() {
         TransitionSystem ts = getTS();
         int i = 0;
         while (running && i++ < cyclesDeliberate && !ts.canSleepDeliberate()) {
             ts.deliberate();
         }
-        //sumDel += i; nbDel++;
-        //System.out.println("running del "+(sumDel/nbDel)+"/"+cyclesDeliberate);
+        // sumDel += i; nbDel++;
+        // System.out.println("running del "+(sumDel/nbDel)+"/"+cyclesDeliberate);
     }
 
-    //int sumAct = 0; int nbAct = 0;
+    // int sumAct = 0; int nbAct = 0;
     protected void act() {
         TransitionSystem ts = getTS();
 
@@ -202,8 +203,8 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         while (running && i++ < ca && !ts.canSleepAct()) {
             ts.act();
         }
-        //sumAct += i; nbAct++;
-        //System.out.println("running act "+(sumAct/nbAct)+"/"+ca);
+        // sumAct += i; nbAct++;
+        // System.out.println("running act "+(sumAct/nbAct)+"/"+ca);
     }
 
     protected void reasoningCycle() {
@@ -221,7 +222,8 @@ public class CentralisedAgArch extends AgArch implements Runnable {
                 boolean isBreakPoint = false;
                 try {
                     isBreakPoint = ts.getC().getSelectedOption().getPlan().hasBreakpoint();
-                    if (logger.isLoggable(Level.FINE)) logger.fine("Informing controller that I finished a reasoning cycle "+getCycleNumber()+". Breakpoint is " + isBreakPoint);
+                    if (logger.isLoggable(Level.FINE))
+                        logger.fine("Informing controller that I finished a reasoning cycle " + getCycleNumber() + ". Breakpoint is " + isBreakPoint);
                 } catch (NullPointerException e) {
                     // no problem, there is no sel opt, no plan ....
                 }
@@ -237,14 +239,14 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     }
 
     private Object sleepSync = new Object();
-    private int    sleepTime = 50;
+    private int sleepTime = 50;
 
     public static final int MAX_SLEEP = 1000;
 
     public void sleep() {
         try {
             if (!getTS().getSettings().isSync()) {
-                //logger.fine("Entering in sleep mode....");
+                // logger.fine("Entering in sleep mode....");
                 synchronized (sleepSync) {
                     sleepSync.wait(sleepTime); // wait for messages
                     if (sleepTime < MAX_SLEEP)
@@ -253,7 +255,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
             }
         } catch (InterruptedException e) {
         } catch (Exception e) {
-            logger.log(Level.WARNING,"Error in sleep.", e);
+            logger.log(Level.WARNING, "Error in sleep.", e);
         }
     }
 
@@ -284,16 +286,19 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     @Override
     public Collection<Literal> perceive() {
         super.perceive();
-        if (infraEnv == null) return null;
+        if (infraEnv == null)
+            return null;
         Collection<Literal> percepts = infraEnv.getUserEnvironment().getPercepts(getAgName());
-        if (logger.isLoggable(Level.FINE) && percepts != null) logger.fine("percepts: " + percepts);
+        if (logger.isLoggable(Level.FINE) && percepts != null)
+            logger.fine("percepts: " + percepts);
         return percepts;
     }
 
     // this is used by the .send internal action in stdlib
     public void sendMsg(Message m) throws ReceiverNotFoundException {
         // actually send the message
-        if (m.getSender() == null)  m.setSender(getAgName());
+        if (m.getSender() == null)
+            m.setSender(getAgName());
 
         CentralisedAgArch rec = masRunner.getAg(m.getReceiver());
 
@@ -307,7 +312,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
         // notify listeners
         if (msgListeners != null)
-            for (MsgListener l: msgListeners)
+            for (MsgListener l : msgListeners)
                 l.msgSent(m);
     }
 
@@ -317,7 +322,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     }
 
     public void broadcast(jason.asSemantics.Message m) throws Exception {
-        for (String agName: masRunner.getAgs().keySet()) {
+        for (String agName : masRunner.getAgs().keySet()) {
             if (!agName.equals(this.getAgName())) {
                 m.setReceiver(agName);
                 sendMsg(m);
@@ -331,7 +336,8 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         Message im = mbox.poll();
         while (im != null) {
             C.addMsg(im);
-            if (logger.isLoggable(Level.FINE)) logger.fine("received message: " + im);
+            if (logger.isLoggable(Level.FINE))
+                logger.fine("received message: " + im);
             im = mbox.poll();
         }
     }
@@ -343,7 +349,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
     /** called by the TS to ask the execution of an action in the environment */
     @Override
     public void act(ActionExec action) {
-        //if (logger.isLoggable(Level.FINE)) logger.fine("doing: " + action.getActionTerm());
+        // if (logger.isLoggable(Level.FINE)) logger.fine("doing: " + action.getActionTerm());
 
         if (isRunning()) {
             if (infraEnv != null) {
@@ -360,7 +366,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
         return mbox.isEmpty() && isRunning();
     }
 
-    private Object  syncMonitor                = new Object();
+    private Object syncMonitor = new Object();
     private volatile boolean inWaitSyncMonitor = false;
 
     /**
@@ -376,7 +382,7 @@ public class CentralisedAgArch extends AgArch implements Runnable {
             }
         } catch (InterruptedException e) {
         } catch (Exception e) {
-            logger.log(Level.WARNING,"Error waiting sync (1)", e);
+            logger.log(Level.WARNING, "Error waiting sync (1)", e);
         }
     }
 
@@ -395,16 +401,17 @@ public class CentralisedAgArch extends AgArch implements Runnable {
             }
         } catch (InterruptedException e) {
         } catch (Exception e) {
-            logger.log(Level.WARNING,"Error waiting sync (2)", e);
+            logger.log(Level.WARNING, "Error waiting sync (2)", e);
         }
     }
 
     /**
-     *  Informs the infrastructure tier controller that the agent
-     *  has finished its reasoning cycle (used in sync mode).
+     * Informs the infrastructure tier controller that the agent
+     * has finished its reasoning cycle (used in sync mode).
      *
-     *  <p><i>breakpoint</i> is true in case the agent selected one plan
-     *  with the "breakpoint" annotation.
+     * <p>
+     * <i>breakpoint</i> is true in case the agent selected one plan
+     * with the "breakpoint" annotation.
      */
     public void informCycleFinished(boolean breakpoint, int cycle) {
         infraControl.receiveFinishedCycle(getAgName(), breakpoint, cycle);
@@ -418,9 +425,9 @@ public class CentralisedAgArch extends AgArch implements Runnable {
 
     private int cycles = 1;
 
-    private int cyclesSense      = 1;
+    private int cyclesSense = 1;
     private int cyclesDeliberate = 1;
-    private int cyclesAct        = 5;
+    private int cyclesAct = 5;
 
     public void setConf(RConf conf) {
         this.conf = conf;

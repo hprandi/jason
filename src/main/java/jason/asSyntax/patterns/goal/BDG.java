@@ -27,12 +27,12 @@ public class BDG extends DG {
                 Term goal = directive.getTerm(0);
 
                 // add -!g : true <- !!g.
-                newAg.getPL().add(ASSyntax.parsePlan("-!"+goal+" <- !!"+goal+"."));
+                newAg.getPL().add(ASSyntax.parsePlan("-!" + goal + " <- !!" + goal + "."));
 
                 return newAg;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive error.", e);
+            logger.log(Level.SEVERE, "Directive error.", e);
         }
         return null;
     }

@@ -53,7 +53,7 @@ import jason.util.Config;
  */
 public class RunCentralisedMAS extends BaseCentralisedMAS {
 
-    private JButton                   btDebug;
+    private JButton btDebug;
 
     public RunCentralisedMAS() {
         super();
@@ -81,14 +81,15 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
     protected int init(String[] args) {
         String projectFileName = null;
         if (args.length < 1) {
-            if (RunCentralisedMAS.class.getResource("/"+defaultProjectFileName) != null) {
+            if (RunCentralisedMAS.class.getResource("/" + defaultProjectFileName) != null) {
                 projectFileName = defaultProjectFileName;
                 readFromJAR = true;
                 Config.get(false); // to void to call fix/store the configuration in this case everything is read from a jar/jnlp file
             } else {
-                System.out.println("Jason "+Config.get().getJasonVersion());
+                System.out.println("Jason " + Config.get().getJasonVersion());
                 System.err.println("You should inform the MAS project file.");
-                //JOptionPane.showMessageDialog(null,"You should inform the project file as a parameter.\n\nJason version "+Config.get().getJasonVersion()+" library built on "+Config.get().getJasonBuiltDate(),"Jason", JOptionPane.INFORMATION_MESSAGE);
+                // JOptionPane.showMessageDialog(null,"You should inform the project file as a parameter.\n\nJason version "+Config.get().getJasonVersion()+" library built on
+                // "+Config.get().getJasonBuiltDate(),"Jason", JOptionPane.INFORMATION_MESSAGE);
                 System.exit(0);
             }
         } else {
@@ -124,7 +125,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
             if (projectFileName != null) {
                 InputStream inProject;
                 if (readFromJAR) {
-                    inProject = RunCentralisedMAS.class.getResource("/"+defaultProjectFileName).openStream();
+                    inProject = RunCentralisedMAS.class.getResource("/" + defaultProjectFileName).openStream();
                     urlPrefix = SourcePath.CRPrefix + "/";
                 } else {
                     URL file;
@@ -132,10 +133,10 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                     try {
                         file = new URL(projectFileName);
                         if (projectFileName.startsWith("jar")) {
-                            urlPrefix = projectFileName.substring(0,projectFileName.indexOf("!")+1) + "/";
+                            urlPrefix = projectFileName.substring(0, projectFileName.indexOf("!") + 1) + "/";
                         }
                     } catch (Exception e) {
-                        file = new URL("file:"+projectFileName);
+                        file = new URL("file:" + projectFileName);
                     }
                     inProject = file.openStream();
                 }
@@ -149,7 +150,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
             project.getSourcePaths().setUrlPrefix(urlPrefix);
             project.registerDirectives();
             // set the aslSrcPath in the include
-            ((Include)DirectiveProcessor.getDirective("include")).setSourcePath(project.getSourcePaths());
+            ((Include) DirectiveProcessor.getDirective("include")).setSourcePath(project.getSourcePaths());
 
             project.fixAgentsSrc();
 
@@ -159,7 +160,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                 createButtons();
             }
 
-            //runner.waitEnd();
+            // runner.waitEnd();
             errorCode = 0;
 
         } catch (FileNotFoundException e1) {
@@ -198,8 +199,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
     public synchronized void setupLogger() {
         if (readFromJAR) {
             try {
-                LogManager.getLogManager().readConfiguration(
-                        RunCentralisedMAS.class.getResource("/"+logPropFile).openStream());
+                LogManager.getLogManager().readConfiguration(RunCentralisedMAS.class.getResource("/" + logPropFile).openStream());
             } catch (Exception e) {
                 Handler[] hs = Logger.getLogger("").getHandlers();
                 for (int i = 0; i < hs.length; i++) {
@@ -263,7 +263,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                 if (runner.control != null) {
                     try {
                         runner.control.getUserControl().setRunningCycle(false);
-                    } catch (Exception e) { }
+                    } catch (Exception e) {
+                    }
                 }
             }
         });
@@ -338,9 +339,9 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
         btStartAg.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 final JFrame f = new JFrame("New REPL Agent, give it a name");
-                //f.getContentPane().setLayout(new BorderLayout());
-                //f.getContentPane().add(BorderLayout.NORTH,command);
-                //f.getContentPane().add(BorderLayout.CENTER,mindPanel);
+                // f.getContentPane().setLayout(new BorderLayout());
+                // f.getContentPane().add(BorderLayout.NORTH,command);
+                // f.getContentPane().add(BorderLayout.CENTER,mindPanel);
                 final JTextField n = new JTextField(30);
                 n.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
@@ -351,7 +352,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                 f.setLayout(new FlowLayout());
                 f.add(n);
                 f.pack();
-                f.setLocation((int)btStartAg.getLocationOnScreen().x, (int)btStartAg.getLocationOnScreen().y+30);
+                f.setLocation((int) btStartAg.getLocationOnScreen().x, (int) btStartAg.getLocationOnScreen().y + 30);
                 f.setVisible(true);
             }
         });
@@ -373,14 +374,12 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
         addAg(agArch);
     }
 
-
     protected void createEnvironment() throws JasonException {
         if (project.getEnvClass() != null && !project.getEnvClass().getClassName().equals(jason.environment.Environment.class.getName())) {
             logger.fine("Creating environment " + project.getEnvClass());
             env = new CentralisedEnvironment(project.getEnvClass(), this);
         }
     }
-
 
     protected void createAgs() throws JasonException {
 
@@ -406,8 +405,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                     }
 
                     String nb = "";
-                    int    n  = 1;
-                    while (getAg(numberedAg+nb) != null)
+                    int n = 1;
+                    while (getAg(numberedAg + nb) != null)
                         nb = "_" + (n++);
                     numberedAg += nb;
 
@@ -422,10 +421,10 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                     }
 
                     // Get the number of reasoning cycles or number of cycles for each stage
-                    int cycles           = -1; // -1 means default value of the platform
-                    int cyclesSense      = -1;
+                    int cycles = -1; // -1 means default value of the platform
+                    int cyclesSense = -1;
                     int cyclesDeliberate = -1;
-                    int cyclesAct        = -1;
+                    int cyclesAct = -1;
 
                     if (ap.getOption("cycles") != null) {
                         cycles = Integer.valueOf(ap.getOption("cycles"));
@@ -445,7 +444,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                         agArch = new CentralisedAgArchForPool();
                     } else if (agentConf == RConf.POOL_SYNCH_SCHEDULED) {
                         agArch = new CentralisedAgArchSynchronousScheduled();
-                    } else if  (agentConf == RConf.ASYNCH || agentConf == RConf.ASYNCH_SHARED_POOLS) {
+                    } else if (agentConf == RConf.ASYNCH || agentConf == RConf.ASYNCH_SHARED_POOLS) {
                         agArch = new CentralisedAgArchAsynchronous();
                     } else {
                         agArch = new CentralisedAgArch();
@@ -464,7 +463,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                         agArch.createArchs(ap.getAgArchClasses(), pag, this);
                     } else {
                         // normal creation
-                        agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.asSource.toString(), ap.getAsSetts(debug, project.getControlClass() != null), this);
+                        agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), ap.asSource.toString(),
+                                ap.getAsSetts(debug, project.getControlClass() != null), this);
                     }
                     addAg(agArch);
 
@@ -475,10 +475,9 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
             }
         }
 
-        if (generalConf != RConf.THREADED) logger.info("Created "+nbAg+" agents.");
+        if (generalConf != RConf.THREADED)
+            logger.info("Created " + nbAg + " agents.");
     }
-
-
 
     protected void createController() throws JasonException {
         ClassParameters controlClass = project.getControlClass();
@@ -493,7 +492,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
 
     protected void startAgs() {
         // run the agents
-        if (project.getInfrastructure().hasParameter("pool") || project.getInfrastructure().hasParameter("synch_scheduled") || project.getInfrastructure().hasParameter("asynch") || project.getInfrastructure().hasParameter("asynch_shared")) {
+        if (project.getInfrastructure().hasParameter("pool") || project.getInfrastructure().hasParameter("synch_scheduled") || project.getInfrastructure().hasParameter("asynch")
+                || project.getInfrastructure().hasParameter("asynch_shared")) {
             createThreadPool();
         } else {
             createAgsThreads();
@@ -503,36 +503,39 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
     /** creates one thread per agent */
     private void createAgsThreads() {
 
-        int cyclesSense      = 1;
+        int cyclesSense = 1;
         int cyclesDeliberate = 1;
-        int cyclesAct        = 5;
+        int cyclesAct = 5;
 
         if (project.getInfrastructure().hasParameters()) {
             if (project.getInfrastructure().getParametersArray().length > 2) {
-                cyclesSense      = Integer.parseInt(project.getInfrastructure().getParameter(1));
+                cyclesSense = Integer.parseInt(project.getInfrastructure().getParameter(1));
                 cyclesDeliberate = Integer.parseInt(project.getInfrastructure().getParameter(2));
-                cyclesAct        = Integer.parseInt(project.getInfrastructure().getParameter(3));
+                cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(3));
             } else if (project.getInfrastructure().getParametersArray().length > 1) {
                 cyclesSense = cyclesDeliberate = cyclesAct = Integer.parseInt(project.getInfrastructure().getParameter(1));
             }
 
-            //logger.info("Creating a threaded agents." + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
+            // logger.info("Creating a threaded agents." + "Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
         }
 
         for (CentralisedAgArch ag : ags.values()) {
             ag.setControlInfraTier(control);
 
             // if the agent hasn't override the values for cycles, use the platform values
-            if (ag.getCyclesSense() == -1)            ag.setCyclesSense(cyclesSense);
-            if (ag.getCyclesDeliberate() == -1)       ag.setCyclesDeliberate(cyclesDeliberate);
-            if (ag.getCyclesAct() == -1)              ag.setCyclesAct(cyclesAct);
+            if (ag.getCyclesSense() == -1)
+                ag.setCyclesSense(cyclesSense);
+            if (ag.getCyclesDeliberate() == -1)
+                ag.setCyclesDeliberate(cyclesDeliberate);
+            if (ag.getCyclesAct() == -1)
+                ag.setCyclesAct(cyclesAct);
 
             // create the agent thread
             Thread agThread = new Thread(ag);
             ag.setThread(agThread);
         }
 
-        //logger.info("Creating threaded agents. Cycles: " + agTemp.getCyclesSense() + ", " + agTemp.getCyclesDeliberate() + ", " + agTemp.getCyclesAct());
+        // logger.info("Creating threaded agents. Cycles: " + agTemp.getCyclesSense() + ", " + agTemp.getCyclesDeliberate() + ", " + agTemp.getCyclesAct());
 
         for (CentralisedAgArch ag : ags.values()) {
             ag.startThread();
@@ -541,11 +544,11 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
 
     private Set<CentralisedAgArch> sleepingAgs;
 
-    private ExecutorService executor            = null;
+    private ExecutorService executor = null;
 
-    private ExecutorService executorSense       = null;
-    private ExecutorService executorDeliberate  = null;
-    private ExecutorService executorAct         = null;
+    private ExecutorService executorSense = null;
+    private ExecutorService executorDeliberate = null;
+    private ExecutorService executorAct = null;
 
     /** creates a pool of threads shared by all agents */
     private void createThreadPool() {
@@ -553,53 +556,55 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
 
         int maxthreads = 10;
 
-        int maxthreadsSense      = 1;
+        int maxthreadsSense = 1;
         int maxthreadsDeliberate = 1;
-        int maxthreadsAct        = 1;
+        int maxthreadsAct = 1;
 
-        int cycles           = 1;
-        int cyclesSense      = 1;
+        int cycles = 1;
+        int cyclesSense = 1;
         int cyclesDeliberate = 1;
-        int cyclesAct        = 5;
+        int cyclesAct = 5;
 
         try {
             ClassParameters infra = project.getInfrastructure();
             RConf conf = RConf.fromString(infra.getParameter(0));
             if (conf == RConf.ASYNCH) {
-                maxthreadsSense      = Integer.parseInt(infra.getParameter(1));
+                maxthreadsSense = Integer.parseInt(infra.getParameter(1));
                 maxthreadsDeliberate = Integer.parseInt(infra.getParameter(2));
-                maxthreadsAct        = Integer.parseInt(infra.getParameter(3));
+                maxthreadsAct = Integer.parseInt(infra.getParameter(3));
                 if (infra.getParametersArray().length > 5) {
-                    cyclesSense      = Integer.parseInt(infra.getParameter(4));
+                    cyclesSense = Integer.parseInt(infra.getParameter(4));
                     cyclesDeliberate = Integer.parseInt(infra.getParameter(5));
-                    cyclesAct        = Integer.parseInt(infra.getParameter(6));
+                    cyclesAct = Integer.parseInt(infra.getParameter(6));
                 }
-                logger.info("Creating agents with asynchronous reasoning cycle. Sense (" + maxthreadsSense + "), Deliberate (" + maxthreadsDeliberate + "), Act (" + maxthreadsAct + "). Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
+                logger.info("Creating agents with asynchronous reasoning cycle. Sense (" + maxthreadsSense + "), Deliberate (" + maxthreadsDeliberate + "), Act (" + maxthreadsAct
+                        + "). Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
 
-                executorSense      = Executors.newFixedThreadPool(maxthreadsSense);
+                executorSense = Executors.newFixedThreadPool(maxthreadsSense);
                 executorDeliberate = Executors.newFixedThreadPool(maxthreadsDeliberate);
-                executorAct        = Executors.newFixedThreadPool(maxthreadsAct);
+                executorAct = Executors.newFixedThreadPool(maxthreadsAct);
 
             } else { // async shared and pool cases
                 if (infra.getParametersArray().length > 1) {
                     maxthreads = Integer.parseInt(infra.getParameter(1));
                 }
                 if (infra.getParametersArray().length > 4) {
-                    cyclesSense      = Integer.parseInt(infra.getParameter(2));
+                    cyclesSense = Integer.parseInt(infra.getParameter(2));
                     cyclesDeliberate = Integer.parseInt(infra.getParameter(3));
-                    cyclesAct        = Integer.parseInt(infra.getParameter(4));
+                    cyclesAct = Integer.parseInt(infra.getParameter(4));
                 }
 
                 if (conf == RConf.ASYNCH_SHARED_POOLS) {
-                    logger.info("Creating agents with asynchronous reasoning cycle (shared). Sense, Deliberate, Act (" + maxthreads + "). Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct);
+                    logger.info("Creating agents with asynchronous reasoning cycle (shared). Sense, Deliberate, Act (" + maxthreads + "). Cycles: " + cyclesSense + ", "
+                            + cyclesDeliberate + ", " + cyclesAct);
                     executorSense = executorDeliberate = executorAct = Executors.newFixedThreadPool(maxthreads);
 
-                } else { // pool c  ases
+                } else { // pool c ases
                     if (conf == RConf.POOL_SYNCH) {
                         // redefine cycles
                         if (infra.getParametersArray().length == 3) {
                             cycles = Integer.parseInt(infra.getParameter(2));
-                        } else  if (infra.getParametersArray().length == 6) {
+                        } else if (infra.getParametersArray().length == 6) {
                             cycles = Integer.parseInt(infra.getParameter(5));
                         } else {
                             cycles = 5;
@@ -609,7 +614,8 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                     }
 
                     int poolSize = Math.min(maxthreads, ags.size());
-                    logger.info("Creating a thread pool with "+poolSize+" thread(s). Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct + ". Reasoning Cycles: " + cycles);
+                    logger.info("Creating a thread pool with " + poolSize + " thread(s). Cycles: " + cyclesSense + ", " + cyclesDeliberate + ", " + cyclesAct
+                            + ". Reasoning Cycles: " + cycles);
 
                     // create the pool
                     executor = Executors.newFixedThreadPool(poolSize);
@@ -621,14 +627,18 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
 
         // initially, add all agents in the tasks
         for (CentralisedAgArch ag : ags.values()) {
-            if (ag.getCycles() == -1)           ag.setCycles(cycles);
-            if (ag.getCyclesSense() == -1)      ag.setCyclesSense(cyclesSense);
-            if (ag.getCyclesDeliberate() == -1) ag.setCyclesDeliberate(cyclesDeliberate);
-            if (ag.getCyclesAct() == -1)        ag.setCyclesAct(cyclesAct);
+            if (ag.getCycles() == -1)
+                ag.setCycles(cycles);
+            if (ag.getCyclesSense() == -1)
+                ag.setCyclesSense(cyclesSense);
+            if (ag.getCyclesDeliberate() == -1)
+                ag.setCyclesDeliberate(cyclesDeliberate);
+            if (ag.getCyclesAct() == -1)
+                ag.setCyclesAct(cyclesAct);
 
             if (executor != null) {
                 if (ag instanceof CentralisedAgArchForPool)
-                    ((CentralisedAgArchForPool)ag).setExecutor(executor);
+                    ((CentralisedAgArchForPool) ag).setExecutor(executor);
                 executor.execute(ag);
             } else if (ag instanceof CentralisedAgArchAsynchronous) {
                 CentralisedAgArchAsynchronous ag2 = (CentralisedAgArchAsynchronous) ag;
@@ -749,7 +759,6 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
         }
     }
 
-
     protected void startSyncMode() {
         if (control != null) {
             // start the execution, if it is controlled
@@ -772,14 +781,14 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
             while (!stop.exists()) {
                 Thread.sleep(1500);
                 /*
-                boolean allSleep = true;
-                for (CentralisedAgArch ag : ags.values()) {
-                    //System.out.println(ag.getAgName()+"="+ag.canSleep());
-                    allSleep = allSleep && ag.canSleep();
-                }
-                if (allSleep)
-                    break;
-                */
+                 * boolean allSleep = true;
+                 * for (CentralisedAgArch ag : ags.values()) {
+                 * //System.out.println(ag.getAgName()+"="+ag.canSleep());
+                 * allSleep = allSleep && ag.canSleep();
+                 * }
+                 * if (allSleep)
+                 * break;
+                 */
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -797,15 +806,16 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
         }
         try {
             // creates a thread that guarantees system.exit(0) in 5 seconds
-            // (the stop of agents can  block)
+            // (the stop of agents can block)
             new Thread() {
                 public void run() {
                     try {
                         sleep(5000);
-                    } catch (InterruptedException e) {}
+                    } catch (InterruptedException e) {
+                    }
                     System.exit(0);
                 }
-            } .start();
+            }.start();
 
             System.out.flush();
             System.err.flush();
@@ -827,7 +837,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
 
             runner = null;
 
-            // remove the .stop___MAS file  (note that GUI console.close(), above, creates this file)
+            // remove the .stop___MAS file (note that GUI console.close(), above, creates this file)
             File stop = new File(stopMASFileName);
             if (stop.exists()) {
                 stop.delete();
@@ -841,7 +851,7 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
 
     /** show the sources of the project */
     private static void showProjectSources(MAS2JProject project) {
-        JFrame frame = new JFrame("Project "+project.getSocName()+" sources");
+        JFrame frame = new JFrame("Project " + project.getSocName() + " sources");
         JTabbedPane pane = new JTabbedPane();
         frame.getContentPane().add(pane);
         project.fixAgentsSrc();
@@ -864,19 +874,19 @@ public class RunCentralisedMAS extends BaseCentralisedMAS {
                 StringBuilder s = new StringBuilder();
                 int c = in.read();
                 while (c > 0) {
-                    s.append((char)c);
+                    s.append((char) c);
                     c = in.read();
                 }
 
                 // show sources
-                JTextArea ta = new JTextArea(40,50);
+                JTextArea ta = new JTextArea(40, 50);
                 ta.setEditable(false);
                 ta.setText(s.toString());
                 ta.setCaretPosition(0);
                 JScrollPane sp = new JScrollPane(ta);
                 pane.add(ap.name, sp);
             } catch (Exception e) {
-                logger.info("Error:"+e);
+                logger.info("Error:" + e);
             }
         }
         frame.pack();

@@ -10,22 +10,27 @@ import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 
 /**
-
-  <p>Internal action: <b><code>.fail</code></b>.
-
-  <p>Description: fails the intention where it is run (an internal action that
-  always returns false).
-
-  <p>Example:<ul>
-
-  <li> <code>.fail</code>.</li>
-
-  </ul>
-
+ * 
+ * <p>
+ * Internal action: <b><code>.fail</code></b>.
+ * 
+ * <p>
+ * Description: fails the intention where it is run (an internal action that
+ * always returns false).
+ * 
+ * <p>
+ * Example:
+ * <ul>
+ * 
+ * <li><code>.fail</code>.</li>
+ * 
+ * </ul>
+ * 
  */
 public class fail extends DefaultInternalAction {
 
     private static InternalAction singleton = null;
+
     public static InternalAction create() {
         if (singleton == null)
             singleton = new fail();
@@ -38,12 +43,12 @@ public class fail extends DefaultInternalAction {
             // find message
             Term smsg = null;
             String msg = "fail";
-            for (Term t: args) {
-                if (t.isStructure() && ((Structure)t).getFunctor().equals("error_msg")) {
+            for (Term t : args) {
+                if (t.isStructure() && ((Structure) t).getFunctor().equals("error_msg")) {
                     smsg = t;
-                    Term tm = ((Structure)t).getTerm(0);
+                    Term tm = ((Structure) t).getTerm(0);
                     if (tm.isString())
-                        msg = ((StringTerm)tm).getString();
+                        msg = ((StringTerm) tm).getString();
                     else
                         msg = tm.toString();
                     break;
@@ -51,7 +56,7 @@ public class fail extends DefaultInternalAction {
             }
 
             JasonException e = new JasonException(msg);
-            for (Term t: args) {
+            for (Term t : args) {
                 if (t != smsg)
                     e.addErrorAnnot(t);
             }

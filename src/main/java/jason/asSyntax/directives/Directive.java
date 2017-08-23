@@ -7,17 +7,21 @@ import jason.asSyntax.parser.as2j;
 /**
  * Interface for all compiler directives (e.g. include and goal patterns).
  *
- * <p>There are two kinds of directives: single directive and begin/end directive.
+ * <p>
+ * There are two kinds of directives: single directive and begin/end directive.
  * The single directive does not have inner plans, as, for instance, the
  * include:
- * <br/><code>
+ * <br/>
+ * <code>
  *     ...<br>
  *     { include("a.asl") } <br>
  *     ...<br>
  * </code><br/>
  *
- * <p>begin/end directives have inner plans, as used in goal patterns:
- * <br/><code>
+ * <p>
+ * begin/end directives have inner plans, as used in goal patterns:
+ * <br/>
+ * <code>
  *     ...<br>
  *     { begin ebdg(g) } <br>
  *     +!g : bel <- action1. <br>
@@ -26,7 +30,8 @@ import jason.asSyntax.parser.as2j;
  *     ...<br>
  * </code><br/>
  * This pattern will change these two plans to:
- * <br/><code>
+ * <br/>
+ * <code>
  *     +!g : g. <br>
  *     +!g : not (p__1(g)) & bel <- +p__1(g); action1; ?g. <br>
  *     +!g : not (p__2(g))       <- +p__2(g); action2; ?g. <br>
@@ -37,7 +42,8 @@ import jason.asSyntax.parser.as2j;
  * Goal patterns are proposed in the paper: <br>
  * <br/>
  * Jomi Fred Hubner, Rafael H. Bordini, and Michael Wooldridge. <br>
- * Programming declarative goals using plan patterns. <br> In Matteo
+ * Programming declarative goals using plan patterns. <br>
+ * In Matteo
  * Baldoni and Ulle Endriss, editors, <i>Proceedings of the Fourth
  * International Workshop on Declarative Agent Languages and
  * Technologies</i> (DALT 2006), held with AAMAS 2006, 8th May, Hakodate,

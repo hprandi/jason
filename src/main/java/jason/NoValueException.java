@@ -1,6 +1,5 @@
 package jason;
 
-
 public class NoValueException extends JasonException {
 
     private static final long serialVersionUID = 1L;

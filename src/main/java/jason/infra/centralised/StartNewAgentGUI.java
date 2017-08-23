@@ -31,8 +31,8 @@ public class StartNewAgentGUI extends BaseDialogGUI {
     protected JTextField agClass;
     protected JTextField nbAgs;
     protected JTextField agHost;
-    protected JComboBox  verbose;
-    String               openDir;
+    protected JComboBox verbose;
+    String openDir;
 
     public StartNewAgentGUI(Frame f, String title, String openDir) {
         super(f, title);
@@ -70,7 +70,7 @@ public class StartNewAgentGUI extends BaseDialogGUI {
 
         archClass = new JTextField(20);
         createField("Architecture class", archClass,
-                    "The customisation class for the agent architecture (<package.classname>). If not filled, the default architecture will be used.");
+                "The customisation class for the agent architecture (<package.classname>). If not filled, the default architecture will be used.");
 
         nbAgs = new JTextField(4);
         nbAgs.setText("1");
@@ -129,7 +129,7 @@ public class StartNewAgentGUI extends BaseDialogGUI {
                     e.printStackTrace();
                 }
             }
-        } .start();
+        }.start();
         return true;
     }
 
@@ -164,7 +164,7 @@ public class StartNewAgentGUI extends BaseDialogGUI {
         }
         if (!nbAgs.getText().trim().equals("1")) {
             try {
-                ap.setNbInstances( Integer.parseInt(nbAgs.getText().trim()) );
+                ap.setNbInstances(Integer.parseInt(nbAgs.getText().trim()));
             } catch (Exception e) {
                 System.err.println("Number of hosts is not a number!");
             }

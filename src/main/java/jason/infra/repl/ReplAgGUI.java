@@ -18,40 +18,41 @@ public class ReplAgGUI extends ReplAg {
     JTextArea output = null;
     JFrame frame;
 
-    //asl2html agTransformer = new asl2html("/xml/agInspection.xsl");
-    //JTextPane mindPanel = null;
+    // asl2html agTransformer = new asl2html("/xml/agInspection.xsl");
+    // JTextPane mindPanel = null;
 
     @Override
     public void initAg() {
         super.initAg();
         initGui();
         initLogger();
-        /*if (mindPanel != null) {
-            new Thread("update mind thread") {
-                public void run() {
-                    while (getTS().getUserAgArch().isRunning()) {
-                        try {
-                            updateMindView();
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                };
-            }.start();
-        }*/
+        /*
+         * if (mindPanel != null) {
+         * new Thread("update mind thread") {
+         * public void run() {
+         * while (getTS().getUserAgArch().isRunning()) {
+         * try {
+         * updateMindView();
+         * sleep(1000);
+         * } catch (InterruptedException e) {
+         * e.printStackTrace();
+         * }
+         * }
+         * };
+         * }.start();
+         * }
+         */
     }
 
     void initLogger() {
-        getTS().getLogger().addHandler( new StreamHandler() {
+        getTS().getLogger().addHandler(new StreamHandler() {
             @Override
             public synchronized void publish(LogRecord l) {
-                output.append(l.getMessage()+"\n");
-                output.setCaretPosition( output.getDocument().getLength());
+                output.append(l.getMessage() + "\n");
+                output.setCaretPosition(output.getDocument().getLength());
             }
         });
     }
-
 
     static int lastPos = 30;
 
@@ -67,11 +68,11 @@ public class ReplAgGUI extends ReplAg {
             }
         });
 
-        //mindPanel = new JTextPane();
-        //mindPanel.setEditable(false);
-        //mindPanel.setContentType("text/html");
+        // mindPanel = new JTextPane();
+        // mindPanel.setEditable(false);
+        // mindPanel.setContentType("text/html");
 
-        output = new JTextArea(5,50);
+        output = new JTextArea(5, 50);
         output.setFont(font);
         output.setEditable(false);
         output.setText("Example of operations you can type:\n   +bel; !goal; .add_plan({+!goal <- .print(ok) }); !!goal; \n   .send(bob,tell,hello);\n");
@@ -83,18 +84,17 @@ public class ReplAgGUI extends ReplAg {
 
         output.append("\n");
 
-
-        frame = new JFrame(".::  REPL Interface for "+getTS().getUserAgArch().getAgName()+"  ::.");
+        frame = new JFrame(".::  REPL Interface for " + getTS().getUserAgArch().getAgName() + "  ::.");
         frame.getContentPane().setLayout(new BorderLayout());
-        frame.getContentPane().add(BorderLayout.NORTH,command);
-        //f.getContentPane().add(BorderLayout.CENTER, new JScrollPane(mindPanel));
-        frame.getContentPane().add(BorderLayout.CENTER,new JScrollPane(output));
+        frame.getContentPane().add(BorderLayout.NORTH, command);
+        // f.getContentPane().add(BorderLayout.CENTER, new JScrollPane(mindPanel));
+        frame.getContentPane().add(BorderLayout.CENTER, new JScrollPane(output));
 
         frame.pack();
         int h = 200;
-        int w = (int)(h*2*1.618);
-        frame.setBounds((int)(h*0.618), 20, w, h);
-        frame.setLocation(lastPos, 200+lastPos);
+        int w = (int) (h * 2 * 1.618);
+        frame.setBounds((int) (h * 0.618), 20, w, h);
+        frame.setLocation(lastPos, 200 + lastPos);
         lastPos += 50;
         frame.setVisible(true);
     }
@@ -106,7 +106,7 @@ public class ReplAgGUI extends ReplAg {
 
     @Override
     public void print(String s) {
-        output.append(s+"\n");
+        output.append(s + "\n");
     }
 
     @Override
@@ -116,18 +116,19 @@ public class ReplAgGUI extends ReplAg {
     }
 
     /*
-    private String lastMind = "";
-
-    void updateMindView() {
-        getTS().getUserAgArch().setCycleNumber(cmdCounter);
-        Document agState = getAgState(); // the XML representation of the agent's mind
-        try {
-            String sMind = agTransformer.transform(agState); // transform to HTML
-            if (!sMind.equals(lastMind))
-                mindPanel.setText(sMind); // show the HTML in the screen
-            lastMind = sMind;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
+     * private String lastMind = "";
+     * 
+     * void updateMindView() {
+     * getTS().getUserAgArch().setCycleNumber(cmdCounter);
+     * Document agState = getAgState(); // the XML representation of the agent's mind
+	 * try {
+	 * String sMind = agTransformer.transform(agState); // transform to HTML
+	 * if (!sMind.equals(lastMind))
+	 * mindPanel.setText(sMind); // show the HTML in the screen
+	 * lastMind = sMind;
+	 * } catch (Exception e) {
+	 * e.printStackTrace();
+	 * }
+	 * }
+	 */
 }

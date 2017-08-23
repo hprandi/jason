@@ -11,29 +11,31 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  * Base class for the user implementation of execution control.
  *
- * <p>This default implementation synchronise the agents execution, i.e.,
+ * <p>
+ * This default implementation synchronise the agents execution, i.e.,
  * each agent will perform its next reasoning cycle only when all agents have
  * finished its reasoning cycle.
  *
- * <p>Execution sequence:
- *    <ul><li>setExecutionControlInfraTier,
- *        <li>init,
- *        <li>(receivedFinishedCycle)*,
- *        <li>stop.
- *    </ul>
+ * <p>
+ * Execution sequence:
+ * <ul>
+ * <li>setExecutionControlInfraTier,
+ * <li>init,
+ * <li>(receivedFinishedCycle)*,
+ * <li>stop.
+ * </ul>
  */
 public class ExecutionControl {
 
     protected ExecutionControlInfraTier infraControl = null;
 
     private Set<String> finished = new HashSet<String>(); // the agents that have finished its reasoning cycle
-    private volatile int     cycleNumber = 0;
+    private volatile int cycleNumber = 0;
     private volatile boolean runningCycle = true;
-    private volatile boolean isRunning    = true;
+    private volatile boolean isRunning = true;
 
     private int nbAgs = -1;
 
@@ -62,7 +64,8 @@ public class ExecutionControl {
 
                             // update number of agents if finished by timeout
                             if (to) {
-                                if (logger.isLoggable(Level.FINE)) logger.fine("Cycle "+getCycleNumber()+" finished by timeout!");
+                                if (logger.isLoggable(Level.FINE))
+                                    logger.fine("Cycle " + getCycleNumber() + " finished by timeout!");
                                 updateNumberOfAgents();
                             }
                         } catch (Exception e) {
@@ -73,7 +76,7 @@ public class ExecutionControl {
                     lock.unlock();
                 }
             }
-        } .start();
+        }.start();
     }
 
     /** returns the maximum number of milliseconds of a cycle */
@@ -87,10 +90,9 @@ public class ExecutionControl {
         cycleNumber++;
     }
 
-
     /**
-     *  Updates the number of agents in the MAS, this default
-     *  implementation, considers all agents in the MAS as actors .
+     * Updates the number of agents in the MAS, this default
+     * implementation, considers all agents in the MAS as actors .
      */
     public void updateNumberOfAgents() {
         setNbAgs(runtime.getAgentsQty());
@@ -110,17 +112,18 @@ public class ExecutionControl {
      * Called when the agent <i>agName</i> has finished its reasoning cycle.
      * <i>breakpoint</i> is true in case the agent selected one plan with "breakpoint"
      * annotation.
-      */
+     */
     public void receiveFinishedCycle(String agName, boolean breakpoint, int cycle) {
-        if (nbAgs < 0 || cycle != this.cycleNumber || finished.size()+1 > nbAgs) {
+        if (nbAgs < 0 || cycle != this.cycleNumber || finished.size() + 1 > nbAgs) {
             updateNumberOfAgents();
         }
         if (cycle == this.cycleNumber && runningCycle) { // the agent finished the current cycle
             lock.lock();
             try {
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("Agent "+agName+" has finished cycle "+cycle+", # of finished agents is "+(finished.size()+1)+"/"+nbAgs);
-                    if (breakpoint) logger.fine("Agent "+agName+" reached a breakpoint");
+                    logger.fine("Agent " + agName + " has finished cycle " + cycle + ", # of finished agents is " + (finished.size() + 1) + "/" + nbAgs);
+                    if (breakpoint)
+                        logger.fine("Agent " + agName + " reached a breakpoint");
                 }
 
                 finished.add(agName);
@@ -169,7 +172,7 @@ public class ExecutionControl {
     protected void allAgsFinished() {
         startNewCycle();
         infraControl.informAllAgsToPerformCycle(cycleNumber);
-        logger.fine("starting cycle "+cycleNumber);
+        logger.fine("starting cycle " + cycleNumber);
     }
 
     public boolean isRunning() {

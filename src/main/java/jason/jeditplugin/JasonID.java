@@ -64,17 +64,17 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
 
     private static final long serialVersionUID = 1L;
 
-    View                 view;
-    OutputStreamAdapter  myOut;
-    JTextArea            textArea;
-    AnimatedIcon         animation;
-    JButton              btStop;
-    JButton              btRun;
-    JButton              btDebug;
-    DefaultListModel     listModel   = new DefaultListModel();
-    JList                lstAgs      = new JList(listModel);
+    View view;
+    OutputStreamAdapter myOut;
+    JTextArea textArea;
+    AnimatedIcon animation;
+    JButton btStop;
+    JButton btRun;
+    JButton btDebug;
+    DefaultListModel listModel = new DefaultListModel();
+    JList lstAgs = new JList(listModel);
 
-    DefaultErrorSource   errorSource = null;
+    DefaultErrorSource errorSource = null;
 
     MASLauncherInfraTier masLauncher;
 
@@ -139,10 +139,10 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
         JLabel animationLabel = new JLabel();
         animationLabel.setBorder(new EmptyBorder(2, 3, 2, 3));
         Toolkit toolkit = getToolkit();
-        animation = new AnimatedIcon(toolkit.getImage(JasonID.class.getResource("/images/Blank.png")), new Image[] {
-                                         toolkit.getImage(JasonID.class.getResource("/images/Active1.png")), toolkit.getImage(JasonID.class.getResource("/images/Active2.png")),
-                                         toolkit.getImage(JasonID.class.getResource("/images/Active3.png")), toolkit.getImage(JasonID.class.getResource("/images/Active4.png"))
-                                     }, 10, animationLabel);
+        animation = new AnimatedIcon(toolkit.getImage(JasonID.class.getResource("/images/Blank.png")),
+                new Image[] { toolkit.getImage(JasonID.class.getResource("/images/Active1.png")), toolkit.getImage(JasonID.class.getResource("/images/Active2.png")),
+                        toolkit.getImage(JasonID.class.getResource("/images/Active3.png")), toolkit.getImage(JasonID.class.getResource("/images/Active4.png")) },
+                10, animationLabel);
         animationLabel.setIcon(animation);
         toolBar.add(animationLabel);
 
@@ -154,68 +154,68 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
         toolBar.add(btRun);
 
         btDebug = createToolBarButton("Debug MAS", new ImageIcon(JasonID.class.getResource("/images/debug.gif")), // GUIUtilities.loadIcon("RunAgain.png"),
-        new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                debugProject();
-            }
-        });
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent arg0) {
+                        debugProject();
+                    }
+                });
         toolBar.add(btDebug);
 
         btStop = createToolBarButton("Stop MAS", new ImageIcon(JasonID.class.getResource("/images/suspend.gif")), // GUIUtilities.loadIcon("Stop.png"),
-        new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                stopMAS();
-            }
-        });
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent arg0) {
+                        stopMAS();
+                    }
+                });
         btStop.setEnabled(false);
         toolBar.add(btStop);
 
         toolBar.add(new JLabel(" | "));
 
         toolBar.add(createToolBarButton("Open Project", new ImageIcon(JasonID.class.getResource("/images/openProject.gif")), // GUIUtilities.loadIcon("NewDir.png"),
-        new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                VFSFileChooserDialog dialog = new VFSFileChooserDialog(view, ".", VFSBrowser.OPEN_DIALOG, false);
-                if (dialog.getSelectedFiles() != null && dialog.getSelectedFiles().length > 0) {
-                    org.gjt.sp.jedit.jEdit.openFile(view, dialog.getSelectedFiles()[0].toString());
-                }
-            }
-        }));
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        VFSFileChooserDialog dialog = new VFSFileChooserDialog(view, ".", VFSBrowser.OPEN_DIALOG, false);
+                        if (dialog.getSelectedFiles() != null && dialog.getSelectedFiles().length > 0) {
+                            org.gjt.sp.jedit.jEdit.openFile(view, dialog.getSelectedFiles()[0].toString());
+                        }
+                    }
+                }));
         toolBar.add(createToolBarButton("New Project", new ImageIcon(JasonID.class.getResource("/images/newProject.gif")), // GUIUtilities.loadIcon("NewDir.png"),
-        new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                newProject();
-            }
-        }));
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        newProject();
+                    }
+                }));
 
         toolBar.add(createToolBarButton("Add agent in project", new ImageIcon(JasonID.class.getResource("/images/newAgent.gif")), // GUIUtilities.loadIcon("NextFile.png"),
-        new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                newAg();
-            }
-        }));
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        newAg();
+                    }
+                }));
 
         toolBar.add(createToolBarButton("Create Environment", new ImageIcon(JasonID.class.getResource("/images/createEnv.gif")), // GUIUtilities.loadIcon("NextFile.png"),
-        new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                createEnv();
-            }
-        }));
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        createEnv();
+                    }
+                }));
 
         toolBar.add(createToolBarButton("Create Internal Action", new ImageIcon(JasonID.class.getResource("/images/createIA.gif")), // GUIUtilities.loadIcon("NextFile.png"),
-        new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                newIA();
-            }
-        }));
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        newIA();
+                    }
+                }));
 
         toolBar.add(new JLabel(" | "));
-        toolBar.add(createToolBarButton("Clear panel", new ImageIcon(JasonID.class.getResource("/images/clear.gif")),// GUIUtilities.loadIcon("Clear.png"),
-        new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                textArea.setText("");
-            }
-        }));
+        toolBar.add(createToolBarButton("Clear panel", new ImageIcon(JasonID.class.getResource("/images/clear.gif")), // GUIUtilities.loadIcon("Clear.png"),
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent arg0) {
+                        textArea.setText("");
+                    }
+                }));
         add(Box.createGlue());
 
         JPanel p = new JPanel(new BorderLayout());
@@ -229,12 +229,12 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
             }
         });
         /*
-        JLabel jasonLabel = new JLabel("Jason IDE");
-        jasonLabel.setFont(new Font("Times", Font.BOLD | Font.ITALIC, 16));
-        */
+         * JLabel jasonLabel = new JLabel("Jason IDE");
+         * jasonLabel.setFont(new Font("Times", Font.BOLD | Font.ITALIC, 16));
+         */
         JPanel pAbt = new JPanel();
         pAbt.add(about);
-        //pAbt.add(jasonLabel);
+        // pAbt.add(jasonLabel);
         p.add(pAbt, BorderLayout.WEST);
 
         return p;
@@ -308,7 +308,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
          * File(bu.getBuffer().getDirectory()));
          *
          * //bu.getBuffer().setProperty("sidekick.parser",JasonSideKickParser.ID);
-         *  } }
+         * } }
          */
     }
 
@@ -402,7 +402,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
                     parser.agent(null);
                     textArea.append(" parsed successfully!\n");
                 } catch (FileNotFoundException ex) {
-                    textArea.append(" error: file '"+asFile+"' not found!");
+                    textArea.append(" error: file '" + asFile + "' not found!");
                     return false;
                 }
             }
@@ -466,7 +466,8 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
                         max++;
                         try {
                             Thread.sleep(200);
-                        } catch (Exception e) { }
+                        } catch (Exception e) {
+                        }
                     }
                 }
 
@@ -488,17 +489,20 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
                     // Check configuration
                     String jasonJar = Config.get().getJasonJar();
                     if (!Config.checkJar(jasonJar)) {
-                        System.err.println("The path to the jason.jar file (" + jasonJar + ") was not correctly set: the MAS may not run. Go to menu Plugins->Plugins Options->Jason to configure the path.");
+                        System.err.println("The path to the jason.jar file (" + jasonJar
+                                + ") was not correctly set: the MAS may not run. Go to menu Plugins->Plugins Options->Jason to configure the path.");
                         return;
                     }
                     String javaHome = Config.get().getJavaHome();
                     if (!Config.checkJavaHomePath(javaHome)) {
-                        System.err.println("The Java JDK directory (" + javaHome + ") was not correctly set: the MAS may not run. Go to the Plugins->Options->Jason menu to configure the path.");
-                        //return;
+                        System.err.println("The Java JDK directory (" + javaHome
+                                + ") was not correctly set: the MAS may not run. Go to the Plugins->Options->Jason menu to configure the path.");
+                        // return;
                     }
                     String antLib = Config.get().getAntLib();
                     if (!Config.checkAntLib(antLib)) {
-                        System.err.println("The ant lib directory (" + antLib + ") was not correctly set: the MAS may not run. Go to the Plugins->Options->Jason menu to configure the path.");
+                        System.err.println(
+                                "The ant lib directory (" + antLib + ") was not correctly set: the MAS may not run. Go to the Plugins->Options->Jason menu to configure the path.");
                         return;
                     }
 
@@ -512,7 +516,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
                     ex.printStackTrace();
                 }
             }
-        } .start();
+        }.start();
     }
 
     public void runProject() {
@@ -598,6 +602,7 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
     public void asl2html() {
         asl2txt(new asl2html(), ".html");
     }
+
     public void asl2tex() {
         asl2txt(new asl2tex(), ".tex");
     }
@@ -615,17 +620,17 @@ public class JasonID extends JPanel implements EBComponent, RunProjectListener {
             String aslcode;
             try {
                 buf.readLock();
-                aslcode = buf.getText(0,buf.getLength());
+                aslcode = buf.getText(0, buf.getLength());
             } finally {
                 buf.readUnlock();
             }
 
-            String  htmlcode = transformer.transform(aslcode);
-            Buffer b = org.gjt.sp.jedit.jEdit.openFile(view,buf.getPath()+ext);
+            String htmlcode = transformer.transform(aslcode);
+            Buffer b = org.gjt.sp.jedit.jEdit.openFile(view, buf.getPath() + ext);
             try {
                 b.writeLock();
                 b.insert(0, htmlcode);
-                b.save(view, buf.getPath()+".html");
+                b.save(view, buf.getPath() + ".html");
             } finally {
                 b.writeUnlock();
             }

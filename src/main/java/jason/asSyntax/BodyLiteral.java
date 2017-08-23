@@ -1,6 +1,5 @@
 package jason.asSyntax;
 
-
 /**
  * @deprecated use PlanBodyImpl instead.
  *
@@ -10,50 +9,60 @@ public class BodyLiteral extends PlanBodyImpl {
 
     /** @deprecated Use BodyType of PlanBody instead */
     public enum BodyType {
-        none {            public String toString() {
+        none {
+            public String toString() {
                 return "";
             }
         },
-        action {          public String toString() {
+        action {
+            public String toString() {
                 return "";
             }
         },
-        internalAction {  public String toString() {
+        internalAction {
+            public String toString() {
                 return "";
             }
         },
-        achieve {         public String toString() {
+        achieve {
+            public String toString() {
                 return "!";
             }
         },
-        test {            public String toString() {
+        test {
+            public String toString() {
                 return "?";
             }
         },
-        addBel {          public String toString() {
+        addBel {
+            public String toString() {
                 return "+";
             }
         },
-        delBel {          public String toString() {
+        delBel {
+            public String toString() {
                 return "-";
             }
         },
-        delAddBel {       public String toString() {
+        delAddBel {
+            public String toString() {
                 return "-+";
             }
         },
-        achieveNF {       public String toString() {
+        achieveNF {
+            public String toString() {
                 return "!!";
             }
         },
-        constraint {      public String toString() {
+        constraint {
+            public String toString() {
                 return "";
             }
         }
     }
 
     public BodyLiteral(BodyType t, Term b) {
-        super(oldToNew(t),b);
+        super(oldToNew(t), b);
     }
 
     private static PlanBody.BodyType oldToNew(BodyType old) {

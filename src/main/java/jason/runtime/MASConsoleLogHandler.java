@@ -1,6 +1,5 @@
 package jason.runtime;
 
-
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -8,10 +7,10 @@ import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
 
 /** Logger handler (redirect output to MASConsoleGUI) */
-public class MASConsoleLogHandler extends StreamHandler  {
+public class MASConsoleLogHandler extends StreamHandler {
 
-    public static String formaterField = MASConsoleLogHandler.class.getName()+".formatter";
-    public static String levelField = MASConsoleLogHandler.class.getName()+".level";
+    public static String formaterField = MASConsoleLogHandler.class.getName() + ".formatter";
+    public static String levelField = MASConsoleLogHandler.class.getName() + ".level";
     public static String useColorsPropField = MASConsoleLogHandler.class.getName() + ".colors";
 
     private MASConsoleGUI fGUI;
@@ -24,7 +23,7 @@ public class MASConsoleLogHandler extends StreamHandler  {
             fGUI = MASConsoleGUI.get();
         }
 
-        //setFormatter(new MASConsoleLogFormatter());
+        // setFormatter(new MASConsoleLogFormatter());
         String formatter = LogManager.getLogManager().getProperty(formaterField);
         if (formatter != null) {
             try {

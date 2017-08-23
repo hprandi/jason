@@ -39,7 +39,7 @@ public class JasonProjectSideKickParser extends sidekick.SideKickParser {
         String text;
         try {
             buf.readLock();
-            text = buf.getText(0,buf.getLength());
+            text = buf.getText(0, buf.getLength());
         } finally {
             buf.readUnlock();
         }
@@ -53,17 +53,17 @@ public class JasonProjectSideKickParser extends sidekick.SideKickParser {
             // create nodes
             pd = new SideKickParsedData(buf.getName());
 
-            pd.root.add(new ProjectAsset("Infrastructure: ",project.getInfrastructure().toString(), buf, INFRA_TYPE).createTreeNode());
+            pd.root.add(new ProjectAsset("Infrastructure: ", project.getInfrastructure().toString(), buf, INFRA_TYPE).createTreeNode());
             if (project.getEnvClass() != null) {
-                pd.root.add(new ProjectAsset("Environment: ",project.getEnvClass().toString(), buf, ENV_TYPE).createTreeNode());
+                pd.root.add(new ProjectAsset("Environment: ", project.getEnvClass().toString(), buf, ENV_TYPE).createTreeNode());
             }
-            for (JasonID jid: jasonPluginInstance) {
+            for (JasonID jid : jasonPluginInstance) {
                 jid.listModel.clear();
             }
-            for (AgentParameters ap: project.getAgents()) {
-                pd.root.add(new ProjectAsset("", ap.name + " ("+ap.asSource+")", buf, AG_TYPE).createTreeNode());
+            for (AgentParameters ap : project.getAgents()) {
+                pd.root.add(new ProjectAsset("", ap.name + " (" + ap.asSource + ")", buf, AG_TYPE).createTreeNode());
 
-                for (JasonID jid: jasonPluginInstance) {
+                for (JasonID jid : jasonPluginInstance) {
                     jid.listModel.addElement(ap);
                 }
             }
@@ -78,14 +78,10 @@ public class JasonProjectSideKickParser extends sidekick.SideKickParser {
 
     public static void addError(jason.mas2j.parser.ParseException ex, DefaultErrorSource errorSource, String path) {
         if (ex.currentToken != null && ex.currentToken.next != null && errorSource != null) {
-            int line = ex.currentToken.next.beginLine-1;
-            if (line < 0) line = 0;
-            errorSource.addError(new DefaultErrorSource.DefaultError(
-                                     errorSource,
-                                     ErrorSource.ERROR,
-                                     path,
-                                     line, 0, 0,
-                                     ex.toString()));
+            int line = ex.currentToken.next.beginLine - 1;
+            if (line < 0)
+                line = 0;
+            errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, path, line, 0, 0, ex.toString()));
         }
 
     }
@@ -107,7 +103,7 @@ public class JasonProjectSideKickParser extends sidekick.SideKickParser {
         int type = 1;
 
         public ProjectAsset(String pre, String vl, Buffer buf, int type) {
-            super(pre+vl);
+            super(pre + vl);
             this.start = toPos(buf, vl);
             this.end = toPos(buf, vl);
             this.type = type;

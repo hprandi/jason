@@ -6,7 +6,8 @@ import jason.mas2j.MAS2JProject;
  * Used to launch an MAS. Each infrastructure should
  * implements it.
  *
- * <p>The methods of this class are called in the following order:
+ * <p>
+ * The methods of this class are called in the following order:
  * <ul>
  * <li>setProject</li>
  * <li>setListener</li>

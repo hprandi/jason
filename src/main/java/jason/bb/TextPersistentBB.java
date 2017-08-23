@@ -20,7 +20,9 @@ public class TextPersistentBB extends ChainBBAdapter {
 
     private File file = null;
 
-    public TextPersistentBB() { }
+    public TextPersistentBB() {
+    }
+
     public TextPersistentBB(BeliefBase next) {
         super(next);
     }
@@ -35,7 +37,7 @@ public class TextPersistentBB extends ChainBBAdapter {
                     ag.addInitialBelsInBB();
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE,"Error initialising TextPersistentBB.",e);
+                logger.log(Level.SEVERE, "Error initialising TextPersistentBB.", e);
             }
         }
     }
@@ -45,9 +47,9 @@ public class TextPersistentBB extends ChainBBAdapter {
             logger.fine("writting to file " + file);
             PrintWriter out = new PrintWriter(new FileWriter(file));
             out.println("// BB stored by TextPersistentBB\n");
-            for (Literal b: this) {
-                if (! b.isRule()) {
-                    out.println(b.toString()+".");
+            for (Literal b : this) {
+                if (!b.isRule()) {
+                    out.println(b.toString() + ".");
                 }
             }
             out.close();

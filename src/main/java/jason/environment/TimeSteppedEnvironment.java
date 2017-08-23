@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
 
-
 /**
  * General environment class that "synchronise" all agents actions.
  * It waits one action for each agent and, when all actions is received,
@@ -42,14 +41,13 @@ public class TimeSteppedEnvironment extends Environment {
         ignoreSecond
     };
 
-    private int step = 0;   // step counter
+    private int step = 0; // step counter
     private int nbAgs = -1; // number of agents acting on the environment
-    private Map<String,ActRequest> requests; // actions to be executed
+    private Map<String, ActRequest> requests; // actions to be executed
     private Queue<ActRequest> overRequests; // second action tentative in the step
     private TimeOutThread timeoutThread = null;
     private long stepTimeout = 0;
-    private int  sleep = 0; // pause time between cycles
-
+    private int sleep = 0; // pause time between cycles
 
     private OverActionsPolicy overActPol = OverActionsPolicy.ignoreSecond;
 
@@ -65,12 +63,12 @@ public class TimeSteppedEnvironment extends Environment {
             try {
                 stepTimeout = Integer.parseInt(args[0]);
             } catch (Exception e) {
-                logger.warning("The argument "+args[0]+" is not a valid number for step timeout");
+                logger.warning("The argument " + args[0] + " is not a valid number for step timeout");
             }
         }
 
         // reset everything
-        requests = new HashMap<String,ActRequest>();
+        requests = new HashMap<String, ActRequest>();
         overRequests = new LinkedList<ActRequest>();
         step = 0;
         if (timeoutThread == null) {
@@ -95,18 +93,17 @@ public class TimeSteppedEnvironment extends Environment {
             timeoutThread.timeout = to;
     }
 
-
     @Override
     public void stop() {
         super.stop();
-        if (timeoutThread != null) timeoutThread.interrupt();
+        if (timeoutThread != null)
+            timeoutThread.interrupt();
     }
 
-
     /**
-     *  Updates the number of agents using the environment, this default
-     *  implementation, considers all agents in the MAS as actors in the
-     *  environment.
+     * Updates the number of agents using the environment, this default
+     * implementation, considers all agents in the MAS as actors in the
+     * environment.
      */
     protected void updateNumberOfAgents() {
         setNbAgs(getEnvironmentInfraTier().getRuntimeServices().getAgentsNames().size());
@@ -138,9 +135,10 @@ public class TimeSteppedEnvironment extends Environment {
 
     @Override
     public void scheduleAction(String agName, Structure action, Object infraData) {
-        if (!isRunning()) return;
+        if (!isRunning())
+            return;
 
-        //System.out.println("scheduling "+action+" for "+agName);
+        // System.out.println("scheduling "+action+" for "+agName);
         ActRequest newRequest = new ActRequest(agName, action, requiredStepsForAction(agName, action), infraData);
 
         boolean startNew = false;
@@ -150,10 +148,12 @@ public class TimeSteppedEnvironment extends Environment {
                 // initialise dynamic information
                 // (must be in sync part, so that more agents do not start the timeout thread)
                 updateNumberOfAgents();
-                /*if (stepTimeout > 0 && timeoutThread == null) {
-                    timeoutThread = new TimeOutThread(stepTimeout);
-                    timeoutThread.start();
-                }*/
+                /*
+                 * if (stepTimeout > 0 && timeoutThread == null) {
+                 * timeoutThread = new TimeOutThread(stepTimeout);
+                 * timeoutThread.start();
+                 * }
+                 */
             }
 
             // if the agent already has an action scheduled, fail the first
@@ -180,7 +180,8 @@ public class TimeSteppedEnvironment extends Environment {
                 if (sleep > 0) {
                     try {
                         Thread.sleep(sleep);
-                    } catch (InterruptedException e) {}
+                    } catch (InterruptedException e) {
+                    }
                 }
             }
         }
@@ -216,18 +217,19 @@ public class TimeSteppedEnvironment extends Environment {
     }
 
     private void startNewStep() {
-        if (!isRunning()) return;
+        if (!isRunning())
+            return;
 
         synchronized (requests) {
             step++;
 
-            //logger.info("#"+requests.size());
-            //logger.info("#"+overRequests.size());
+            // logger.info("#"+requests.size());
+            // logger.info("#"+overRequests.size());
 
             try {
 
                 // execute all scheduled actions
-                for (ActRequest a: requests.values()) {
+                for (ActRequest a : requests.values()) {
                     a.remainSteps--;
                     if (a.remainSteps == 0) {
                         // calls the user implementation of the action
@@ -248,7 +250,7 @@ public class TimeSteppedEnvironment extends Environment {
                 }
 
                 // clear all requests
-                //requests.clear();
+                // requests.clear();
 
                 // add actions waiting in over requests into the requests
                 Iterator<ActRequest> io = overRequests.iterator();
@@ -269,7 +271,7 @@ public class TimeSteppedEnvironment extends Environment {
                 stepStarted(step);
             } catch (Exception ie) {
                 if (isRunning() && !(ie instanceof InterruptedException)) {
-                    logger.log(Level.WARNING, "act error!",ie);
+                    logger.log(Level.WARNING, "act error!", ie);
                 }
             }
         }
@@ -301,20 +303,24 @@ public class TimeSteppedEnvironment extends Environment {
         Object infraData;
         boolean success;
         int remainSteps; // the number os steps this action have to wait to be executed
+
         public ActRequest(String ag, Structure act, int rs, Object data) {
             agName = ag;
             action = act;
             infraData = data;
             remainSteps = rs;
         }
+
         public boolean equals(Object obj) {
             return agName.equals(obj);
         }
+
         public int hashCode() {
             return agName.hashCode();
         }
+
         public String toString() {
-            return "["+agName+","+action+"]";
+            return "[" + agName + "," + action + "]";
         }
     }
 
@@ -346,15 +352,15 @@ public class TimeSteppedEnvironment extends Environment {
                         byTimeOut = !agActCond.await(timeout, TimeUnit.MILLISECONDS);
                     }
                     allFinished = false;
-                    long now  = System.currentTimeMillis();
-                    long time = (now-lastStepStart);
+                    long now = System.currentTimeMillis();
+                    long time = (now - lastStepStart);
                     stepFinished(step, time, byTimeOut);
                     lock.unlock();
                     startNewStep();
                 }
             } catch (InterruptedException e) {
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error in timeout thread!",e);
+                logger.log(Level.SEVERE, "Error in timeout thread!", e);
             }
         }
     }

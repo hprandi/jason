@@ -13,11 +13,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Implementation of the  Maintenance Goal pattern (see DALT 2006 paper)
+ * Implementation of the Maintenance Goal pattern (see DALT 2006 paper)
  *
  * @author jomi
  */
-public class MG extends DefaultDirective  implements Directive {
+public class MG extends DefaultDirective implements Directive {
 
     static Logger logger = Logger.getLogger(MG.class.getName());
 
@@ -29,7 +29,7 @@ public class MG extends DefaultDirective  implements Directive {
             if (directive.getArity() > 1) {
                 subDir = Pred.parsePred(directive.getTerm(1).toString());
             } else {
-                subDir = Pred.parsePred("bc("+goal+")");
+                subDir = Pred.parsePred("bc(" + goal + ")");
             }
             Directive sd = DirectiveProcessor.getDirective(subDir.getFunctor());
 
@@ -42,12 +42,12 @@ public class MG extends DefaultDirective  implements Directive {
                 newAg.addInitialBel(goal);
 
                 // add -g : true <- !g.
-                newAg.getPL().add(ASSyntax.parsePlan("-"+goal+" <- !"+goal+"."));
+                newAg.getPL().add(ASSyntax.parsePlan("-" + goal + " <- !" + goal + "."));
 
                 return newAg;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive error.", e);
+            logger.log(Level.SEVERE, "Directive error.", e);
         }
         return null;
     }

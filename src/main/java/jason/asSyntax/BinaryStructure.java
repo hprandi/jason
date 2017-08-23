@@ -3,21 +3,20 @@ package jason.asSyntax;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 /**
-   Represents a binary/unary logical/relational operator.
-
-   @opt nodefillcolor lightgoldenrodyellow
-
-   @navassoc - left  - Term
-   @navassoc - right - Term
-
+ * Represents a binary/unary logical/relational operator.
+ * 
+ * @opt nodefillcolor lightgoldenrodyellow
+ * 
+ * @navassoc - left - Term
+ * @navassoc - right - Term
+ * 
  */
 public abstract class BinaryStructure extends Structure {
 
     /** Constructor for binary operator */
     public BinaryStructure(Term t1, String id, Term t2) {
-        super(id,2);
+        super(id, 2);
         addTerm(t1);
         addTerm(t2);
         if (t1.getSrcInfo() != null)
@@ -28,8 +27,8 @@ public abstract class BinaryStructure extends Structure {
 
     /** Constructor for unary operator */
     public BinaryStructure(String id, Term arg) {
-        super(id,1);
-        addTerm( arg );
+        super(id, 1);
+        addTerm(arg);
         srcInfo = arg.getSrcInfo();
     }
 
@@ -46,9 +45,9 @@ public abstract class BinaryStructure extends Structure {
     @Override
     public String toString() {
         if (isUnary()) {
-            return getFunctor()+"("+getTerm(0)+")";
+            return getFunctor() + "(" + getTerm(0) + ")";
         } else {
-            return "("+getTerm(0)+getFunctor()+getTerm(1)+")";
+            return "(" + getTerm(0) + getFunctor() + getTerm(1) + ")";
         }
     }
 

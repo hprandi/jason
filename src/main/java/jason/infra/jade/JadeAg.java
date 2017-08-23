@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  * Implementation of a basic jade agent for jason agents
  *
@@ -27,12 +26,12 @@ import java.util.logging.Logger;
 public abstract class JadeAg extends Agent {
 
     // KQML performatives not available in FIPA-ACL
-    public static final int UNTELL    = 1001;
-    public static final int ASKALL    = 1002;
+    public static final int UNTELL = 1001;
+    public static final int ASKALL = 1002;
     public static final int UNACHIEVE = 1003;
-    public static final int TELLHOW   = 1004;
+    public static final int TELLHOW = 1004;
     public static final int UNTELLHOW = 1005;
-    public static final int ASKHOW    = 1006;
+    public static final int ASKHOW = 1006;
 
     private static final long serialVersionUID = 1L;
 
@@ -41,7 +40,7 @@ public abstract class JadeAg extends Agent {
     private static int rwid = 0; // reply-with counter
     protected boolean running = true;
 
-    protected Map<String,String> conversationIds = new HashMap<String,String>();
+    protected Map<String, String> conversationIds = new HashMap<String, String>();
 
     @Override
     public void doDelete() {
@@ -66,20 +65,22 @@ public abstract class JadeAg extends Agent {
                 acl.setConversationId(convid);
             }
         }
-        if (logger.isLoggable(Level.FINE)) logger.fine("Sending message: " + acl);
+        if (logger.isLoggable(Level.FINE))
+            logger.fine("Sending message: " + acl);
         send(acl);
     }
 
     public void broadcast(final Message m) {
         addBehaviour(new OneShotBehaviour() {
             private static final long serialVersionUID = 1L;
+
             public void action() {
                 try {
                     ACLMessage acl = jasonToACL(m);
                     addAllAgsAsReceivers(acl);
                     send(acl);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, "Error in broadcast of "+m, e);
+                    logger.log(Level.SEVERE, "Error in broadcast of " + m, e);
                 }
             }
         });
@@ -91,20 +92,19 @@ public abstract class JadeAg extends Agent {
 
     protected ACLMessage ask(final ACLMessage m) {
         try {
-            String waitingRW = "id"+incReplyWithId();
+            String waitingRW = "id" + incReplyWithId();
             m.setReplyWith(waitingRW);
             send(m);
             ACLMessage r = blockingReceive(MessageTemplate.MatchInReplyTo(waitingRW), 5000);
             if (r != null)
                 return r;
             else
-                logger.warning("ask timeout for "+m.getContent());
+                logger.warning("ask timeout for " + m.getContent());
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error waiting message.", e);
         }
         return null;
     }
-
 
     public void addAllAgsAsReceivers(ACLMessage m) throws Exception {
         // get all agents' name
@@ -114,7 +114,7 @@ public abstract class JadeAg extends Agent {
         sd.setName(JadeAgArch.dfName);
         template.addServices(sd);
         DFAgentDescription[] ans = DFService.search(this, template);
-        for (int i=0; i<ans.length; i++) {
+        for (int i = 0; i < ans.length; i++) {
             if (!ans[i].getName().equals(getAID())) {
                 m.addReceiver(ans[i].getName());
             }
@@ -127,7 +127,7 @@ public abstract class JadeAg extends Agent {
         if (m.getPropCont() instanceof Term || m.getPropCont() instanceof String) {
             acl.setContent(m.getPropCont().toString());
         } else {
-            acl.setContentObject((Serializable)m.getPropCont());
+            acl.setContentObject((Serializable) m.getPropCont());
         }
         acl.setReplyWith(m.getMsgId());
         acl.setLanguage("AgentSpeak");
@@ -144,12 +144,7 @@ public abstract class JadeAg extends Agent {
             return new ACLMessage(ACLMessage.QUERY_REF);
         } else if (p.equals("achieve")) {
             return new ACLMessage(ACLMessage.REQUEST);
-        } else if (p.equals("untell") ||
-                   p.equals("unachieve") ||
-                   p.equals("askAll") ||
-                   p.equals("askHow") ||
-                   p.equals("tellHow") ||
-                   p.equals("untellHow")) {
+        } else if (p.equals("untell") || p.equals("unachieve") || p.equals("askAll") || p.equals("askHow") || p.equals("tellHow") || p.equals("untellHow")) {
             ACLMessage m = new ACLMessage(ACLMessage.INFORM_REF);
             m.addUserDefinedParameter("kqml-performative", p);
             return m;
@@ -161,34 +156,38 @@ public abstract class JadeAg extends Agent {
             return new ACLMessage(ACLMessage.QUERY_IF);
         } else if (p.toLowerCase().equals("inform_if")) {
             return new ACLMessage(ACLMessage.INFORM_IF);
-            /*} else if (p.equals("unachieve")) {
-                return UNACHIEVE;
-            } else if (p.equals("askAll")) {
-                return ASKALL;
-            } else if (p.equals("askHow")) {
-                return ASKHOW;
-            } else if (p.equals("tellHow")) {
-                return TELLHOW;
-            } else if (p.equals("untellHow")) {
-                return UNTELLHOW;*/
+            /*
+             * } else if (p.equals("unachieve")) {
+             * return UNACHIEVE;
+             * } else if (p.equals("askAll")) {
+             * return ASKALL;
+             * } else if (p.equals("askHow")) {
+             * return ASKHOW;
+             * } else if (p.equals("tellHow")) {
+             * return TELLHOW;
+             * } else if (p.equals("untellHow")) {
+             * return UNTELLHOW;
+             */
         }
         return new ACLMessage(ACLMessage.getInteger(p));
     }
 
     public static String aclPerformativeToKqml(ACLMessage m) {
-        switch(m.getPerformative()) {
+        switch (m.getPerformative()) {
         case ACLMessage.INFORM:
             return "tell";
         case ACLMessage.QUERY_REF:
             return "askOne";
         case ACLMessage.REQUEST:
             return "achieve";
-        /*case UNTELL: return "untell";
-        case UNACHIEVE: return "unachieve";
-        case ASKALL: return "askAll";
-        case ASKHOW: return "askHow";
-        case TELLHOW: return "tellHow";
-        case UNTELLHOW: return "untellHow";*/
+        /*
+         * case UNTELL: return "untell";
+         * case UNACHIEVE: return "unachieve";
+         * case ASKALL: return "askAll";
+         * case ASKHOW: return "askHow";
+         * case TELLHOW: return "tellHow";
+         * case UNTELLHOW: return "untellHow";
+         */
         case ACLMessage.INFORM_REF:
             String kp = m.getUserDefinedParameter("kqml-performative");
             if (kp != null) {

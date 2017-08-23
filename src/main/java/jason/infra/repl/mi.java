@@ -11,8 +11,9 @@ import java.net.URI;
 
 public class mi extends DefaultInternalAction {
 
-    @Override public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-        String url = MindInspectorWeb.getURL()+"/agent-mind/"+ts.getUserAgArch().getAgName();
+    @Override
+    public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
+        String url = MindInspectorWeb.getURL() + "/agent-mind/" + ts.getUserAgArch().getAgName();
         Desktop.getDesktop().browse(new URI(url));
         return true;
     }

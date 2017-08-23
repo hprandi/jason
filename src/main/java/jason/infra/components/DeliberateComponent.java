@@ -32,7 +32,7 @@ public class DeliberateComponent extends AgentComponent {
 
     public void run() {
         int cycles = ag.getCyclesDeliberate();
-        //int number_cycles = 1;
+        // int number_cycles = 1;
         int i = 0;
 
         while (ag.isRunning() && i < cycles) {

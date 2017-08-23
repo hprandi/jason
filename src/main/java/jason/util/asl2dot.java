@@ -10,8 +10,6 @@ import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBody.BodyType;
 import jason.asSyntax.Trigger.TEType;
 
-
-
 /**
  * Convert an agent asl code to dot (http://www.graphviz.org/)
  * -- used to produce the graph of goals.
@@ -28,7 +26,7 @@ public class asl2dot extends asl2xml {
         new asl2dot().run(args[0]);
     }
 
-    public String transform(Agent ag)  throws Exception {
+    public String transform(Agent ag) throws Exception {
         StringBuilder so = new StringBuilder();
         so.append("// dot file used to generate goals graph\n");
         so.append("// run: dot -Tpdf <theoutput> -o goals.pdf\n");
@@ -36,21 +34,21 @@ public class asl2dot extends asl2xml {
         so.append("    rankdir=BT;\n\n");
 
         Set<String> done = new HashSet<String>();
-        for (Plan p: ag.getPL()) {
+        for (Plan p : ag.getPL()) {
             if (p.getTrigger().getType() == TEType.achieve) {
                 String ps = p.getTrigger().getLiteral().getFunctor();
                 if (!done.contains(ps)) {
                     done.add(ps);
-                    so.append("    "+ps+";\n");
+                    so.append("    " + ps + ";\n");
                 }
                 PlanBody b = p.getBody();
                 while (b != null) {
                     if (b.getBodyType() == BodyType.achieve || b.getBodyType() == BodyType.achieveNF) {
-                        String bs = ((Literal)b.getBodyTerm()).getFunctor();
-                        String e = bs+ps;
+                        String bs = ((Literal) b.getBodyTerm()).getFunctor();
+                        String e = bs + ps;
                         if (!done.contains(e)) {
                             done.add(e);
-                            so.append("    "+bs+" -> "+ps+";\n");
+                            so.append("    " + bs + " -> " + ps + ";\n");
                         }
                     }
                     b = b.getBodyNext();

@@ -35,7 +35,7 @@ public class DefaultBeliefBase extends BeliefBase {
      */
     private Map<PredicateIndicator, BelEntry> belsMapDefaultNS = new ConcurrentHashMap<PredicateIndicator, BelEntry>();
 
-    private Map<Atom, Map<PredicateIndicator, BelEntry>> nameSpaces = new ConcurrentHashMap<Atom, Map<PredicateIndicator,BelEntry>>();
+    private Map<Atom, Map<PredicateIndicator, BelEntry>> nameSpaces = new ConcurrentHashMap<Atom, Map<PredicateIndicator, BelEntry>>();
 
     private int size = 0;
 
@@ -49,7 +49,7 @@ public class DefaultBeliefBase extends BeliefBase {
     @Override
     public void init(Agent ag, String[] args) {
         if (ag != null) {
-            logger = Logger.getLogger(ag.getTS().getUserAgArch().getAgName() + "-"+DefaultBeliefBase.class.getSimpleName());
+            logger = Logger.getLogger(ag.getTS().getUserAgArch().getAgName() + "-" + DefaultBeliefBase.class.getSimpleName());
         }
     }
 
@@ -77,13 +77,16 @@ public class DefaultBeliefBase extends BeliefBase {
         final Iterator<Literal> i = percepts.iterator();
         return new Iterator<Literal>() {
             Literal current = null;
+
             public boolean hasNext() {
                 return i.hasNext();
             }
+
             public Literal next() {
                 current = i.next();
                 return current;
             }
+
             public void remove() {
                 if (current == null) {
                     logger.warning("Trying to remove a perception, but the the next() from the iterator is not called before!");
@@ -98,7 +101,7 @@ public class DefaultBeliefBase extends BeliefBase {
                 removeFromEntry(current);
             }
         };
-        //return ((Set<Literal>)percepts.clone()).iterator();
+        // return ((Set<Literal>)percepts.clone()).iterator();
     }
 
     Set<Literal> getPerceptsSet() {
@@ -117,7 +120,7 @@ public class DefaultBeliefBase extends BeliefBase {
 
     protected boolean add(Literal l, boolean addInEnd) {
         if (!l.canBeAddedInBB()) {
-            logger.log(Level.SEVERE, "Error: '"+l+"' can not be added in the belief base.");
+            logger.log(Level.SEVERE, "Error: '" + l + "' can not be added in the belief base.");
             return false;
         }
 
@@ -135,7 +138,8 @@ public class DefaultBeliefBase extends BeliefBase {
         } else {
             // new bel
 
-            l = l.copy(); // we need to clone l for the consequent event to not have a ref to this bel (which may change before the event is processed); see bug from Viviana Marcardi
+            l = l.copy(); // we need to clone l for the consequent event to not have a ref to this bel (which may change before the event is processed); see bug from Viviana
+                            // Marcardi
             BelEntry entry = provideBelEntry(l);
             entry.add(l, addInEnd);
 
@@ -205,14 +209,14 @@ public class DefaultBeliefBase extends BeliefBase {
         return new Iterator<Literal>() {
 
             Iterator<BelEntry> ibe = ins.next().values().iterator();
-            Iterator<Literal>  il  = null;
-            Literal            l   = null;
+            Iterator<Literal> il = null;
+            Literal l = null;
             {
                 goNext();
             }
 
             public boolean hasNext() {
-                return il != null && il.hasNext(); //l != null;
+                return il != null && il.hasNext(); // l != null;
             }
 
             private void goNext() {
@@ -260,7 +264,7 @@ public class DefaultBeliefBase extends BeliefBase {
         } else {
             return false;
         }
-        //return belsMap.remove(pi) != null;
+        // return belsMap.remove(pi) != null;
     }
 
     @Override
@@ -272,7 +276,7 @@ public class DefaultBeliefBase extends BeliefBase {
         if (entry == null) {
             return null;
         } else {
-            //logger.info("*"+l+":"+l.hashCode()+" = "+entry.contains(l)+" in "+this);//+" entry="+entry);
+            // logger.info("*"+l+":"+l.hashCode()+" = "+entry.contains(l)+" in "+this);//+" entry="+entry);
             return entry.contains(l);
         }
     }
@@ -280,7 +284,7 @@ public class DefaultBeliefBase extends BeliefBase {
     @Override
     public Iterator<Literal> getCandidateBeliefs(PredicateIndicator pi) {
         Map<PredicateIndicator, BelEntry> pi2entry = nameSpaces.get(pi.getNS());
-        if (pi2entry == null )
+        if (pi2entry == null)
             return null;
 
         BelEntry entry = pi2entry.get(pi);
@@ -300,7 +304,7 @@ public class DefaultBeliefBase extends BeliefBase {
             if (l.getNS() != Literal.DefaultNS) {
                 Atom ns = l.getNS();
                 if (ns.isVar()) {
-                    l = (Literal)l.capply(u);
+                    l = (Literal) l.capply(u);
                     ns = l.getNS();
                 }
                 if (ns.isVar()) { // still a var
@@ -312,7 +316,7 @@ public class DefaultBeliefBase extends BeliefBase {
                 return null;
             BelEntry entry = belsMap.get(l.getPredicateIndicator());
             if (entry != null) {
-                //System.out.println(l.getNS() + "::::"+ l+ "  ==> " + entry.list);
+                // System.out.println(l.getNS() + "::::"+ l+ " ==> " + entry.list);
                 return entry.list.iterator();
             } else {
                 return null;
@@ -327,7 +331,7 @@ public class DefaultBeliefBase extends BeliefBase {
     @Override
     public BeliefBase clone() {
         DefaultBeliefBase bb = new DefaultBeliefBase();
-        for (Literal b: this) {
+        for (Literal b : this) {
             bb.add(1, b.copy());
         }
         return bb;
@@ -346,7 +350,7 @@ public class DefaultBeliefBase extends BeliefBase {
                     Element ens = (Element) document.createElement("namespace");
                     ens.setAttribute("id", Literal.DefaultNS.toString()); // to ensure default is the first
                     enss.appendChild(ens);
-                    for (Atom ns: getNameSpaces()) {
+                    for (Atom ns : getNameSpaces()) {
                         if (ns == Literal.DefaultNS)
                             continue;
                         ens = (Element) document.createElement("namespace");
@@ -356,11 +360,11 @@ public class DefaultBeliefBase extends BeliefBase {
                     ebels.appendChild(enss);
                     // copy bels to an array to sort it
                     allBels = new ArrayList<Literal>(size());
-                    for (Literal l: this)
+                    for (Literal l : this)
                         allBels.add(l);
                 }
                 Collections.sort(allBels);
-                for (Literal l: allBels)
+                for (Literal l : allBels)
                     ebels.appendChild(l.getAsDOM(document));
                 break; // quit the loop
             } catch (Exception e) { // normally concurrent modification, but others happen
@@ -375,8 +379,8 @@ public class DefaultBeliefBase extends BeliefBase {
     /** each predicate indicator has one BelEntry assigned to it */
     final class BelEntry {
 
-        final private Deque<Literal> list = new LinkedBlockingDeque<Literal>();  // maintains the order of the beliefs
-        final private Map<StructureWrapperForLiteral,Literal> map = new ConcurrentHashMap<StructureWrapperForLiteral,Literal>(); // to find content faster
+        final private Deque<Literal> list = new LinkedBlockingDeque<Literal>(); // maintains the order of the beliefs
+        final private Map<StructureWrapperForLiteral, Literal> map = new ConcurrentHashMap<StructureWrapperForLiteral, Literal>(); // to find content faster
 
         public void add(Literal l, boolean addInEnd) {
             map.put(new StructureWrapperForLiteral(l), l);
@@ -408,7 +412,7 @@ public class DefaultBeliefBase extends BeliefBase {
 
         protected Object clone() {
             BelEntry be = new BelEntry();
-            for (Literal l: list) {
+            for (Literal l : list) {
                 be.add(l.copy(), false);
             }
             return be;
@@ -416,8 +420,8 @@ public class DefaultBeliefBase extends BeliefBase {
 
         public String toString() {
             StringBuilder s = new StringBuilder();
-            for (Literal l: list) {
-                s.append(l+":"+l.hashCode()+",");
+            for (Literal l : list) {
+                s.append(l + ":" + l.hashCode() + ",");
             }
             return s.toString();
         }

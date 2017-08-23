@@ -19,7 +19,7 @@ public class NameSpace implements Directive {
 
     static Logger logger = Logger.getLogger(NameSpace.class.getName());
 
-    private Map<Atom,Atom> localNSs = new HashMap<Atom,Atom>();
+    private Map<Atom, Atom> localNSs = new HashMap<Atom, Atom>();
 
     @Override
     public boolean isSingleton() {
@@ -35,24 +35,24 @@ public class NameSpace implements Directive {
 
     @Override
     public void begin(Pred directive, as2j parser) {
-        if (! directive.getTerm(0).isAtom()) {
-            logger.log(Level.SEVERE, "The first parameter of the directive namespace should be an atom and not "+directive.getTerm(0));
+        if (!directive.getTerm(0).isAtom()) {
+            logger.log(Level.SEVERE, "The first parameter of the directive namespace should be an atom and not " + directive.getTerm(0));
             return;
         }
-        Atom ns = new Atom( ((Atom)directive.getTerm(0)).getFunctor() );
+        Atom ns = new Atom(((Atom) directive.getTerm(0)).getFunctor());
 
         if (directive.getArity() > 1) {
-            if (! directive.getTerm(1).isAtom()) {
-                logger.log(Level.SEVERE, "The second parameter of the directive namespace should be an atom and not "+directive.getTerm(1));
+            if (!directive.getTerm(1).isAtom()) {
+                logger.log(Level.SEVERE, "The second parameter of the directive namespace should be an atom and not " + directive.getTerm(1));
                 return;
             }
-            String type = ((Atom)directive.getTerm(1)).getFunctor();
+            String type = ((Atom) directive.getTerm(1)).getFunctor();
             if (!type.equals("local") && !type.equals("global")) {
                 logger.log(Level.SEVERE, "The second parameter of the directive namespace should be either local or global");
                 return;
             }
             if (type.equals("global") && isLocalNS(ns)) {
-                logger.warning("The namespace "+ns+" was previously defined as local, changing it to globall!");
+                logger.warning("The namespace " + ns + " was previously defined as local, changing it to globall!");
                 localNSs.remove(ns);
             }
             if (type.equals("local")) {
@@ -83,6 +83,7 @@ public class NameSpace implements Directive {
     }
 
     static private AtomicInteger nsCounter = new AtomicInteger(0);
+
     public static int getUniqueID() {
         return nsCounter.incrementAndGet();
     }
@@ -90,8 +91,8 @@ public class NameSpace implements Directive {
     private synchronized Atom addLocalNS(Atom ns) {
         Atom newNS = localNSs.get(ns);
         if (newNS == null) {
-            newNS = new Atom(LOCAL_PREFIX+nsCounter.incrementAndGet()+ns);
-            localNSs.put(ns,newNS);
+            newNS = new Atom(LOCAL_PREFIX + nsCounter.incrementAndGet() + ns);
+            localNSs.put(ns, newNS);
         }
         return newNS;
     }

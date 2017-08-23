@@ -42,8 +42,8 @@ public class GoalListenerForMetaEvents implements GoalListener {
                 Literal newGoal = goal.forceFullLiteralImpl().copy();
                 Literal stateAnnot = ASSyntax.createLiteral("state", new Atom(state.toString()));
                 if (reason != null)
-                    stateAnnot.addAnnot( ASSyntax.createStructure("reason", new StringTermImpl(reason)));
-                newGoal.addAnnot( stateAnnot );
+                    stateAnnot.addAnnot(ASSyntax.createStructure("reason", new StringTermImpl(reason)));
+                newGoal.addAnnot(stateAnnot);
                 Trigger eEnd = new Trigger(TEOperator.goalState, type, newGoal);
                 if (ts.getAg().getPL().hasCandidatePlan(eEnd))
                     ts.getC().insertMetaEvent(new Event(eEnd, null));

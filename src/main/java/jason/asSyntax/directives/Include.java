@@ -28,14 +28,14 @@ public class Include extends DefaultDirective implements Directive {
             return null;
 
         // handles file (arg[0])
-        String file = ((StringTerm)directive.getTerm(0)).getString().replaceAll("\\\\", "/");
+        String file = ((StringTerm) directive.getTerm(0)).getString().replaceAll("\\\\", "/");
         try {
             InputStream in = null;
             // test include from jar
             if (file.startsWith("$")) { // the case of "$jasonJar/src/a.asl"
-                String jar = file.substring(1,file.indexOf("/"));
+                String jar = file.substring(1, file.indexOf("/"));
                 if (Config.get().get(jar) == null) {
-                    logger.log(Level.SEVERE,"The included file '"+jar+"' is not configured");
+                    logger.log(Level.SEVERE, "The included file '" + jar + "' is not configured");
                     return null;
                 }
                 String path = Config.get().get(jar).toString();
@@ -46,7 +46,7 @@ public class Include extends DefaultDirective implements Directive {
                 if (outerContent != null && outerPrefix != null) {
                     // check if the outer is URL
                     if (outerPrefix.startsWith("jar")) {
-                        outerPrefix = outerPrefix.substring(0,outerPrefix.indexOf("!")+1) + "/";
+                        outerPrefix = outerPrefix.substring(0, outerPrefix.indexOf("!") + 1) + "/";
                         file = aslSourcePath.fixPath(file, outerPrefix);
                         in = new URL(file).openStream();
                     } else if (outerPrefix.startsWith(SourcePath.CRPrefix)) {
@@ -55,11 +55,11 @@ public class Include extends DefaultDirective implements Directive {
 
                         SourcePath newpath = new SourcePath();
                         if (outerPrefix.indexOf("/") != posSlash) { // has only one slash
-                            newpath.addPath(outerPrefix.substring(SourcePath.CRPrefix.length()+1,posSlash));
+                            newpath.addPath(outerPrefix.substring(SourcePath.CRPrefix.length() + 1, posSlash));
                         }
                         newpath.addAll(aslSourcePath);
 
-                        file = newpath.fixPath(file, SourcePath.CRPrefix+"/");
+                        file = newpath.fixPath(file, SourcePath.CRPrefix + "/");
                         in = Agent.class.getResource(file.substring(SourcePath.CRPrefix.length())).openStream();
                     } else if (outerPrefix.startsWith("file:") || outerPrefix.startsWith("http:") || outerPrefix.startsWith("https:")) {
                         URL url = new URL(new URL(outerPrefix), file);
@@ -87,13 +87,14 @@ public class Include extends DefaultDirective implements Directive {
             Atom ns = directive.getNS();
             if (directive.getArity() > 1) {
                 if (directive.getTerm(1).isVar()) {
-                    ns = new Atom("ns"+NameSpace.getUniqueID());
+                    ns = new Atom("ns" + NameSpace.getUniqueID());
                     directive.setTerm(1, ns);
                 } else {
-                    if (! directive.getTerm(1).isAtom()) {
-                        logger.log(Level.SEVERE, "The second parameter of the directive include (the namespace) should be an atom and not "+directive.getTerm(1)+". It is being ignored!");
+                    if (!directive.getTerm(1).isAtom()) {
+                        logger.log(Level.SEVERE,
+                                "The second parameter of the directive include (the namespace) should be an atom and not " + directive.getTerm(1) + ". It is being ignored!");
                     } else {
-                        ns = new Atom( ((Atom)directive.getTerm(1)).getFunctor() );
+                        ns = new Atom(((Atom) directive.getTerm(1)).getFunctor());
                     }
                 }
             }
@@ -103,12 +104,12 @@ public class Include extends DefaultDirective implements Directive {
             as2j sparser = new as2j(in);
             sparser.setNS(ns);
             sparser.agent(ag);
-            logger.fine("as2j: AgentSpeak program '"+file+"' parsed successfully!");
+            logger.fine("as2j: AgentSpeak program '" + file + "' parsed successfully!");
             return ag;
         } catch (FileNotFoundException e) {
-            logger.log(Level.SEVERE,"The included file '"+file+"' was not found! (it is being included in the agent '"+outerContent.getASLSrc()+"')");
+            logger.log(Level.SEVERE, "The included file '" + file + "' was not found! (it is being included in the agent '" + outerContent.getASLSrc() + "')");
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"as2j: error parsing \"" + file + "\"", e);
+            logger.log(Level.SEVERE, "as2j: error parsing \"" + file + "\"", e);
         }
         return null;
     }

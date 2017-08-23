@@ -30,12 +30,11 @@ public class ActComponent extends AgentComponent {
 
     public void run() {
         int cycles = ag.getCyclesAct();
-        //int number_cycles = 1;
+        // int number_cycles = 1;
         int i = 0;
         while (ag.isRunning() && i < cycles) {
             i++;
             ag.getTS().act();
-
 
             synchronized (ag.objAct) {
                 if (canSleep()) {

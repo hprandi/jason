@@ -14,6 +14,7 @@ public final class Location implements Serializable {
     public int distanceManhattan(Location l) {
         return Math.abs(x - l.x) + Math.abs(y - l.y);
     }
+
     /** calculates the Manhattan distance between two points */
     public int distance(Location l) {
         return Math.abs(x - l.x) + Math.abs(y - l.y);
@@ -26,24 +27,24 @@ public final class Location implements Serializable {
 
     /** returns the chessboard king (or Chebyshev) distance between two locations : max( |this.x - l.x| , |this.y - l.y|) */
     public int distanceChebyshev(Location l) {
-        return Math.max( Math.abs(this.x - l.x), Math.abs(this.y - l.y));
+        return Math.max(Math.abs(this.x - l.x), Math.abs(this.y - l.y));
     }
+
     /** @deprecated renamed to distanceChessboard */
     public int maxBorder(Location l) {
-        return Math.max( Math.abs(this.x - l.x), Math.abs(this.y - l.y));
+        return Math.max(Math.abs(this.x - l.x), Math.abs(this.y - l.y));
     }
 
     public boolean isInArea(Location tl, Location br) {
         return x >= tl.x && x <= br.x && y >= tl.y && y <= br.y;
     }
+
     public boolean isInArea(Area a) {
         return a.contains(this);
     }
+
     public boolean isNeigbour(Location l) {
-        return
-            distance(l) == 1 ||
-            equals(l) ||
-            Math.abs(x - l.x) == 1 && Math.abs(y - l.y) == 1;
+        return distance(l) == 1 || equals(l) || Math.abs(x - l.x) == 1 && Math.abs(y - l.y) == 1;
     }
 
     @Override
@@ -57,17 +58,22 @@ public final class Location implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (getClass() != obj.getClass()) return false;
+        if (obj == null)
+            return false;
+        if (this == obj)
+            return true;
+        if (getClass() != obj.getClass())
+            return false;
         final Location other = (Location) obj;
-        if (x != other.x) return false;
-        if (y != other.y) return false;
+        if (x != other.x)
+            return false;
+        if (y != other.y)
+            return false;
         return true;
     }
 
     public Object clone() {
-        return new Location(x,y);
+        return new Location(x, y);
     }
 
     public String toString() {

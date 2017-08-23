@@ -28,21 +28,21 @@ public class BC extends DefaultDirective implements Directive {
             if (directive.getArity() > 1) {
                 subDir = Pred.parsePred(directive.getTerm(1).toString());
             } else {
-                subDir = Pred.parsePred("bdg("+goal+")");
+                subDir = Pred.parsePred("bdg(" + goal + ")");
             }
             Directive sd = DirectiveProcessor.getDirective(subDir.getFunctor());
 
             // apply sub directive
-            Agent newAg = sd.process((Pred)subDir, outerContent, innerContent);
+            Agent newAg = sd.process((Pred) subDir, outerContent, innerContent);
             if (newAg != null) {
 
                 // add +!g : true <- !!g.
-                newAg.getPL().add(ASSyntax.parsePlan("+!"+goal+" <- !!"+goal+"."));
+                newAg.getPL().add(ASSyntax.parsePlan("+!" + goal + " <- !!" + goal + "."));
 
                 return newAg;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive error.", e);
+            logger.log(Level.SEVERE, "Directive error.", e);
         }
         return null;
     }

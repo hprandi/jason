@@ -57,20 +57,21 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
             successor.stop();
     }
 
-
     // Management of the chain of responsibility
     /** Returns the first architecture in the chain of responsibility pattern */
     public AgArch getFirstAgArch() {
         return firstArch;
     }
+
     public AgArch getNextAgArch() {
         return successor;
     }
+
     public List<String> getAgArchClassesChain() {
         List<String> all = new ArrayList<String>();
         AgArch a = getFirstAgArch();
         while (a != null) {
-            all.add(0,a.getClass().getName());
+            all.add(0, a.getClass().getName());
             a = a.getNextAgArch();
         }
         return all;
@@ -85,6 +86,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
         }
         setFirstAgArch(arch);
     }
+
     private void setFirstAgArch(AgArch arch) {
         firstArch = arch;
         if (successor != null)
@@ -94,7 +96,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
     public void createCustomArchs(List<String> archs) throws Exception {
         if (archs == null)
             return;
-        for (String agArchClass: archs) {
+        for (String agArchClass : archs) {
             // user custom arch
             if (!agArchClass.equals(AgArch.class.getName()) && !agArchClass.equals(CentralisedAgArch.class.getName())) {
                 try {
@@ -103,9 +105,9 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
                     insertAgArch(a);
                     a.init();
                 } catch (Exception e) {
-                    System.out.println("Error creating custom agent aarchitecture."+e);
+                    System.out.println("Error creating custom agent aarchitecture." + e);
                     e.printStackTrace();
-                    ts.getLogger().log(Level.SEVERE,"Error creating custom agent aarchitecture.",e);
+                    ts.getLogger().log(Level.SEVERE, "Error creating custom agent aarchitecture.", e);
                 }
             }
         }
@@ -116,13 +118,12 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
      * when a new reasoning cycle is starting
      */
     public void reasoningCycleStarting() {
-        //QueryProfiling q = getTS().getAg().getQueryProfiling();
-        //if (q != null)
-        //    q.setNbReasoningCycles(getCycleNumber());
+        // QueryProfiling q = getTS().getAg().getQueryProfiling();
+        // if (q != null)
+        // q.setNbReasoningCycles(getCycleNumber());
         if (successor != null)
             successor.reasoningCycleStarting();
     }
-
 
     /** returns the last arch in the chain, which is supposed to be the infra tier */
     public AgArchInfraTier getArchInfraTier() {
@@ -131,7 +132,6 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
         else
             return successor.getArchInfraTier();
     }
-
 
     public TransitionSystem getTS() {
         if (ts != null)
@@ -147,8 +147,9 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
             successor.setTS(ts);
     }
 
-    /** Gets the agent's perception as a list of Literals.
-     *  The returned list will be modified by Jason.
+    /**
+     * Gets the agent's perception as a list of Literals.
+     * The returned list will be modified by Jason.
      */
     public Collection<Literal> perceive() {
         if (successor == null)
@@ -157,8 +158,10 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
             return successor.perceive();
     }
 
-    /** Reads the agent's mailbox and adds messages into
-        the agent's circumstance */
+    /**
+     * Reads the agent's mailbox and adds messages into
+     * the agent's circumstance
+     */
     public void checkMail() {
         if (successor != null)
             successor.checkMail();
@@ -187,10 +190,12 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
     }
 
     /** Puts the agent in sleep. */
-    /*public void sleep() {
-        if (successor != null)
-            successor.sleep();
-    }*/
+    /*
+     * public void sleep() {
+     * if (successor != null)
+     * successor.sleep();
+     * }
+     */
 
     public void wake() {
         if (successor != null)
@@ -211,7 +216,6 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
         if (successor != null)
             successor.wakeUpAct();
     }
-
 
     public RuntimeServicesInfraTier getRuntimeServices() {
         if (successor == null)
@@ -253,7 +257,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
     }
 
     public void incCycleNumber() {
-        setCycleNumber(cycleNumber+1);
+        setCycleNumber(cycleNumber + 1);
     }
 
     /** gets the current cycle number */
@@ -263,7 +267,7 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
 
     @Override
     public String toString() {
-        return "arch-"+getAgName();
+        return "arch-" + getAgName();
     }
 
     @Override
@@ -273,9 +277,12 @@ public class AgArch implements AgArchInfraTier, Comparable<AgArch> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (obj == this) return true;
-        if (obj instanceof AgArch) return this.getAgName().equals(((AgArch)obj).getAgName());
+        if (obj == null)
+            return false;
+        if (obj == this)
+            return true;
+        if (obj instanceof AgArch)
+            return this.getAgName().equals(((AgArch) obj).getAgName());
         return false;
     }
 

@@ -58,7 +58,6 @@ public class CentralisedAgArchAsynchronous extends CentralisedAgArch implements 
         return executorSense;
     }
 
-
     public ExecutorService getExecutorDeliberate() {
         return executorDeliberate;
     }

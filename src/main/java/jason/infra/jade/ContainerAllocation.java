@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface ContainerAllocation {
     public void init(String[] args, MAS2JProject project);
+
     public List<String> getContainers();
+
     public String allocateAgent(String agentName);
 }

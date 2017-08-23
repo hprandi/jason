@@ -20,6 +20,8 @@ public abstract class AgentComponent implements Runnable {
     }
 
     public abstract void wakeUp();
+
     public abstract void enqueueExecutor(boolean ts);
+
     public abstract boolean canSleep();
 }

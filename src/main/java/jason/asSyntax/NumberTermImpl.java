@@ -25,7 +25,7 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
         try {
             t = Double.parseDouble(sn);
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error setting number term value from "+sn,e);
+            logger.log(Level.SEVERE, "Error setting number term value from " + sn, e);
         }
         value = t;
     }
@@ -35,7 +35,7 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
     }
 
     public NumberTermImpl(NumberTermImpl t) {
-        value   = t.value;
+        value = t.value;
         srcInfo = t.srcInfo;
     }
 
@@ -54,20 +54,22 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
+        if (o == this)
+            return true;
 
-        if (o != null && o instanceof Term && ((Term)o).isNumeric() && !((Term)o).isArithExpr()) {
-            NumberTerm st = (NumberTerm)o;
+        if (o != null && o instanceof Term && ((Term) o).isNumeric() && !((Term) o).isArithExpr()) {
+            NumberTerm st = (NumberTerm) o;
             try {
                 return solve() == st.solve();
-            } catch (Exception e) { }
+            } catch (Exception e) {
+            }
         }
         return false;
     }
 
     @Override
     protected int calcHashCode() {
-        return 37 * (int)value;
+        return 37 * (int) value;
     }
 
     @Override
@@ -76,9 +78,11 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
             return o.compareTo(this) * -1;
         }
         if (o instanceof NumberTermImpl) {
-            NumberTermImpl st = (NumberTermImpl)o;
-            if (value > st.value) return 1;
-            if (value < st.value) return -1;
+            NumberTermImpl st = (NumberTermImpl) o;
+            if (value > st.value)
+                return 1;
+            if (value < st.value)
+                return -1;
             return 0;
         }
         return -1;
@@ -86,7 +90,7 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
 
     public String toString() {
         long r = Math.round(value);
-        if (value == (double)r) {
+        if (value == (double) r) {
             return String.valueOf(r);
         } else {
             return String.valueOf(value);

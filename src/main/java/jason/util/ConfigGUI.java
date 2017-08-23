@@ -1,6 +1,5 @@
 package jason.util;
 
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -32,17 +31,17 @@ public class ConfigGUI {
     protected JTextField javaTF;
     protected JTextField antTF;
     protected JTextArea infraTP;
-    //JCheckBox  insideJIDECBox;
-    protected JCheckBox  closeAllCBox;
-    protected JCheckBox  checkVersionCBox;
-    protected JCheckBox  warnSingVarsCBox;
+    // JCheckBox insideJIDECBox;
+    protected JCheckBox closeAllCBox;
+    protected JCheckBox checkVersionCBox;
+    protected JCheckBox warnSingVarsCBox;
 
     protected JTextField jadeJarTF;
     protected JTextField jadeArgsTF;
-    protected JCheckBox  jadeSnifferCB;
-    protected JCheckBox  jadeRmaCB;
+    protected JCheckBox jadeSnifferCB;
+    protected JCheckBox jadeRmaCB;
 
-    protected JCheckBox  shortUnnamedVarCB;
+    protected JCheckBox shortUnnamedVarCB;
 
     protected static Config userProperties = Config.get();
 
@@ -50,13 +49,13 @@ public class ConfigGUI {
         String currJasonVersion = userProperties.getJasonVersion();
 
         // check new version
-        //File jasonConfFile = getUserConfFile();
+        // File jasonConfFile = getUserConfFile();
         if (userProperties.getProperty("version") != null) {
-            //userProperties.load(new FileInputStream(jasonConfFile));
+            // userProperties.load(new FileInputStream(jasonConfFile));
             if (!userProperties.getProperty("version").equals(currJasonVersion) && !currJasonVersion.equals("?")) {
                 // new version, set all values to default
                 System.out.println("This is a new version of Jason, reseting configuration...");
-                //userProperties.clear();
+                // userProperties.clear();
                 userProperties.remove(Config.JADE_JAR);
                 userProperties.remove(Config.JASON_JAR);
                 userProperties.remove(Config.ANT_LIB);
@@ -108,7 +107,7 @@ public class ConfigGUI {
     }
 
     protected String getWindowTitle() {
-        return "Jason Configuration -- "+userProperties.getProperty("version");
+        return "Jason Configuration -- " + userProperties.getProperty("version");
     }
 
     public JPanel getJasonConfigPanel() {
@@ -117,9 +116,8 @@ public class ConfigGUI {
 
         // jason home
         jasonTF = new JTextField(25);
-        JPanel jasonHomePanel = new JPanel(new GridLayout(0,1));
-        jasonHomePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                                 .createEtchedBorder(), "Jason", TitledBorder.LEFT, TitledBorder.TOP));
+        JPanel jasonHomePanel = new JPanel(new GridLayout(0, 1));
+        jasonHomePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Jason", TitledBorder.LEFT, TitledBorder.TOP));
         JPanel jasonJarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jasonJarPanel.add(new JLabel("jason.jar location"));
         jasonJarPanel.add(jasonTF);
@@ -128,7 +126,7 @@ public class ConfigGUI {
 
         // jason check version
         JPanel checkVersionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        //checkVersionPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Jason options", TitledBorder.LEFT, TitledBorder.TOP));
+        // checkVersionPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Jason options", TitledBorder.LEFT, TitledBorder.TOP));
         checkVersionCBox = new JCheckBox("Check for new Jason versions on startup", false);
         checkVersionPanel.add(checkVersionCBox);
         jasonHomePanel.add(checkVersionPanel);
@@ -147,11 +145,9 @@ public class ConfigGUI {
 
         pop.add(jasonHomePanel);
 
-
         // java home
         JPanel javaHomePanel = new JPanel();
-        javaHomePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                                .createEtchedBorder(), "Java Home", TitledBorder.LEFT, TitledBorder.TOP));
+        javaHomePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Java Home", TitledBorder.LEFT, TitledBorder.TOP));
         javaHomePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         javaHomePanel.add(new JLabel("Directory"));
         javaTF = new JTextField(25);
@@ -171,7 +167,8 @@ public class ConfigGUI {
                             JOptionPane.showMessageDialog(null, "The selected JDK home directory doesn't have the bin/javac file!");
                         }
                     }
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
         });
         javaHomePanel.add(setJava);
@@ -179,8 +176,7 @@ public class ConfigGUI {
 
         // ant lib home
         JPanel antHomePanel = new JPanel();
-        antHomePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                               .createEtchedBorder(), "Ant libs", TitledBorder.LEFT, TitledBorder.TOP));
+        antHomePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Ant libs", TitledBorder.LEFT, TitledBorder.TOP));
         antHomePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         antHomePanel.add(new JLabel("Directory"));
         antTF = new JTextField(25);
@@ -200,7 +196,8 @@ public class ConfigGUI {
                             JOptionPane.showMessageDialog(null, "The selected directory doesn't have the files ant.jar and ant-launcher.jar!");
                         }
                     }
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
         });
         antHomePanel.add(setAnt);
@@ -208,20 +205,17 @@ public class ConfigGUI {
 
         // infras
         JPanel infraPanel = new JPanel();
-        infraPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                             .createEtchedBorder(), "Available Insfrastructures", TitledBorder.LEFT, TitledBorder.TOP));
+        infraPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Available Insfrastructures", TitledBorder.LEFT, TitledBorder.TOP));
         infraPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        infraTP = new JTextArea(5,45);
+        infraTP = new JTextArea(5, 45);
         infraPanel.add(new JScrollPane(infraTP));
         pop.add(infraPanel);
 
-
         // jade home
-        jadeJarTF  = new JTextField(25);
+        jadeJarTF = new JTextField(25);
         jadeArgsTF = new JTextField(30);
-        JPanel jadeHomePanel = new JPanel(new GridLayout(0,1));
-        jadeHomePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                                .createEtchedBorder(), "JADE", TitledBorder.LEFT, TitledBorder.TOP));
+        JPanel jadeHomePanel = new JPanel(new GridLayout(0, 1));
+        jadeHomePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "JADE", TitledBorder.LEFT, TitledBorder.TOP));
 
         JPanel jadeJarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jadeJarPanel.add(new JLabel("jade.jar location"));
@@ -249,25 +243,25 @@ public class ConfigGUI {
 
         // shell command
         /*
-        JPanel shellPanel = new JPanel();
-        shellPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
-                .createEtchedBorder(), "Shell command", TitledBorder.LEFT, TitledBorder.TOP));
-        shellPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        shellTF = new JTextField(30);
-        shellTF.setToolTipText("This command will be used to run the scripts that run the MAS.");
-        shellPanel.add(shellTF);
-        pop.add(shellPanel);
-        */
+         * JPanel shellPanel = new JPanel();
+         * shellPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory
+         * .createEtchedBorder(), "Shell command", TitledBorder.LEFT, TitledBorder.TOP));
+         * shellPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+         * shellTF = new JTextField(30);
+         * shellTF.setToolTipText("This command will be used to run the scripts that run the MAS.");
+         * shellPanel.add(shellTF);
+         * pop.add(shellPanel);
+         */
 
         // run centralised inside jIDE
         /*
-        JPanel insideJIDEPanel = new JPanel();
-        insideJIDEPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Centralised MAS execution mode", TitledBorder.LEFT, TitledBorder.TOP));
-        insideJIDEPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        insideJIDECBox = new JCheckBox("Run MAS as a JasonIDE internal thread instead of another process.");
-        insideJIDEPanel.add(insideJIDECBox);
-        pop.add(insideJIDEPanel);
-        */
+         * JPanel insideJIDEPanel = new JPanel();
+         * insideJIDEPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Centralised MAS execution mode", TitledBorder.LEFT, TitledBorder.TOP));
+         * insideJIDEPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+         * insideJIDECBox = new JCheckBox("Run MAS as a JasonIDE internal thread instead of another process.");
+         * insideJIDEPanel.add(insideJIDECBox);
+         * pop.add(insideJIDEPanel);
+         */
 
         // close all before opening mas project
         JPanel closeAllPanel = new JPanel();
@@ -282,8 +276,8 @@ public class ConfigGUI {
         jasonTF.setText(userProperties.getJasonJar());
         javaTF.setText(userProperties.getJavaHome());
         antTF.setText(userProperties.getAntLib());
-        //shellTF.setText(userProperties.getShellCommand());
-        //insideJIDECBox.setSelected(userProperties.runAsInternalTread());
+        // shellTF.setText(userProperties.getShellCommand());
+        // insideJIDECBox.setSelected(userProperties.runAsInternalTread());
         closeAllCBox.setSelected(userProperties.getBoolean(Config.CLOSEALL));
         checkVersionCBox.setSelected(userProperties.getBoolean(Config.CHECK_VERSION));
         warnSingVarsCBox.setSelected(userProperties.getBoolean(Config.WARN_SING_VAR));
@@ -291,8 +285,8 @@ public class ConfigGUI {
         jadeSnifferCB.setSelected(userProperties.getBoolean(Config.JADE_SNIFFER));
         jadeRmaCB.setSelected(userProperties.getBoolean(Config.JADE_RMA));
 
-        for (String i: userProperties.getAvailableInfrastructures()) {
-            infraTP.append(i+"="+userProperties.getInfrastructureFactoryClass(i)+"\n");
+        for (String i : userProperties.getAvailableInfrastructures()) {
+            infraTP.append(i + "=" + userProperties.getInfrastructureFactoryClass(i) + "\n");
         }
 
         return pop;
@@ -304,18 +298,19 @@ public class ConfigGUI {
             public void actionPerformed(ActionEvent arg0) {
                 try {
                     JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
-                    chooser.setDialogTitle("Select the "+jarfile+" file");
-                    chooser.setFileFilter(new JarFileFilter("The "+jarfile+" file"));
-                    //chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                    chooser.setDialogTitle("Select the " + jarfile + " file");
+                    chooser.setFileFilter(new JarFileFilter("The " + jarfile + " file"));
+                    // chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                     if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                         String selJar = (new File(chooser.getSelectedFile().getPath())).getCanonicalPath();
                         if (Config.checkJar(selJar)) {
                             tf.setText(selJar);
                         } else {
-                            JOptionPane.showMessageDialog(null, "The selected "+jarfile+" file was not ok!");
+                            JOptionPane.showMessageDialog(null, "The selected " + jarfile + " file was not ok!");
                         }
                     }
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
         });
         return bt;
@@ -339,27 +334,27 @@ public class ConfigGUI {
             userProperties.setAntLib(antTF.getText().trim());
         }
 
-        //userProperties.put(Config.SHELL_CMD, shellTF.getText().trim());
-        //userProperties.put(Config.RUN_AS_THREAD, insideJIDECBox.isSelected()+"");
-        userProperties.put(Config.CLOSEALL, closeAllCBox.isSelected()+"");
-        userProperties.put(Config.CHECK_VERSION, checkVersionCBox.isSelected()+"");
-        userProperties.put(Config.WARN_SING_VAR, warnSingVarsCBox.isSelected()+"");
-        userProperties.put(Config.SHORT_UNNAMED_VARS, shortUnnamedVarCB.isSelected()+"");
-        userProperties.put(Config.JADE_SNIFFER, jadeSnifferCB.isSelected()+"");
-        userProperties.put(Config.JADE_RMA, jadeRmaCB.isSelected()+"");
+        // userProperties.put(Config.SHELL_CMD, shellTF.getText().trim());
+        // userProperties.put(Config.RUN_AS_THREAD, insideJIDECBox.isSelected()+"");
+        userProperties.put(Config.CLOSEALL, closeAllCBox.isSelected() + "");
+        userProperties.put(Config.CHECK_VERSION, checkVersionCBox.isSelected() + "");
+        userProperties.put(Config.WARN_SING_VAR, warnSingVarsCBox.isSelected() + "");
+        userProperties.put(Config.SHORT_UNNAMED_VARS, shortUnnamedVarCB.isSelected() + "");
+        userProperties.put(Config.JADE_SNIFFER, jadeSnifferCB.isSelected() + "");
+        userProperties.put(Config.JADE_RMA, jadeRmaCB.isSelected() + "");
 
         // infras
         BufferedReader in = new BufferedReader(new StringReader(infraTP.getText()));
         String i;
         try {
-            for (String s: userProperties.getAvailableInfrastructures()) {
+            for (String s : userProperties.getAvailableInfrastructures()) {
                 userProperties.removeInfrastructureFactoryClass(s);
             }
-            while ( (i = in.readLine()) != null) {
+            while ((i = in.readLine()) != null) {
                 int pos = i.indexOf("=");
                 if (pos > 0) {
-                    String infra = i.substring(0,pos);
-                    String factory = i.substring(pos+1);
+                    String infra = i.substring(0, pos);
+                    String factory = i.substring(pos + 1);
                     userProperties.setInfrastructureFactoryClass(infra, factory);
                 }
             }
@@ -372,9 +367,11 @@ public class ConfigGUI {
 
     class JarFileFilter extends FileFilter {
         String ds;
+
         public JarFileFilter(String ds) {
-            this.ds  = ds;
+            this.ds = ds;
         }
+
         public boolean accept(File f) {
             if (f.getName().endsWith("jar") || f.isDirectory()) {
                 return true;

@@ -6,52 +6,51 @@ import jason.asSyntax.parser.ParseException;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 public class Message implements Serializable {
 
-    private String ilForce  = null;
-    private String sender   = null;
+    private String ilForce = null;
+    private String sender = null;
     private String receiver = null;
     private Object propCont = null;
-    private String msgId    = null;
+    private String msgId = null;
     private String inReplyTo = null;
 
     private static AtomicInteger idCount = new AtomicInteger(0);
 
-    public final static String[] knownPerformatives = {"tell","untell","achieve","unachieve","askOne","askAll","tellHow", "untellHow","askHow"};
+    public final static String[] knownPerformatives = { "tell", "untell", "achieve", "unachieve", "askOne", "askAll", "tellHow", "untellHow", "askHow" };
 
-    public final static String msgIdPrefix        = "mid";
+    public final static String msgIdPrefix = "mid";
     public final static String msgIdSyncAskPrefix = "samid";
 
     public final static String kqmlReceivedFunctor = "kqml_received";
-    public final static String kqmlDefaultPlans    = "$jasonJar/asl/kqmlPlans.asl";
+    public final static String kqmlDefaultPlans = "$jasonJar/asl/kqmlPlans.asl";
 
     public Message() {
     }
 
     public Message(String ilf, String s, String r, Object c) {
-        this(ilf, s, r, c, msgIdPrefix+(idCount.incrementAndGet()));
+        this(ilf, s, r, c, msgIdPrefix + (idCount.incrementAndGet()));
     }
 
     public Message(String ilf, String s, String r, Object c, String id) {
         setIlForce(ilf);
-        sender   = s;
+        sender = s;
         receiver = r;
         propCont = c;
-        msgId    = id;
+        msgId = id;
     }
 
     public Message(Message m) {
-        ilForce  = m.ilForce;
-        sender   = m.sender;
+        ilForce = m.ilForce;
+        sender = m.sender;
         receiver = m.receiver;
         propCont = m.propCont;
-        msgId    = m.msgId;
-        inReplyTo= m.inReplyTo;
+        msgId = m.msgId;
+        inReplyTo = m.inReplyTo;
     }
 
     public void setSyncAskMsgId() {
-        msgId = msgIdSyncAskPrefix+(idCount.incrementAndGet());
+        msgId = msgIdSyncAskPrefix + (idCount.incrementAndGet());
     }
 
     public String getIlForce() {
@@ -59,20 +58,27 @@ public class Message implements Serializable {
     }
 
     public void setIlForce(String ilf) {
-        if (ilf.equals("ask-one")) ilf = "askOne";
-        if (ilf.equals("ask-all")) ilf = "askAll";
-        if (ilf.equals("tell-how")) ilf = "tellHow";
-        if (ilf.equals("ask-how")) ilf = "askHow";
-        if (ilf.equals("untell-how")) ilf = "untellHow";
+        if (ilf.equals("ask-one"))
+            ilf = "askOne";
+        if (ilf.equals("ask-all"))
+            ilf = "askAll";
+        if (ilf.equals("tell-how"))
+            ilf = "tellHow";
+        if (ilf.equals("ask-how"))
+            ilf = "askHow";
+        if (ilf.equals("untell-how"))
+            ilf = "untellHow";
         ilForce = ilf;
     }
 
     public boolean isAsk() {
         return ilForce.startsWith("ask");
     }
+
     public boolean isTell() {
         return ilForce.startsWith("tell");
     }
+
     public boolean isUnTell() {
         return ilForce.startsWith("untell");
     }
@@ -82,7 +88,7 @@ public class Message implements Serializable {
     }
 
     public boolean isKnownPerformative() {
-        for (String s: knownPerformatives) {
+        for (String s : knownPerformatives) {
             if (ilForce.equals(s))
                 return true;
         }
@@ -92,6 +98,7 @@ public class Message implements Serializable {
     public void setPropCont(Object o) {
         propCont = o;
     }
+
     public Object getPropCont() {
         return propCont;
     }
@@ -99,12 +106,15 @@ public class Message implements Serializable {
     public String getReceiver() {
         return receiver;
     }
+
     public void setSender(String agName) {
         sender = agName;
     }
+
     public String getSender() {
         return sender;
     }
+
     public void setReceiver(String agName) {
         receiver = agName;
     }
@@ -112,6 +122,7 @@ public class Message implements Serializable {
     public String getMsgId() {
         return msgId;
     }
+
     public void setMsgId(String id) {
         msgId = id;
     }
@@ -119,6 +130,7 @@ public class Message implements Serializable {
     public String getInReplyTo() {
         return inReplyTo;
     }
+
     public void setInReplyTo(String inReplyTo) {
         this.inReplyTo = inReplyTo;
     }
@@ -161,7 +173,7 @@ public class Message implements Serializable {
     }
 
     public String toString() {
-        String irt = (inReplyTo == null ? "" : "->"+inReplyTo);
-        return "<"+msgId+irt+","+sender+","+ilForce+","+receiver+","+propCont+">";
+        String irt = (inReplyTo == null ? "" : "->" + inReplyTo);
+        return "<" + msgId + irt + "," + sender + "," + ilForce + "," + receiver + "," + propCont + ">";
     }
 }

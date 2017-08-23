@@ -87,7 +87,7 @@ public class NewEnvironmentGUI extends NewAgentGUI {
 
     String getEnvText(String className) {
         String envCode = Config.get().getTemplate("environment");
-        envCode = envCode.replaceAll("<ENV_NAME>",className);
+        envCode = envCode.replaceAll("<ENV_NAME>", className);
         envCode = envCode.replaceAll("<PROJECT_NAME>", buffer.getName());
         return envCode;
     }

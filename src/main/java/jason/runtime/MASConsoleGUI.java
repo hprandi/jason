@@ -28,10 +28,10 @@ import javax.swing.text.DefaultCaret;
 /** the GUI console to output log messages */
 public class MASConsoleGUI {
 
-    protected static MASConsoleGUI masConsole        = null;
-    public    static String        isTabbedPropField = MASConsoleLogHandler.class.getName() + ".tabbed";
+    protected static MASConsoleGUI masConsole = null;
+    public static String isTabbedPropField = MASConsoleLogHandler.class.getName() + ".tabbed";
 
-    private boolean                isTabbed          = false;
+    private boolean isTabbed = false;
 
     /** for singleton pattern */
     public static MASConsoleGUI get() {
@@ -45,14 +45,14 @@ public class MASConsoleGUI {
         return masConsole != null;
     }
 
-    protected Map<String, JTextArea>       agsTextArea       = new HashMap<String, JTextArea>();
-    protected JTabbedPane                  tabPane;
-    protected JFrame              frame   = null;
-    protected JTextArea           output;
-    protected JPanel              pBt     = null;
-    protected JPanel              pcenter;
+    protected Map<String, JTextArea> agsTextArea = new HashMap<String, JTextArea>();
+    protected JTabbedPane tabPane;
+    protected JFrame frame = null;
+    protected JTextArea output;
+    protected JPanel pBt = null;
+    protected JPanel pcenter;
     protected OutputStreamAdapter out;
-    protected boolean             inPause = false;
+    protected boolean inPause = false;
 
     protected MASConsoleGUI(String title) {
         initFrame(title);
@@ -70,8 +70,8 @@ public class MASConsoleGUI {
         });
         frame.getContentPane().setLayout(new BorderLayout());
         int h = 600;
-        int w = (int)(h*1.618);
-        frame.setBounds((int)(h*0.618), 20, w, h);
+        int w = (int) (h * 1.618);
+        frame.setBounds((int) (h * 0.618), 20, w, h);
     }
 
     protected void initMainPanel() {
@@ -90,7 +90,7 @@ public class MASConsoleGUI {
     protected void initOutput() {
         output = new JTextArea();
         output.setEditable(false);
-        ((DefaultCaret)output.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        ((DefaultCaret) output.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         if (isTabbed) {
             tabPane.add("common", new JScrollPane(output));
         } else {
@@ -142,12 +142,14 @@ public class MASConsoleGUI {
             while (inPause) {
                 wait();
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        }
     }
 
     public boolean isTabbed() {
         return isTabbed;
     }
+
     public boolean isPause() {
         return inPause;
     }
@@ -169,7 +171,7 @@ public class MASConsoleGUI {
                 if (ta == null) {
                     ta = new JTextArea();
                     ta.setEditable(false);
-                    ((DefaultCaret)ta.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+                    ((DefaultCaret) ta.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
                     final JTextArea cta = ta;
                     SwingUtilities.invokeAndWait(new Runnable() {
                         public void run() {
@@ -199,7 +201,7 @@ public class MASConsoleGUI {
         } catch (Exception e) {
             try {
                 PrintWriter out = new PrintWriter(new FileWriter("e_r_r_o_r.txt"));
-                out.write("Error that can not be printed in the MAS Console!\n"+e.toString()+"\n");
+                out.write("Error that can not be printed in the MAS Console!\n" + e.toString() + "\n");
                 e.printStackTrace(out);
                 out.close();
             } catch (IOException e1) {

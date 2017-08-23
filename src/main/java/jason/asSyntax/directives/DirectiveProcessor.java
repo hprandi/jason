@@ -30,12 +30,12 @@ import java.util.logging.Logger;
 public class DirectiveProcessor {
     static Logger logger = Logger.getLogger(DirectiveProcessor.class.getName());
 
-    private static Map<String,Class> directives = new HashMap<String,Class>();
-    private Map<String,Directive> instances  = new HashMap<String,Directive>();
-    private static Map<String,Directive> singletons = new HashMap<String,Directive>();
+    private static Map<String, Class> directives = new HashMap<String, Class>();
+    private Map<String, Directive> instances = new HashMap<String, Directive>();
+    private static Map<String, Directive> singletons = new HashMap<String, Directive>();
 
     public static void registerDirective(String id, Class d) {
-        directives.put(id,d);
+        directives.put(id, d);
     }
 
     public static Directive getDirective(String id) {
@@ -46,12 +46,12 @@ public class DirectiveProcessor {
         // create the instance
         Class c = directives.get(id);
         if (c == null) {
-            logger.log(Level.SEVERE, "Unknown directive "+id);
+            logger.log(Level.SEVERE, "Unknown directive " + id);
             return null;
         }
 
         try {
-            d = (Directive)c.newInstance();
+            d = (Directive) c.newInstance();
             if (d.isSingleton())
                 singletons.put(id, d);
             return d;
@@ -61,9 +61,9 @@ public class DirectiveProcessor {
         return null;
     }
 
-    //public static Directive removeDirective(String id) {
-    //    return directives.remove(id);
-    //}
+    // public static Directive removeDirective(String id) {
+    // return directives.remove(id);
+    // }
 
     // add known directives
     static {
@@ -71,14 +71,14 @@ public class DirectiveProcessor {
         registerDirective("register_function", FunctionRegister.class);
         registerDirective("namespace", NameSpace.class);
 
-        registerDirective("dg",  DG.class);
+        registerDirective("dg", DG.class);
         registerDirective("bdg", BDG.class);
-        registerDirective("ebdg",EBDG.class);
-        registerDirective("bc",  BC.class);
+        registerDirective("ebdg", EBDG.class);
+        registerDirective("bc", BC.class);
         registerDirective("smc", SMC.class);
-        registerDirective("rc",  RC.class);
+        registerDirective("rc", RC.class);
         registerDirective("omc", OMC.class);
-        registerDirective("mg",  MG.class);
+        registerDirective("mg", MG.class);
         registerDirective("sga", SGA.class);
     }
 
@@ -98,12 +98,12 @@ public class DirectiveProcessor {
         // create the instance
         Class c = directives.get(id);
         if (c == null) {
-            logger.log(Level.SEVERE, "Unknown directive "+id);
+            logger.log(Level.SEVERE, "Unknown directive " + id);
             return null;
         }
 
         try {
-            d = (Directive)c.newInstance();
+            d = (Directive) c.newInstance();
             if (d.isSingleton())
                 singletons.put(id, d);
             else

@@ -28,7 +28,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
     private ExecutorService executor; // the thread pool used to execute actions
 
     @Override
-    public void setup()  {
+    public void setup() {
         logger = Logger.getLogger(JadeExecutionControl.class.getName());
 
         // create the user environment
@@ -36,7 +36,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
             Object[] args = getArguments();
             if (args != null && args.length > 0) {
                 if (args[0] instanceof ClassParameters) { // it is an mas2j parameter
-                    ClassParameters ecp = (ClassParameters)args[0];
+                    ClassParameters ecp = (ClassParameters) args[0];
                     userControl = (ExecutionControl) Class.forName(ecp.getClassName()).newInstance();
                     userControl.setExecutionControlInfraTier(this);
                     userControl.init(ecp.getParametersArray());
@@ -65,16 +65,17 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
                     userControl.updateNumberOfAgents();
                     informAllAgsToPerformCycle(0);
                     /*
-                    executor.execute(new Runnable() {
-                        public void run() {
-                        }
-                    });
-                    */
+                     * executor.execute(new Runnable() {
+                     * public void run() {
+                     * }
+                     * });
+                     */
                 }
             });
 
             addBehaviour(new CyclicBehaviour() {
                 ACLMessage m;
+
                 public void action() {
                     m = receive();
                     if (m == null) {
@@ -83,17 +84,17 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
                         try {
                             // check if the message is an agent state
                             @SuppressWarnings("unused")
-                            Document o = (Document)m.getContentObject();
-                            logger.warning("Received agState too late! in-reply-to:"+m.getInReplyTo());
+                            Document o = (Document) m.getContentObject();
+                            logger.warning("Received agState too late! in-reply-to:" + m.getInReplyTo());
                         } catch (Exception ex0) {
                             try {
                                 // check if the message is an end of cycle from some agent
                                 final String content = m.getContent();
                                 final int p = content.indexOf(",");
                                 if (p > 0) {
-                                    final String sender  = m.getSender().getLocalName();
-                                    final boolean breakpoint = Boolean.parseBoolean(content.substring(0,p));
-                                    final int cycle = Integer.parseInt(content.substring(p+1));
+                                    final String sender = m.getSender().getLocalName();
+                                    final boolean breakpoint = Boolean.parseBoolean(content.substring(0, p));
+                                    final int cycle = Integer.parseInt(content.substring(p + 1));
                                     executor.execute(new Runnable() {
                                         public void run() {
                                             try {
@@ -105,7 +106,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
                                     });
                                 }
                             } catch (Exception e) {
-                                logger.log(Level.SEVERE, "Error in processing "+m, e);
+                                logger.log(Level.SEVERE, "Error in processing " + m, e);
                             }
                         }
                     }
@@ -119,7 +120,8 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
 
     @Override
     protected void takeDown() {
-        if (userControl != null) userControl.stop();
+        if (userControl != null)
+            userControl.stop();
     }
 
     public ExecutionControl getUserControl() {
@@ -143,7 +145,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
         addBehaviour(new OneShotBehaviour() {
             public void action() {
                 try {
-                    logger.fine("Sending performCycle "+cycle+" to all agents.");
+                    logger.fine("Sending performCycle " + cycle + " to all agents.");
                     ACLMessage m = new ACLMessage(ACLMessage.INFORM);
                     m.setOntology(controllerOntology);
                     addAllAgsAsReceivers(m);
@@ -158,7 +160,8 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
     }
 
     public Document getAgState(final String agName) {
-        if (agName == null) return null;
+        if (agName == null)
+            return null;
 
         state = null;
         addBehaviour(new OneShotBehaviour() {
@@ -188,12 +191,14 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
 
     private Document state = null;
     private Object syncWaitState = new Object();
+
     private Document waitState() {
         if (state == null) {
             synchronized (syncWaitState) {
                 try {
                     syncWaitState.wait();
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException e) {
+                }
             }
         }
         return state;

@@ -12,7 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Implementation of the  Relativised Commitment pattern (see DALT 2006 paper)
+ * Implementation of the Relativised Commitment pattern (see DALT 2006 paper)
  *
  * @author jomi
  */
@@ -25,8 +25,8 @@ public class RC extends DefaultDirective implements Directive {
         try {
             Term goal = directive.getTerm(0);
             Term motivation = directive.getTerm(1);
-            Pred subDir = Pred.parsePred("bc("+goal+")");
-            //logger.fine("parameters="+goal+","+motivation+","+subDir);
+            Pred subDir = Pred.parsePred("bc(" + goal + ")");
+            // logger.fine("parameters="+goal+","+motivation+","+subDir);
             Directive sd = DirectiveProcessor.getDirective(subDir.getFunctor());
 
             // apply sub directive
@@ -34,12 +34,12 @@ public class RC extends DefaultDirective implements Directive {
             if (newAg != null) {
 
                 // add -m : true <- .succeed_goal(g).
-                newAg.getPL().add(ASSyntax.parsePlan("-"+motivation+" <- .succeed_goal("+goal+")."));
+                newAg.getPL().add(ASSyntax.parsePlan("-" + motivation + " <- .succeed_goal(" + goal + ")."));
 
                 return newAg;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive error.", e);
+            logger.log(Level.SEVERE, "Directive error.", e);
         }
         return null;
     }

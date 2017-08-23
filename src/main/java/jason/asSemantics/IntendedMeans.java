@@ -16,17 +16,17 @@ public class IntendedMeans implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    protected Unifier  unif = null;
+    protected Unifier unif = null;
     protected PlanBody planBody;
-    protected Plan     plan;
-    private   Trigger  trigger; // the trigger which created this IM
+    protected Plan plan;
+    private Trigger trigger; // the trigger which created this IM
 
-    protected Unifier  renamedVars = null;
+    protected Unifier renamedVars = null;
 
     public IntendedMeans(Option opt, Trigger te) {
-        plan     = opt.getPlan();
+        plan = opt.getPlan();
         planBody = plan.getBody();
-        unif     = opt.getUnifier();
+        unif = opt.getUnifier();
 
         if (te == null) {
             trigger = plan.getTrigger().capply(unif);
@@ -36,7 +36,8 @@ public class IntendedMeans implements Serializable {
     }
 
     // used by clone
-    private IntendedMeans() {  }
+    private IntendedMeans() {
+    }
 
     /** removes the current action of the IM and returns the term of the body */
     public Term removeCurrentStep() {
@@ -76,6 +77,7 @@ public class IntendedMeans implements Serializable {
     public Trigger getTrigger() {
         return trigger;
     }
+
     public void setTrigger(Trigger tr) {
         trigger = tr;
     }
@@ -94,11 +96,11 @@ public class IntendedMeans implements Serializable {
 
     public Object clone() {
         IntendedMeans c = new IntendedMeans();
-        c.unif     = this.unif.clone();
+        c.unif = this.unif.clone();
         if (this.planBody != null)
             c.planBody = this.planBody.clonePB();
-        c.trigger  = this.trigger.clone();
-        c.plan     = this.plan;
+        c.trigger = this.trigger.clone();
+        c.plan = this.plan;
         return c;
     }
 
@@ -113,12 +115,12 @@ public class IntendedMeans implements Serializable {
             if (planBody == null) { // (NIDE) in case we must convert empty plan to Term
                 bd = new PlanBodyImpl();
             } else {
-                bd = (PlanBody)((PlanBodyImpl)planBody.clone()).makeVarsAnnon();
+                bd = (PlanBody) ((PlanBodyImpl) planBody.clone()).makeVarsAnnon();
             }
             bd.setAsBodyTerm(true);
             return ASSyntax.createStructure("im", ASSyntax.createString(plan.getLabel()), bd, unif.getAsTerm());
         } else {
-            return ASSyntax.createAtom("noimplementedforclass"+planBody.getClass().getSimpleName());
+            return ASSyntax.createAtom("noimplementedforclass" + planBody.getClass().getSimpleName());
         }
     }
 

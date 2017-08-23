@@ -32,12 +32,12 @@ public class NewProjectGUI extends NewAgentGUI {
 
     JTextField projDir;
 
-    JLabel     projFinalDir;
+    JLabel projFinalDir;
 
     // JTextField projEnv;
-    JComboBox  projInfra;
+    JComboBox projInfra;
 
-    JasonID    jasonID;
+    JasonID jasonID;
 
     public NewProjectGUI(String title, View view, JasonID jasonID) {
         super(title, null, view, ".");
@@ -132,10 +132,10 @@ public class NewProjectGUI extends NewAgentGUI {
             if (!finalDir.exists()) {
                 boolean ok = finalDir.mkdirs();
                 if (!ok)
-                    JOptionPane.showMessageDialog(this, "Error creating project directory: "+finalDir);
+                    JOptionPane.showMessageDialog(this, "Error creating project directory: " + finalDir);
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error creating project directory: "+finalDir+": " + e);
+            JOptionPane.showMessageDialog(this, "Error creating project directory: " + finalDir + ": " + e);
             return false;
         }
 

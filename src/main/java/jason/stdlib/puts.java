@@ -50,11 +50,11 @@ import java.util.regex.Pattern;
  * Example:
  * <ul>
  *
- * <li> <code>.puts("Testing variable #{A}")</code>: prints out to the
+ * <li><code>.puts("Testing variable #{A}")</code>: prints out to the
  * console the supplied string replacing #{A} with the value of variable A.</li>
- * <li> <code>.puts("Testing variable #{A}, into B", B)</code>: tries to unify
+ * <li><code>.puts("Testing variable #{A}, into B", B)</code>: tries to unify
  * B with the supplied string replacing #{A} with the value of variable A.</li>
- * <li> <code>.puts("The value of the expression is #{X+2}")</code>: prints out
+ * <li><code>.puts("The value of the expression is #{X+2}")</code>: prints out
  * the result of the X+2 expression. Assuming X is unified to a numeric value,
  * the printed result will be the sum of X and two, if X is unified to any
  * other value, the original expression (X+2) will be printed.</li>
@@ -76,20 +76,24 @@ public class puts extends DefaultInternalAction {
         return singleton;
     }
 
-    //Pattern regex = Pattern.compile("#\\{\\p{Upper}\\p{Alnum}*\\}");
+    // Pattern regex = Pattern.compile("#\\{\\p{Upper}\\p{Alnum}*\\}");
     Pattern regex = Pattern.compile("#\\{[\\p{Alnum}_]+\\}");
 
-    @Override public int getMinArgs() {
+    @Override
+    public int getMinArgs() {
         return 1;
     }
-    @Override public int getMaxArgs() {
+
+    @Override
+    public int getMaxArgs() {
         return 2;
     }
 
-    @Override protected void checkArguments(Term[] args) throws JasonException {
+    @Override
+    protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if (!args[0].isString())
-            throw JasonException.createWrongArgument(this,"first argument must be a string");
+            throw JasonException.createWrongArgument(this, "first argument must be a string");
     }
 
     @Override
@@ -114,7 +118,7 @@ public class puts extends DefaultInternalAction {
                 sVar = sVar.substring(2, sVar.length() - 1);
                 try {
                     Term t = ASSyntax.parseTerm(sVar);
-                    //We use t.apply to evaluate any logical or arithmetic expression in Jason
+                    // We use t.apply to evaluate any logical or arithmetic expression in Jason
                     t = t.capply(un);
                     matcher.appendReplacement(sb, t.toString());
                 } catch (ParseException pe) {
@@ -122,7 +126,7 @@ public class puts extends DefaultInternalAction {
                     // TODO: Decide whether or not we should ignore the exception and print the call instead
                     // Right now, if I get a parse error from ASSyntax, I just print the original escaped
                     // sequence, so a user can see that his/her expression was problematic
-                    matcher.appendReplacement(sb, "#{"+sVar+"}");
+                    matcher.appendReplacement(sb, "#{" + sVar + "}");
                 }
 
             }
@@ -140,10 +144,10 @@ public class puts extends DefaultInternalAction {
 
     public void makeVarsAnnon(Literal l, Unifier un) {
         try {
-            for (int i=0; i<l.getArity(); i++) {
+            for (int i = 0; i < l.getArity(); i++) {
                 Term t = l.getTerm(i);
                 if (t.isString()) {
-                    StringTerm st = (StringTerm)t;
+                    StringTerm st = (StringTerm) t;
                     Matcher matcher = regex.matcher(st.getString());
                     StringBuffer sb = new StringBuffer();
 
@@ -152,8 +156,8 @@ public class puts extends DefaultInternalAction {
                         sVar = sVar.substring(2, sVar.length() - 1);
                         Term v = ASSyntax.parseTerm(sVar);
                         if (v.isVar()) {
-                            VarTerm to = ((Structure)l).varToReplace(v, un);
-                            matcher.appendReplacement(sb, "#{"+to.toString()+"}");
+                            VarTerm to = ((Structure) l).varToReplace(v, un);
+                            matcher.appendReplacement(sb, "#{" + to.toString() + "}");
                         }
                     }
                     matcher.appendTail(sb);

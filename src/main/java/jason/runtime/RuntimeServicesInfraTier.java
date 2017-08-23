@@ -24,7 +24,8 @@ public interface RuntimeServicesInfraTier {
      * Settings (default value is new Settings()), and
      * <i>father</i> is the agent creating this agent (null is none).
      *
-     * <p> Example: createAgent("bob", "bob.asl", "mypkg.MyAgent", null, null, null);
+     * <p>
+     * Example: createAgent("bob", "bob.asl", "mypkg.MyAgent", null, null, null);
      *
      * Returns the name of the agent
      */

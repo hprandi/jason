@@ -17,51 +17,59 @@ import jason.asSyntax.Trigger.TEType;
 import java.util.Map;
 
 /**
-  <p>Internal action: <b><code>.suspended(<i>G</i>, <i>R</i>)</code></b>.
-
-  <p>Description: checks whether goal <i>G</i> belongs to a suspended intention. <i>R</i> (a String)
-  unifies with the reason for the
-  suspend (waiting action to be performed, .wait, ....).
-
-  The literal <i>G</i>
-  represents a suspended goal if there is a triggering event <code>+!G</code> in any plan within
-  any intention in PI or PA.
-
-  <p>Example:<ul>
-
-  <li> <code>.suspended(go(1,3),R)</code>: true if <code>go(1,3)</code>
-  is a suspended goal. <code>R</code> unifies with "act" if the reason for being suspended
-  is an action waiting feedback from environment.
-
-  </ul>
-
-  @see jason.stdlib.intend
-  @see jason.stdlib.desire
-  @see jason.stdlib.drop_all_desires
-  @see jason.stdlib.drop_all_events
-  @see jason.stdlib.drop_all_intentions
-  @see jason.stdlib.drop_intention
-  @see jason.stdlib.drop_desire
-  @see jason.stdlib.succeed_goal
-  @see jason.stdlib.fail_goal
-  @see jason.stdlib.current_intention
-  @see jason.stdlib.suspend
-  @see jason.stdlib.resume
-
-*/
+ * <p>
+ * Internal action: <b><code>.suspended(<i>G</i>, <i>R</i>)</code></b>.
+ * 
+ * <p>
+ * Description: checks whether goal <i>G</i> belongs to a suspended intention. <i>R</i> (a String)
+ * unifies with the reason for the
+ * suspend (waiting action to be performed, .wait, ....).
+ * 
+ * The literal <i>G</i>
+ * represents a suspended goal if there is a triggering event <code>+!G</code> in any plan within
+ * any intention in PI or PA.
+ * 
+ * <p>
+ * Example:
+ * <ul>
+ * 
+ * <li><code>.suspended(go(1,3),R)</code>: true if <code>go(1,3)</code>
+ * is a suspended goal. <code>R</code> unifies with "act" if the reason for being suspended
+ * is an action waiting feedback from environment.
+ * 
+ * </ul>
+ * 
+ * @see jason.stdlib.intend
+ * @see jason.stdlib.desire
+ * @see jason.stdlib.drop_all_desires
+ * @see jason.stdlib.drop_all_events
+ * @see jason.stdlib.drop_all_intentions
+ * @see jason.stdlib.drop_intention
+ * @see jason.stdlib.drop_desire
+ * @see jason.stdlib.succeed_goal
+ * @see jason.stdlib.fail_goal
+ * @see jason.stdlib.current_intention
+ * @see jason.stdlib.suspend
+ * @see jason.stdlib.resume
+ * 
+ */
 public class suspended extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
-        return 2;
-    }
-    @Override public int getMaxArgs() {
+    @Override
+    public int getMinArgs() {
         return 2;
     }
 
-    @Override protected void checkArguments(Term[] args) throws JasonException {
+    @Override
+    public int getMaxArgs() {
+        return 2;
+    }
+
+    @Override
+    protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if (!args[0].isLiteral())
-            throw JasonException.createWrongArgument(this,"first argument must be a literal");
+            throw JasonException.createWrongArgument(this, "first argument must be a literal");
     }
 
     private static final Term aAct = new StringTermImpl("act");
@@ -71,16 +79,16 @@ public class suspended extends DefaultInternalAction {
         checkArguments(args);
 
         Circumstance C = ts.getC();
-        Trigger teGoal = new Trigger(TEOperator.add, TEType.achieve, (Literal)args[0]);
+        Trigger teGoal = new Trigger(TEOperator.add, TEType.achieve, (Literal) args[0]);
 
         // search in PA
-        for (ActionExec a: C.getPendingActions().values())
+        for (ActionExec a : C.getPendingActions().values())
             if (a.getIntention().hasTrigger(teGoal, un))
                 return un.unifies(args[1], aAct);
 
         // search in PI
         Map<String, Intention> pi = C.getPendingIntentions();
-        for (String reason: pi.keySet())
+        for (String reason : pi.keySet())
             if (pi.get(reason).hasTrigger(teGoal, un))
                 return un.unifies(args[1], new StringTermImpl(reason));
 

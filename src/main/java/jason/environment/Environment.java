@@ -22,12 +22,14 @@ import jason.asSyntax.Structure;
  * It is a base class for Environment, it is overridden by the user
  * application to define the environment "behaviour".
  *
- * <p>Execution sequence:
- *     <ul><li>setEnvironmentInfraTier,
- *         <li>init,
- *         <li>(getPercept|executeAction)*,
- *         <li>stop.
- *     </ul>
+ * <p>
+ * Execution sequence:
+ * <ul>
+ * <li>setEnvironmentInfraTier,
+ * <li>init,
+ * <li>(getPercept|executeAction)*,
+ * <li>stop.
+ * </ul>
  *
  */
 public class Environment {
@@ -35,7 +37,7 @@ public class Environment {
     private static Logger logger = Logger.getLogger(Environment.class.getName());
 
     private List<Literal> percepts = Collections.synchronizedList(new ArrayList<Literal>());
-    private Map<String,List<Literal>>  agPercepts = new ConcurrentHashMap<String, List<Literal>>();
+    private Map<String, List<Literal>> agPercepts = new ConcurrentHashMap<String, List<Literal>>();
 
     private boolean isRunning = true;
 
@@ -56,7 +58,7 @@ public class Environment {
         // where no more than 3 tasks will wait for a thread
         // The max number of thread is 1000 (so the 1001 task will be rejected)
         // Threads idle for 10 sec. will be removed from the pool
-        //executor= new ThreadPoolExecutor(1,1000,10,TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(3));
+        // executor= new ThreadPoolExecutor(1,1000,10,TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(3));
     }
 
     /** creates an environment class with the default number of threads in the pool */
@@ -90,6 +92,7 @@ public class Environment {
     public void setEnvironmentInfraTier(EnvironmentInfraTier je) {
         environmentInfraTier = je;
     }
+
     public EnvironmentInfraTier getEnvironmentInfraTier() {
         return environmentInfraTier;
     }
@@ -114,7 +117,7 @@ public class Environment {
     }
 
     /**
-     * Returns percepts for an agent.  A full copy of both common
+     * Returns percepts for an agent. A full copy of both common
      * and agent's percepts lists is returned.
      *
      * It returns null if the agent's perception doesn't changed since
@@ -139,7 +142,7 @@ public class Environment {
         }
         Collection<Literal> p = new ArrayList<Literal>(size);
 
-        if (! percepts.isEmpty()) { // has global perception?
+        if (!percepts.isEmpty()) { // has global perception?
             synchronized (percepts) {
                 // make a local copy of the environment percepts
                 // Note: a deep copy will be done by BB.add
@@ -156,10 +159,10 @@ public class Environment {
     }
 
     /**
-     *  Returns a copy of the perception for an agent.
+     * Returns a copy of the perception for an agent.
      *
-     *  It is the same list returned by getPercepts, but
-     *  doesn't consider the last call of the method.
+     * It is the same list returned by getPercepts, but
+     * doesn't consider the last call of the method.
      */
     public List<Literal> consultPercepts(String agName) {
         int size = percepts.size();
@@ -169,7 +172,7 @@ public class Environment {
         }
         List<Literal> p = new ArrayList<Literal>(size);
 
-        if (! percepts.isEmpty()) { // has global perception?
+        if (!percepts.isEmpty()) { // has global perception?
             synchronized (percepts) {
                 // make a local copy of the environment percepts
                 // Note: a deep copy will be done by BB.add
@@ -187,8 +190,8 @@ public class Environment {
     /** Adds a perception for all agents */
     public void addPercept(Literal... perceptions) {
         if (perceptions != null) {
-            for (Literal per: perceptions) {
-                if (! percepts.contains(per)) {
+            for (Literal per : perceptions) {
+                if (!percepts.contains(per)) {
                     percepts.add(per);
                 }
             }
@@ -205,31 +208,32 @@ public class Environment {
         return false;
     }
 
-    /** Removes all percepts from the common perception list that unifies with <i>per</i>.
+    /**
+     * Removes all percepts from the common perception list that unifies with <i>per</i>.
      *
-     *  Example: removePerceptsByUnif(Literal.parseLiteral("position(_)")) will remove
-     *  all percepts that unifies "position(_)".
+     * Example: removePerceptsByUnif(Literal.parseLiteral("position(_)")) will remove
+     * all percepts that unifies "position(_)".
      *
-     *  @return the number of removed percepts.
+     * @return the number of removed percepts.
      */
     public int removePerceptsByUnif(Literal per) {
         int c = 0;
-        if (! percepts.isEmpty()) { // has global perception?
+        if (!percepts.isEmpty()) { // has global perception?
             synchronized (percepts) {
                 Iterator<Literal> i = percepts.iterator();
                 while (i.hasNext()) {
                     Literal l = i.next();
-                    if (new Unifier().unifies(l,per)) {
+                    if (new Unifier().unifies(l, per)) {
                         i.remove();
                         c++;
                     }
                 }
             }
-            if (c>0) uptodateAgs.clear();
+            if (c > 0)
+                uptodateAgs.clear();
         }
         return c;
     }
-
 
     /** Clears the list of global percepts */
     public void clearPercepts() {
@@ -253,17 +257,16 @@ public class Environment {
             List<Literal> agl = agPercepts.get(agName);
             if (agl == null) {
                 agl = Collections.synchronizedList(new ArrayList<Literal>());
-                agPercepts.put( agName, agl);
+                agPercepts.put(agName, agl);
             }
-            for (Literal p: per) {
-                if (! agl.contains(p)) {
+            for (Literal p : per) {
+                if (!agl.contains(p)) {
                     uptodateAgs.remove(agName);
                     agl.add(p);
                 }
             }
         }
     }
-
 
     /** Removes a perception for an agent */
     public boolean removePercept(String agName, Literal per) {
@@ -277,8 +280,10 @@ public class Environment {
         return false;
     }
 
-    /** Removes from an agent perception all percepts that unifies with <i>per</i>.
-     *  @return the number of removed percepts.
+    /**
+     * Removes from an agent perception all percepts that unifies with <i>per</i>.
+     * 
+     * @return the number of removed percepts.
      */
     public int removePerceptsByUnif(String agName, Literal per) {
         int c = 0;
@@ -289,13 +294,14 @@ public class Environment {
                     Iterator<Literal> i = agl.iterator();
                     while (i.hasNext()) {
                         Literal l = i.next();
-                        if (new Unifier().unifies(l,per)) {
+                        if (new Unifier().unifies(l, per)) {
                             i.remove();
                             c++;
                         }
                     }
                 }
-                if (c>0) uptodateAgs.remove(agName);
+                if (c > 0)
+                    uptodateAgs.remove(agName);
             }
         }
         return c;
@@ -304,7 +310,7 @@ public class Environment {
     public boolean containsPercept(String agName, Literal per) {
         if (per != null && agName != null) {
             @SuppressWarnings("rawtypes")
-            List agl = (List)agPercepts.get(agName);
+            List agl = (List) agPercepts.get(agName);
             if (agl != null) {
                 return agl.contains(per);
             }
@@ -326,7 +332,7 @@ public class Environment {
     /** Clears all perception (from common list and individual perceptions) */
     public void clearAllPercepts() {
         clearPercepts();
-        for (String ag: agPercepts.keySet())
+        for (String ag : agPercepts.keySet())
             clearPercepts(ag);
     }
 
@@ -342,7 +348,7 @@ public class Environment {
                     environmentInfraTier.actionExecuted(agName, action, success, infraData); // send the result of the execution to the agent
                 } catch (Exception ie) {
                     if (!(ie instanceof InterruptedException)) {
-                        logger.log(Level.WARNING, "act error!",ie);
+                        logger.log(Level.WARNING, "act error!", ie);
                     }
                 }
             }
@@ -353,7 +359,7 @@ public class Environment {
      * Executes an action on the environment. This method is probably overridden in the user environment class.
      */
     public boolean executeAction(String agName, Structure act) {
-        logger.info("The action "+act+" done by "+agName+" is not implemented in the default environment.");
+        logger.info("The action " + act + " done by " + agName + " is not implemented in the default environment.");
         return false;
     }
 }

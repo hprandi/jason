@@ -10,38 +10,37 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
-     A rule is a Literal (head) with a body, as in "a :- b &amp; c".
-
-     @navassoc - body - LogicalFormula
+ * A rule is a Literal (head) with a body, as in "a :- b &amp; c".
+ * 
+ * @navassoc - body - LogicalFormula
  */
 public class Rule extends LiteralImpl {
 
     private static final long serialVersionUID = 1L;
     private static Logger logger = Logger.getLogger(Rule.class.getName());
 
-    private LogicalFormula body   = null;
+    private LogicalFormula body = null;
 
-    private boolean     isTerm = false; // it is true when the rule is used as a term ( { p :- q } )
+    private boolean isTerm = false; // it is true when the rule is used as a term ( { p :- q } )
 
     public Rule(Literal head, LogicalFormula body) {
         super(head);
         if (head.isRule()) {
-            logger.log(Level.SEVERE,"The rule head ("+head+") is a rule!", new Exception());
+            logger.log(Level.SEVERE, "The rule head (" + head + ") is a rule!", new Exception());
         } else if (isInternalAction()) {
-            logger.log(Level.SEVERE,"The rule head ("+head+") can not be an internal action!", new Exception());
+            logger.log(Level.SEVERE, "The rule head (" + head + ") can not be an internal action!", new Exception());
         } else if (head == LTrue || head == LFalse) {
-            logger.log(Level.SEVERE,"The rule head ("+head+") can not be a true or false!", new Exception());
+            logger.log(Level.SEVERE, "The rule head (" + head + ") can not be a true or false!", new Exception());
         }
         this.body = body;
     }
 
     public Rule(Rule r, Unifier u) {
-        super(r,u);
+        super(r, u);
         this.isTerm = r.isTerm;
-        body = (LogicalFormula)r.body.capply(u);
+        body = (LogicalFormula) r.body.capply(u);
         predicateIndicatorCache = null;
     }
-
 
     @Override
     public boolean isRule() {
@@ -91,17 +90,17 @@ public class Rule extends LiteralImpl {
     @Override
     public Literal makeVarsAnnon(Unifier un) {
         if (body instanceof Literal)
-            ((Literal)body).makeVarsAnnon(un);
+            ((Literal) body).makeVarsAnnon(un);
         return super.makeVarsAnnon(un);
     }
 
     @Override
     public Term capply(Unifier u) {
-        return new Rule(this,u);
+        return new Rule(this, u);
     }
 
     public Rule clone() {
-        Rule r = new Rule((Literal)super.clone(), (LogicalFormula)body.clone());
+        Rule r = new Rule((Literal) super.clone(), (LogicalFormula) body.clone());
         r.predicateIndicatorCache = null;
         r.resetHashCodeCache();
         r.isTerm = this.isTerm;
@@ -109,11 +108,11 @@ public class Rule extends LiteralImpl {
     }
 
     public Literal headClone() {
-        return (Literal)super.clone();
+        return (Literal) super.clone();
     }
 
     public Literal headCApply(Unifier u) {
-        return (Literal)super.capply(u);
+        return (Literal) super.capply(u);
     }
 
     public String toString() {
@@ -125,7 +124,8 @@ public class Rule extends LiteralImpl {
 
     @Override
     public boolean hasVar(VarTerm t, Unifier u) {
-        if (super.hasVar(t, u)) return true;
+        if (super.hasVar(t, u))
+            return true;
         return body.hasVar(t, u);
     }
 

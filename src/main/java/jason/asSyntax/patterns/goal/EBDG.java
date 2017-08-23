@@ -36,11 +36,11 @@ public class EBDG extends DefaultDirective implements Directive {
             Literal goal = Literal.parseLiteral(directive.getTerm(0).toString());
 
             // add +!g : g <- true.
-            newAg.getPL().add(ASSyntax.parsePlan("+!"+goal+" : " +goal+"."));
+            newAg.getPL().add(ASSyntax.parsePlan("+!" + goal + " : " + goal + "."));
 
             // change all inner plans
             int i = 0;
-            for (Plan p: innerContent.getPL()) {
+            for (Plan p : innerContent.getPL()) {
                 if (p.getTrigger().isAchvGoal()) {
                     Literal planGoal = p.getTrigger().getLiteral();
                     if (new Unifier().unifies(planGoal, goal)) { // if the plan goal unifier the pattern goal
@@ -61,26 +61,25 @@ public class EBDG extends DefaultDirective implements Directive {
                         PlanBody b1 = new PlanBodyImpl(BodyType.addBel, pi);
                         p.getBody().add(0, b1);
                         // add ?g
-                        PlanBody b2 = new PlanBodyImpl(BodyType.test, planGoal.copy()); //goal.copy());
+                        PlanBody b2 = new PlanBodyImpl(BodyType.test, planGoal.copy()); // goal.copy());
                         p.getBody().add(b2);
                     }
                 }
                 newAg.getPL().add(p);
             }
 
-
             // add -!g : true <- !!g.
-            newAg.getPL().add(ASSyntax.parsePlan("-!"+goal+" <- !!"+goal+"."));
+            newAg.getPL().add(ASSyntax.parsePlan("-!" + goal + " <- !!" + goal + "."));
 
             // add +g : true <- .abolish(p__f(_,g)); .succeed_goal(g).
-            newAg.getPL().add(ASSyntax.parsePlan("+"+goal+" <- .abolish(p__f(_,"+goal+")); .succeed_goal("+goal+")."));
+            newAg.getPL().add(ASSyntax.parsePlan("+" + goal + " <- .abolish(p__f(_," + goal + ")); .succeed_goal(" + goal + ")."));
 
             // add -g <- .abolish(p__f(_,g)).
-            newAg.getPL().add(ASSyntax.parsePlan("-"+goal+" <- .abolish(p__f(_,"+goal+"))."));
+            newAg.getPL().add(ASSyntax.parsePlan("-" + goal + " <- .abolish(p__f(_," + goal + "))."));
 
             return newAg;
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive EBDG error.", e);
+            logger.log(Level.SEVERE, "Directive EBDG error.", e);
         }
         return null;
     }

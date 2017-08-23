@@ -5,14 +5,13 @@ import jason.asSemantics.Unifier;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 /**
  * A Literal extends a Pred with strong negation (~).
  */
 public class LiteralImpl extends Pred {
 
     private static final long serialVersionUID = 1L;
-    //private static Logger logger = Logger.getLogger(LiteralImpl.class.getName());
+    // private static Logger logger = Logger.getLogger(LiteralImpl.class.getName());
 
     private boolean type = LPos;
 
@@ -37,7 +36,6 @@ public class LiteralImpl extends Pred {
         super(l, u);
         type = !l.negated();
     }
-
 
     /** if pos == true, the literal is positive, otherwise it is negative */
     public LiteralImpl(boolean pos, Literal l) {
@@ -81,8 +79,10 @@ public class LiteralImpl extends Pred {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (o == this) return true;
+        if (o == null)
+            return false;
+        if (o == this)
+            return true;
 
         if (o instanceof LiteralImpl) {
             final LiteralImpl l = (LiteralImpl) o;
@@ -95,8 +95,8 @@ public class LiteralImpl extends Pred {
 
     @Override
     public String getErrorMsg() {
-        String src = getSrcInfo() == null ? "" : " ("+ getSrcInfo() + ")";
-        return "Error in '"+this+"'"+src;
+        String src = getSrcInfo() == null ? "" : " (" + getSrcInfo() + ")";
+        return "Error in '" + this + "'" + src;
     }
 
     @Override
@@ -104,7 +104,7 @@ public class LiteralImpl extends Pred {
         if (t == null)
             return -1;
         if (t.isLiteral()) {
-            Literal tl = (Literal)t;
+            Literal tl = (Literal) t;
             if (!negated() && tl.negated())
                 return -1;
             else if (negated() && !tl.negated())
@@ -132,7 +132,8 @@ public class LiteralImpl extends Pred {
     @Override
     protected int calcHashCode() {
         int result = super.calcHashCode();
-        if (negated()) result += 3271;
+        if (negated())
+            result += 3271;
         return result;
     }
 
@@ -140,7 +141,7 @@ public class LiteralImpl extends Pred {
     @Override
     public PredicateIndicator getPredicateIndicator() {
         if (predicateIndicatorCache == null)
-            predicateIndicatorCache = new PredicateIndicator(getNS(), ((type == LPos) ? getFunctor() : "~"+getFunctor()),getArity());
+            predicateIndicatorCache = new PredicateIndicator(getNS(), ((type == LPos) ? getFunctor() : "~" + getFunctor()), getArity());
         return predicateIndicatorCache;
     }
 
@@ -150,7 +151,7 @@ public class LiteralImpl extends Pred {
         Element u = (Element) document.createElement("literal");
         u.setAttribute("namespace", getNS().getFunctor());
         if (negated()) {
-            u.setAttribute("negated", negated()+"");
+            u.setAttribute("negated", negated() + "");
         }
         u.appendChild(super.getAsDOM(document));
         return u;

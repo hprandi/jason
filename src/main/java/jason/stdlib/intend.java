@@ -16,118 +16,134 @@ import jason.asSyntax.Trigger.TEType;
 
 import java.util.Iterator;
 
-
 /**
-  <p>Internal action: <b><code>.intend(<i>I</i>)</code></b>.
-
-  <p>Description: checks if <i>I</i> is an intention: <i>I</i> is an intention
-  if there is a triggering event <code>+!I</code> in any plan within an
-  intention; just note that intentions can appear in E (list of events), PA (intentions with pending actions),
-  and PI (intentions waiting for something) as well.
-
-  <p>Example:<ul>
-
-  <li> <code>.intend(go(1,3))</code>: is true if a plan with triggering event
-  <code>+!go(1,3)</code> appears in an intention of the agent.
-
-  </ul>
-
-  @see jason.stdlib.desire
-  @see jason.stdlib.drop_all_desires
-  @see jason.stdlib.drop_all_events
-  @see jason.stdlib.drop_all_intentions
-  @see jason.stdlib.drop_intention
-  @see jason.stdlib.drop_desire
-  @see jason.stdlib.succeed_goal
-  @see jason.stdlib.fail_goal
-  @see jason.stdlib.current_intention
-  @see jason.stdlib.suspend
-  @see jason.stdlib.suspended
-  @see jason.stdlib.resume
-
+ * <p>
+ * Internal action: <b><code>.intend(<i>I</i>)</code></b>.
+ * 
+ * <p>
+ * Description: checks if <i>I</i> is an intention: <i>I</i> is an intention
+ * if there is a triggering event <code>+!I</code> in any plan within an
+ * intention; just note that intentions can appear in E (list of events), PA (intentions with pending actions),
+ * and PI (intentions waiting for something) as well.
+ * 
+ * <p>
+ * Example:
+ * <ul>
+ * 
+ * <li><code>.intend(go(1,3))</code>: is true if a plan with triggering event
+ * <code>+!go(1,3)</code> appears in an intention of the agent.
+ * 
+ * </ul>
+ * 
+ * @see jason.stdlib.desire
+ * @see jason.stdlib.drop_all_desires
+ * @see jason.stdlib.drop_all_events
+ * @see jason.stdlib.drop_all_intentions
+ * @see jason.stdlib.drop_intention
+ * @see jason.stdlib.drop_desire
+ * @see jason.stdlib.succeed_goal
+ * @see jason.stdlib.fail_goal
+ * @see jason.stdlib.current_intention
+ * @see jason.stdlib.suspend
+ * @see jason.stdlib.suspended
+ * @see jason.stdlib.resume
+ * 
  */
 public class intend extends DefaultInternalAction {
 
-    @Override public int getMinArgs() {
-        return 1;
-    }
-    @Override public int getMaxArgs() {
+    @Override
+    public int getMinArgs() {
         return 1;
     }
 
-    @Override protected void checkArguments(Term[] args) throws JasonException {
+    @Override
+    public int getMaxArgs() {
+        return 1;
+    }
+
+    @Override
+    protected void checkArguments(Term[] args) throws JasonException {
         super.checkArguments(args); // check number of arguments
         if (!args[0].isLiteral() && !args[0].isVar())
-            throw JasonException.createWrongArgument(this,"first argument must be a literal or variable");
+            throw JasonException.createWrongArgument(this, "first argument must be a literal or variable");
     }
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        return allIntentions(ts.getC(),(Literal)args[0],un);
+        return allIntentions(ts.getC(), (Literal) args[0], un);
     }
 
     /*
-    public boolean intends(Circumstance C, Literal l, Unifier un) {
-        Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
-
-        // we need to check the intention in the selected event in this cycle!!!
-        // (as it was already removed from E)
-        if (C.getSelectedEvent() != null) {
-            // logger.log(Level.SEVERE,"Int: "+g+" unif "+ts.C.SE);
-            if (C.getSelectedEvent().getIntention() != null)
-                if (C.getSelectedEvent().getIntention().hasTrigger(g, un))
-                    return true;
-        }
-
-        // we need to check the selected intention in this cycle too!!!
-        if (C.getSelectedIntention() != null) {
-            // logger.log(Level.SEVERE,"Int: "+g+" unif "+ts.C.SI);
-            if (C.getSelectedIntention().hasTrigger(g, un))
-                return true;
-        }
-
-        // intention may be in E
-        for (Event evt : C.getEvents()) {
-            if (evt.getIntention() != null && evt.getIntention().hasTrigger(g, un))
-                return true;
-        }
-
-        // intention may be suspended in PE
-        for (Event evt : C.getPendingEvents().values()) {
-            if (evt.getIntention() != null && evt.getIntention().hasTrigger(g, un))
-                return true;
-        }
-
-        // intention may be suspended in PA! (in the new semantics)
-        if (C.hasPendingAction()) {
-            for (ActionExec ac: C.getPendingActions().values()) {
-                if (ac.getIntention().hasTrigger(g, un))
-                    return true;
-            }
-        }
-
-        // intention may be suspended in PI! (in the new semantics)
-        if (C.hasPendingIntention()) {
-            for (Intention intention: C.getPendingIntentions().values()) {
-                if (intention.hasTrigger(g, un))
-                    return true;
-            }
-        }
-
-        for (Intention i : C.getIntentions()) {
-            if (i.hasTrigger(g, un))
-                return true;
-        }
-
-        return false;
-    }
+     * public boolean intends(Circumstance C, Literal l, Unifier un) {
+     * Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
+     * 
+     * // we need to check the intention in the selected event in this cycle!!!
+     * // (as it was already removed from E)
+     * if (C.getSelectedEvent() != null) {
+     * // logger.log(Level.SEVERE,"Int: "+g+" unif "+ts.C.SE);
+     * if (C.getSelectedEvent().getIntention() != null)
+     * if (C.getSelectedEvent().getIntention().hasTrigger(g, un))
+     * return true;
+     * }
+     * 
+     * // we need to check the selected intention in this cycle too!!!
+     * if (C.getSelectedIntention() != null) {
+     * // logger.log(Level.SEVERE,"Int: "+g+" unif "+ts.C.SI);
+     * if (C.getSelectedIntention().hasTrigger(g, un))
+     * return true;
+     * }
+     * 
+     * // intention may be in E
+     * for (Event evt : C.getEvents()) {
+     * if (evt.getIntention() != null && evt.getIntention().hasTrigger(g, un))
+     * return true;
+     * }
+     * 
+     * // intention may be suspended in PE
+     * for (Event evt : C.getPendingEvents().values()) {
+     * if (evt.getIntention() != null && evt.getIntention().hasTrigger(g, un))
+     * return true;
+     * }
+     * 
+     * // intention may be suspended in PA! (in the new semantics)
+     * if (C.hasPendingAction()) {
+     * for (ActionExec ac: C.getPendingActions().values()) {
+     * if (ac.getIntention().hasTrigger(g, un))
+     * return true;
+     * }
+     * }
+     * 
+     * // intention may be suspended in PI! (in the new semantics)
+     * if (C.hasPendingIntention()) {
+     * for (Intention intention: C.getPendingIntentions().values()) {
+     * if (intention.hasTrigger(g, un))
+     * return true;
+     * }
+     * }
+     * 
+     * for (Intention i : C.getIntentions()) {
+     * if (i.hasTrigger(g, un))
+     * return true;
+     * }
+     * 
+     * return false;
+     * }
      */
 
     // data structures where intentions can be found
-    enum Step { selEvt, selInt, evt, pendEvt, pendAct, pendInt, intentions, end }
+    enum Step {
+        selEvt,
+        selInt,
+        evt,
+        pendEvt,
+        pendAct,
+        pendInt,
+        intentions,
+        end
+    }
 
-    //private static Logger logger = Logger.getLogger(intend.class.getName());
+    // private static Logger logger = Logger.getLogger(intend.class.getName());
 
     public static Iterator<Unifier> allIntentions(final Circumstance C, final Literal l, final Unifier un) {
         final Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
@@ -135,11 +151,11 @@ public class intend extends DefaultInternalAction {
         return new Iterator<Unifier>() {
             Step curStep = Step.selEvt;
             Unifier solution = null; // the current response (which is an unifier)
-            Iterator<Event>      evtIterator     = null;
-            Iterator<Event>      pendEvtIterator = null;
+            Iterator<Event> evtIterator = null;
+            Iterator<Event> pendEvtIterator = null;
             Iterator<ActionExec> pendActIterator = null;
-            Iterator<Intention>  pendIntIterator = null;
-            Iterator<Intention>  intInterator    = null;
+            Iterator<Intention> pendIntIterator = null;
+            Iterator<Intention> intInterator = null;
 
             public boolean hasNext() {
                 if (solution == null) // the first call of hasNext should find the first response
@@ -148,12 +164,15 @@ public class intend extends DefaultInternalAction {
             }
 
             public Unifier next() {
-                if (solution == null) find();
+                if (solution == null)
+                    find();
                 Unifier b = solution;
                 find(); // find next response
                 return b;
             }
-            public void remove() {}
+
+            public void remove() {
+            }
 
             void find() {
                 switch (curStep) {
@@ -244,7 +263,7 @@ public class intend extends DefaultInternalAction {
                         if (pendIntIterator.hasNext()) {
                             solution = un.clone();
                             Intention i = pendIntIterator.next();
-                            //System.out.println("try "+i+" for "+g+" = "+i.hasTrigger(g, solution));
+                            // System.out.println("try "+i+" for "+g+" = "+i.hasTrigger(g, solution));
                             if (i.hasTrigger(g, solution))
                                 return;
                         } else {
@@ -263,7 +282,7 @@ public class intend extends DefaultInternalAction {
                     if (intInterator.hasNext()) {
                         solution = un.clone();
                         Intention i = intInterator.next();
-                        //logger.info("* try "+i+"\n"+intInterator.hasNext());
+                        // logger.info("* try "+i+"\n"+intInterator.hasNext());
                         if (i.hasTrigger(g, solution))
                             return;
                     } else {

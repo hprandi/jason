@@ -4,10 +4,9 @@ import jason.runtime.RuntimeServicesInfraTier;
 
 import org.w3c.dom.Document;
 
-
 /**
- *  This interface is implemented in the infrastructure tier (distributed/centralised)
- *  to provide methods that the <b>user</b> controller may call.
+ * This interface is implemented in the infrastructure tier (distributed/centralised)
+ * to provide methods that the <b>user</b> controller may call.
  */
 public interface ExecutionControlInfraTier {
 

@@ -18,14 +18,12 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Document;
 
-
-
 /**
  * Convert an agent asl code to xml.
  *
  * @author Jomi
  */
-public class asl2xml  {
+public class asl2xml {
 
     public static void main(String[] args) throws Exception {
         if (args.length != 1) {
@@ -42,7 +40,7 @@ public class asl2xml  {
         }
     }
 
-    Agent loadAg(String file)  throws Exception {
+    Agent loadAg(String file) throws Exception {
         Agent ag = new Agent();
         ag.initAg();
         if (ag.parseAS(new File(file))) {
@@ -62,11 +60,11 @@ public class asl2xml  {
         return transform(ag.getAgProgram());
     }
 
-    public String transform(Agent ag)  throws Exception {
+    public String transform(Agent ag) throws Exception {
         return transform(ag.getAgProgram());
     }
 
-    public String transform(Document agState)  throws Exception {
+    public String transform(Document agState) throws Exception {
         try {
             StringWriter so = new StringWriter();
             getTransformer().transform(new DOMSource(agState), new StreamResult(so));
@@ -77,7 +75,8 @@ public class asl2xml  {
     }
 
     protected Transformer transCache = null;
-    public Transformer getTransformer()  throws Exception {
+
+    public Transformer getTransformer() throws Exception {
         if (transCache == null) {
             transCache = getFactory().newTransformer();
             transCache.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -91,6 +90,7 @@ public class asl2xml  {
     }
 
     TransformerFactory fac = null;
+
     TransformerFactory getFactory() throws Exception {
         if (fac == null) {
             fac = TransformerFactory.newInstance();

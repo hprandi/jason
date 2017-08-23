@@ -41,11 +41,11 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
     public ArithFunctionTerm(ArithFunctionTerm af) {
         super(af); // clone args from af
         function = af.function;
-        agent    = af.agent;
+        agent = af.agent;
     }
 
     public ArithFunctionTerm(String functor, int arity) {
-        super(functor,arity);
+        super(functor, arity);
     }
 
     @Override
@@ -76,6 +76,7 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
     public void setAgent(Agent ag) {
         agent = ag;
     }
+
     public Agent getAgent() {
         return agent;
     }
@@ -84,20 +85,20 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
     @Override
     public Term capply(Unifier u) {
         if (function == null) {
-            logger.log(Level.SEVERE, getErrorMsg()+ " -- the function can not be evalutated, it has no function assigned to it!", new Exception());
+            logger.log(Level.SEVERE, getErrorMsg() + " -- the function can not be evalutated, it has no function assigned to it!", new Exception());
         } else {
             Term v = super.capply(u);
             if (function.allowUngroundTerms() || v.isGround()) {
                 try {
-                    value = new NumberTermImpl(function.evaluate((agent == null ? null : agent.getTS()), ((Literal)v).getTermsArray()));
+                    value = new NumberTermImpl(function.evaluate((agent == null ? null : agent.getTS()), ((Literal) v).getTermsArray()));
                     return value;
                 } catch (NoValueException e) {
                     // ignore and return this;
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, getErrorMsg()+ " -- error in evaluate!", e);
+                    logger.log(Level.SEVERE, getErrorMsg() + " -- error in evaluate!", e);
                 }
-                //} else {
-                //    logger.warning(getErrorMsg()+ " -- this function has unground arguments and can not be evaluated! Unifier is "+u);
+                // } else {
+                // logger.warning(getErrorMsg()+ " -- this function has unground arguments and can not be evaluated! Unifier is "+u);
             }
         }
         return clone();
@@ -107,7 +108,7 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
         if (value == null) // try to solve without unifier
             capply(null);
         if (value == null)
-            throw new NoValueException("Error evaluating "+this+"."+ (isGround() ? "" : " It is not ground."));
+            throw new NoValueException("Error evaluating " + this + "." + (isGround() ? "" : " It is not ground."));
         else
             return value.solve();
     }
@@ -117,14 +118,15 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
     }
 
     @Override
-    public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un)  {
+    public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un) {
         logger.log(Level.WARNING, "Arithmetic term cannot be used for logical consequence!", new Exception());
         return LogExpr.EMPTY_UNIF_LIST.iterator();
     }
 
     @Override
     public boolean equals(Object t) {
-        if (t == null) return false;
+        if (t == null)
+            return false;
         return super.equals(t);
     }
 
@@ -134,18 +136,20 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
             return o.compareTo(this) * -1;
         }
         return super.compareTo(o);
-        /*if (o instanceof NumberTerm) {
-            NumberTerm st = (NumberTerm)o;
-            if (solve() > st.solve()) return 1;
-            if (solve() < st.solve()) return -1;
-            return 0;
-        }
-        return -1;*/
+        /*
+         * if (o instanceof NumberTerm) {
+         * NumberTerm st = (NumberTerm)o;
+         * if (solve() > st.solve()) return 1;
+         * if (solve() < st.solve()) return -1;
+         * return 0;
+         * }
+         * return -1;
+         */
     }
 
     @Override
     public String getErrorMsg() {
-        return "Error in '"+this+"' ("+ super.getErrorMsg() + ")";
+        return "Error in '" + this + "' (" + super.getErrorMsg() + ")";
     }
 
     @Override

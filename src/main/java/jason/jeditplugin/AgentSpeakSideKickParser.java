@@ -30,7 +30,7 @@ public class AgentSpeakSideKickParser extends sidekick.SideKickParser {
         String text;
         try {
             buf.readLock();
-            text = buf.getText(0,buf.getLength());
+            text = buf.getText(0, buf.getLength());
         } finally {
             buf.readUnlock();
         }
@@ -44,7 +44,7 @@ public class AgentSpeakSideKickParser extends sidekick.SideKickParser {
 
             // create nodes
             pd = new SideKickParsedData(buf.getName());
-            for (Plan p: ag.getPL()) {
+            for (Plan p : ag.getPL()) {
                 DefaultMutableTreeNode node = new PlanAsset(p, buf).createTreeNode();
                 pd.root.add(node);
             }
@@ -52,7 +52,7 @@ public class AgentSpeakSideKickParser extends sidekick.SideKickParser {
         } catch (jason.asSyntax.parser.ParseException ex) {
             addError(ex, errorSource, buf.getPath());
         } catch (Exception e) {
-            System.out.println("Error in AS SideKick:"+e);
+            System.out.println("Error in AS SideKick:" + e);
             e.printStackTrace();
         }
         return pd;
@@ -60,14 +60,10 @@ public class AgentSpeakSideKickParser extends sidekick.SideKickParser {
 
     public static void addError(jason.asSyntax.parser.ParseException ex, DefaultErrorSource errorSource, String path) {
         if (ex.currentToken != null && ex.currentToken.next != null && errorSource != null) {
-            int line = ex.currentToken.next.beginLine-1;
-            if (line < 0) line = 0;
-            errorSource.addError(new DefaultErrorSource.DefaultError(
-                                     errorSource,
-                                     ErrorSource.ERROR,
-                                     path,
-                                     line, 0, 0,
-                                     ex.toString()));
+            int line = ex.currentToken.next.beginLine - 1;
+            if (line < 0)
+                line = 0;
+            errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR, path, line, 0, 0, ex.toString()));
         }
     }
 
@@ -82,11 +78,11 @@ public class AgentSpeakSideKickParser extends sidekick.SideKickParser {
         private Plan plan;
 
         public PlanAsset(Plan p, Buffer buf) {
-            //super(((p.getLabel() == null) ? "" : "@" + p.getLabel() + " ")    + p.getTriggerEvent());
+            // super(((p.getLabel() == null) ? "" : "@" + p.getLabel() + " ") + p.getTriggerEvent());
             super(p.getTrigger().toString());
-            this.plan  = p;
+            this.plan = p;
             this.start = toPos(buf, p.getSrcInfo().getBeginSrcLine());
-            this.end   = toPos(buf, p.getSrcInfo().getEndSrcLine());
+            this.end = toPos(buf, p.getSrcInfo().getEndSrcLine());
         }
 
         public Icon getIcon() {

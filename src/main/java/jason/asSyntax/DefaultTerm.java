@@ -25,8 +25,8 @@ public abstract class DefaultTerm implements Term, Serializable {
     private static final long serialVersionUID = 1L;
     private static Logger logger = Logger.getLogger(Term.class.getName());
 
-    protected Integer    hashCodeCache = null;
-    protected SourceInfo srcInfo       = null;
+    protected Integer hashCodeCache = null;
+    protected SourceInfo srcInfo = null;
 
     /** @deprecated it is preferable to use ASSyntax.parseTerm */
     public static Term parse(String sTerm) {
@@ -34,68 +34,85 @@ public abstract class DefaultTerm implements Term, Serializable {
         try {
             return parser.term();
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing term " + sTerm,e);
+            logger.log(Level.SEVERE, "Error parsing term " + sTerm, e);
             return null;
         }
     }
 
-    public boolean isVar()            {
+    public boolean isVar() {
         return false;
     }
-    public boolean isUnnamedVar()     {
+
+    public boolean isUnnamedVar() {
         return false;
     }
-    public boolean isLiteral()        {
+
+    public boolean isLiteral() {
         return false;
     }
-    public boolean isRule()           {
+
+    public boolean isRule() {
         return false;
     }
-    public boolean isList()           {
+
+    public boolean isList() {
         return false;
     }
-    public boolean isString()         {
+
+    public boolean isString() {
         return false;
     }
+
     public boolean isInternalAction() {
         return false;
     }
-    public boolean isArithExpr()      {
+
+    public boolean isArithExpr() {
         return false;
     }
-    public boolean isNumeric()        {
+
+    public boolean isNumeric() {
         return false;
     }
-    public boolean isPred()           {
+
+    public boolean isPred() {
         return false;
     }
-    public boolean isStructure()      {
+
+    public boolean isStructure() {
         return false;
     }
-    public boolean isAtom()           {
+
+    public boolean isAtom() {
         return false;
     }
-    public boolean isPlanBody()       {
+
+    public boolean isPlanBody() {
         return false;
     }
-    public boolean isGround()         {
+
+    public boolean isGround() {
         return true;
     }
-    public boolean isCyclicTerm()     {
+
+    public boolean isCyclicTerm() {
         return false;
     }
-    public VarTerm getCyclicVar()     {
+
+    public VarTerm getCyclicVar() {
         return null;
     }
 
-    public boolean hasVar(VarTerm t, Unifier u)    {
+    public boolean hasVar(VarTerm t, Unifier u) {
         return false;
     }
 
-    public void countVars(Map<VarTerm, Integer> c) {}
+    public void countVars(Map<VarTerm, Integer> c) {
+    }
 
-    abstract public    Term   clone();
-    abstract protected int    calcHashCode();
+    abstract public Term clone();
+
+    abstract protected int calcHashCode();
 
     public int hashCode() {
         if (hashCodeCache == null)

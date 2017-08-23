@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  * This class implements the centralised version of the environment infrastructure tier.
  */
@@ -33,8 +32,8 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
                 userEnv.setEnvironmentInfraTier(this);
                 userEnv.init(userEnvArgs.getParametersArray());
             } catch (Exception e) {
-                logger.log(Level.SEVERE,"Error in Centralised MAS environment creation",e);
-                throw new JasonException("The user environment class instantiation '"+userEnvArgs+"' has failed!"+e.getMessage());
+                logger.log(Level.SEVERE, "Error in Centralised MAS environment creation", e);
+                throw new JasonException("The user environment class instantiation '" + userEnvArgs + "' has failed!" + e.getMessage());
             }
         }
     }
@@ -52,6 +51,7 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
     public void setUserEnvironment(Environment env) {
         userEnv = env;
     }
+
     public Environment getUserEnvironment() {
         return userEnv;
     }
@@ -64,21 +64,20 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
     }
 
     public void actionExecuted(String agName, Structure actTerm, boolean success, Object infraData) {
-        ActionExec action = (ActionExec)infraData;
+        ActionExec action = (ActionExec) infraData;
         action.setResult(success);
         CentralisedAgArch ag = masRunner.getAg(agName);
         if (ag != null) // the agent may was killed
             ag.actionExecuted(action);
     }
 
-
     public void informAgsEnvironmentChanged(String... agents) {
         if (agents.length == 0) {
-            for (CentralisedAgArch ag: masRunner.getAgs().values()) {
+            for (CentralisedAgArch ag : masRunner.getAgs().values()) {
                 ag.getTS().getUserAgArch().wakeUpSense();
             }
         } else {
-            for (String agName: agents) {
+            for (String agName : agents) {
                 CentralisedAgArch ag = masRunner.getAg(agName);
                 if (ag != null) {
                     if (ag instanceof CentralisedAgArchAsynchronous) {
@@ -98,7 +97,7 @@ public class CentralisedEnvironment implements EnvironmentInfraTier {
         if (agentsToNotify == null) {
             informAgsEnvironmentChanged();
         } else {
-            for (String agName: agentsToNotify) {
+            for (String agName : agentsToNotify) {
                 CentralisedAgArch ag = masRunner.getAg(agName);
                 if (ag != null) {
                     ag.getTS().getUserAgArch().wakeUpSense();

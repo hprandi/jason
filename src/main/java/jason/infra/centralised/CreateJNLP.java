@@ -10,9 +10,9 @@ public class CreateJNLP {
     public static void main(String[] args) {
         try {
             String projectName = args[0];
-            String mas2jFile   = args[1];
+            String mas2jFile = args[1];
 
-            String file = projectName+".jnlp";
+            String file = projectName + ".jnlp";
             PrintWriter out = new PrintWriter(new File(file));
 
             String script = Config.get().getTemplate("jnlp-template.xml");
@@ -34,10 +34,10 @@ public class CreateJNLP {
             String jars = "";
             File lib = new File("../lib");
             if (lib.exists()) {
-                for (String j: new File("../lib").list()) {
+                for (String j : new File("../lib").list()) {
                     System.out.println(j);
                     if (j.endsWith("jar")) {
-                        jars += "  <jar href=\""+j+"\" />\n";
+                        jars += "  <jar href=\"" + j + "\" />\n";
                     }
                 }
             }
@@ -45,7 +45,7 @@ public class CreateJNLP {
             out.write(script);
 
             out.close();
-            System.out.print("File "+file+" created!");
+            System.out.print("File " + file + " created!");
 
         } catch (Exception e) {
             System.err.println("Error creating the jnlp file:");

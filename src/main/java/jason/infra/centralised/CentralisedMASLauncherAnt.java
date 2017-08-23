@@ -21,15 +21,15 @@ import jason.util.Config;
  */
 public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
 
-    protected MAS2JProject       project;
+    protected MAS2JProject project;
     protected RunProjectListener listener;
-    protected boolean            stop       = false;
-    protected Process            masProcess = null;
-    protected OutputStream       processOut;
+    protected boolean stop = false;
+    protected Process masProcess = null;
+    protected OutputStream processOut;
 
-    protected boolean            useBuildFileName = true;
+    protected boolean useBuildFileName = true;
 
-    public static String         bindir = "bin"+File.separator;
+    public static String bindir = "bin" + File.separator;
 
     private String task;
 
@@ -67,7 +67,6 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
             for (int i = 1; i < command.length; i++) {
                 cmdstr += " " + command[i];
             }
-
 
             System.out.println("Executing " + cmdstr);
 
@@ -117,7 +116,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
     public void stopMAS() {
         try {
             // creating this file will stop the MAS, the runner checks for this file creation
-            File stop = new File(project.getDirectory()+File.separator+BaseCentralisedMAS.stopMASFileName);
+            File stop = new File(project.getDirectory() + File.separator + BaseCentralisedMAS.stopMASFileName);
             stop.createNewFile();
         } catch (Exception e) {
             System.err.println("Error stoping RunCentMAS: " + e);
@@ -129,18 +128,17 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
 
     /** returns the operating system command that runs the MAS */
     public String[] getStartCommandArray() {
-        String build = bindir+getBuildFileName();;
-        if (hasCBuild()) build = bindir+getCustomBuildFileName();
+        String build = bindir + getBuildFileName();
+        ;
+        if (hasCBuild())
+            build = bindir + getCustomBuildFileName();
         String ant = Config.get().getAntJar();
         if (ant == null) {
-            System.err.println("Ant is not properly configured! Current value is "+Config.get().getAntLib());
+            System.err.println("Ant is not properly configured! Current value is " + Config.get().getAntLib());
             return null;
         } else {
-            return new String[] { Config.get().getJavaHome() + "bin" + File.separator + "java",
-                                  "-classpath",
-                                  Config.get().getAntLib() + ant, "org.apache.tools.ant.launch.Launcher",
-                                  "-e", "-f", build, task
-                                };
+            return new String[] { Config.get().getJavaHome() + "bin" + File.separator + "java", "-classpath", Config.get().getAntLib() + ant,
+                    "org.apache.tools.ant.launch.Launcher", "-e", "-f", build, task };
         }
     }
 
@@ -148,14 +146,15 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         if (useBuildFileName) {
             return "build.xml";
         } else {
-            return project.getSocName()+".xml";
+            return project.getSocName() + ".xml";
         }
     }
+
     public String getCustomBuildFileName() {
         if (useBuildFileName) {
             return "c-build.xml";
         } else {
-            return "c-"+project.getSocName()+".xml";
+            return "c-" + project.getSocName() + ".xml";
         }
     }
 
@@ -163,10 +162,10 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
     public boolean writeScripts(boolean debug, boolean useBuildFileName) {
         this.useBuildFileName = useBuildFileName;
 
-        //if (hasCBuild()) {
-        //    System.out.println("The build.xml file is not being created, the user c-build.xml file is used instead.");
-        //    return true; // if the user has a c-build.xml file, use his build
-        //}
+        // if (hasCBuild()) {
+        // System.out.println("The build.xml file is not being created, the user c-build.xml file is used instead.");
+        // return true; // if the user has a c-build.xml file, use his build
+        // }
 
         try {
             String script = Config.get().getTemplate("build-template.xml");
@@ -175,7 +174,7 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
             script = replaceMarks(script, debug);
 
             // create bin dir
-            File bindirfile = new File(project.getDirectory()+File.separator+bindir);
+            File bindirfile = new File(project.getDirectory() + File.separator + bindir);
             if (!bindirfile.exists()) {
                 bindirfile.mkdirs();
             }
@@ -213,15 +212,14 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         String lib = "";
 
         // if cartago env
-        if (project.isJade() ||
-                (project.getEnvClass() != null && project.getEnvClass().getClassName().equals("jaca.CartagoEnvironment"))) {
+        if (project.isJade() || (project.getEnvClass() != null && project.getEnvClass().getClassName().equals("jaca.CartagoEnvironment"))) {
             Config c = Config.get();
-            String cartago = Config.findJarInDirectory(new File(c.getJasonHome()+"/libs"), "cartago");
+            String cartago = Config.findJarInDirectory(new File(c.getJasonHome() + "/libs"), "cartago");
             if (cartago != null)
-                lib += "        <pathelement location=\""+cartago+"\"/>\n";
-            String c4jason = Config.findJarInDirectory(new File(c.getJasonHome()+"/libs"), "jaca");
+                lib += "        <pathelement location=\"" + cartago + "\"/>\n";
+            String c4jason = Config.findJarInDirectory(new File(c.getJasonHome() + "/libs"), "jaca");
             if (c4jason != null)
-                lib += "        <pathelement location=\""+c4jason+"\"/>\n";
+                lib += "        <pathelement location=\"" + c4jason + "\"/>\n";
         }
 
         if (new File(dDir + File.separator + "lib").exists()) {
@@ -232,27 +230,27 @@ public class CentralisedMASLauncherAnt implements MASLauncherInfraTier {
         }
 
         // add classpath defined in the project .mas2j
-        for (String cp: project.getClassPaths()) {
+        for (String cp : project.getClassPaths()) {
             int apos = cp.indexOf("*");
             if (apos < 0) {
-                lib += "        <pathelement location=\""+cp+"\"/>\n";
+                lib += "        <pathelement location=\"" + cp + "\"/>\n";
             } else {
                 cp = cp.replaceAll("\\\\", "/");
-                String dir   = "${basedir}";
+                String dir = "${basedir}";
                 String files = cp;
                 int spos = cp.lastIndexOf("/");
                 if (spos >= 0 && spos < apos) {
-                    dir   = cp.substring(0,spos);
-                    files = cp.substring(spos+1);
+                    dir = cp.substring(0, spos);
+                    files = cp.substring(spos + 1);
                 } else {
                     spos = cp.lastIndexOf("/**");
                     if (spos >= 0 && spos < apos) {
-                        dir   = cp.substring(0,spos);
-                        files = cp.substring(spos+1);
+                        dir = cp.substring(0, spos);
+                        files = cp.substring(spos + 1);
                     }
                 }
 
-                lib += "        <fileset dir=\""+dir+"\" >  <include name=\""+files+"\" /> </fileset>\n";
+                lib += "        <fileset dir=\"" + dir + "\" >  <include name=\"" + files + "\" /> </fileset>\n";
             }
         }
 
