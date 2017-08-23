@@ -8,6 +8,8 @@ import jason.asSemantics.Message;
 import jason.infra.components.ActComponent;
 import jason.infra.components.DeliberateComponent;
 import jason.infra.components.SenseComponent;
+import jason.infra.virtual.actuator.Actuator;
+import jason.infra.virtual.sensor.Sensor;
 
 public class CentralisedAgArchAsynchronous extends CentralisedAgArch implements Runnable {
     private SenseComponent senseComponent;
@@ -22,49 +24,51 @@ public class CentralisedAgArchAsynchronous extends CentralisedAgArch implements 
     public Object objDeliberate = new Object();
     public Object objAct = new Object();
 
-    public CentralisedAgArchAsynchronous() {
-        super();
+    public CentralisedAgArchAsynchronous(Sensor sensor, Actuator actuator) {
+        super(sensor, actuator);
 
-        senseComponent = new SenseComponent(this);
-        deliberateComponent = new DeliberateComponent(this);
-        actComponent = new ActComponent(this);
+        this.senseComponent = new SenseComponent(this);
+        this.deliberateComponent = new DeliberateComponent(this);
+        this.actComponent = new ActComponent(this);
     }
 
+    @Override
     public void wakeUpSense() {
-        senseComponent.wakeUp();
+        this.senseComponent.wakeUp();
     }
 
+    @Override
     public void wakeUpDeliberate() {
-        deliberateComponent.wakeUp();
+        this.deliberateComponent.wakeUp();
     }
 
+    @Override
     public void wakeUpAct() {
-        actComponent.wakeUp();
+        this.actComponent.wakeUp();
     }
 
     public SenseComponent getSenseComponent() {
-        return senseComponent;
+        return this.senseComponent;
     }
 
     public DeliberateComponent getDeliberateComponent() {
-        return deliberateComponent;
+        return this.deliberateComponent;
     }
 
     public ActComponent getActComponent() {
-        return actComponent;
+        return this.actComponent;
     }
 
     public ExecutorService getExecutorSense() {
-        return executorSense;
+        return this.executorSense;
     }
 
-
     public ExecutorService getExecutorDeliberate() {
-        return executorDeliberate;
+        return this.executorDeliberate;
     }
 
     public ExecutorService getExecutorAct() {
-        return executorAct;
+        return this.executorAct;
     }
 
     public void setExecutorAct(ExecutorService executorAct) {
@@ -84,18 +88,20 @@ public class CentralisedAgArchAsynchronous extends CentralisedAgArch implements 
     }
 
     public void addListenerToC(CircumstanceListener listener) {
-        getTS().getC().addEventListener(listener);
+        this.getTS().getC().addEventListener(listener);
     }
 
+    @Override
     public void receiveMsg(Message m) {
-        synchronized (objSense) {
+        synchronized (this.objSense) {
             super.receiveMsg(m);
         }
     }
 
     /** called the the environment when the action was executed */
+    @Override
     public void actionExecuted(ActionExec action) {
-        synchronized (objAct) {
+        synchronized (this.objAct) {
             super.actionExecuted(action);
         }
     }

@@ -26,87 +26,98 @@ public class CentralisedRuntimeServices implements RuntimeServicesInfraTier {
     }
 
     protected CentralisedAgArch newAgInstance() {
-        return new CentralisedAgArch();
+        throw new RuntimeException("Operation not allowed.");
     }
 
+    @Override
     public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) throws Exception {
-        if (logger.isLoggable(Level.FINE))
+        if (logger.isLoggable(Level.FINE)) {
             logger.fine("Creating centralised agent " + agName + " from source " + agSource + " (agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
+        }
 
         AgentParameters ap = new AgentParameters();
         ap.setAgClass(agClass);
         ap.addArchClass(archClasses);
         ap.setBB(bbPars);
 
-        if (stts == null)
+        if (stts == null) {
             stts = new Settings();
+        }
 
         String prefix = null;
-        if (father != null && father.getASLSrc().startsWith(SourcePath.CRPrefix))
+        if (father != null && father.getASLSrc().startsWith(SourcePath.CRPrefix)) {
             prefix = SourcePath.CRPrefix + "/";
-        agSource = masRunner.getProject().getSourcePaths().fixPath(agSource, prefix);
+        }
+        agSource = this.masRunner.getProject().getSourcePaths().fixPath(agSource, prefix);
 
         String nb = "";
         synchronized (logger) { // to avoid problems related to concurrent executions of .create_agent
             int n = 1;
-            while (masRunner.getAg(agName+nb) != null)
-                nb = "_" + (n++);
+            while (this.masRunner.getAg(agName + nb) != null) {
+                nb = "_" + n++;
+            }
             agName = agName + nb;
 
-            CentralisedAgArch agArch = newAgInstance();
+            CentralisedAgArch agArch = this.newAgInstance();
             agArch.setAgName(agName);
-            agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), agSource, stts, masRunner);
-            agArch.setEnvInfraTier(masRunner.getEnvironmentInfraTier());
-            agArch.setControlInfraTier(masRunner.getControllerInfraTier());
-            masRunner.addAg(agArch);
+            agArch.createArchs(ap.getAgArchClasses(), ap.agClass.getClassName(), ap.getBBClass(), agSource, stts, this.masRunner);
+            agArch.setEnvInfraTier(this.masRunner.getEnvironmentInfraTier());
+            agArch.setControlInfraTier(this.masRunner.getControllerInfraTier());
+            this.masRunner.addAg(agArch);
         }
 
         logger.fine("Agent " + agName + " created!");
         return agName;
     }
 
+    @Override
     public void startAgent(String agName) {
         // create the agent thread
-        CentralisedAgArch agArch = masRunner.getAg(agName);
+        CentralisedAgArch agArch = this.masRunner.getAg(agName);
         Thread agThread = new Thread(agArch);
         agArch.setThread(agThread);
         agThread.start();
     }
 
+    @Override
     public AgArch clone(Agent source, List<String> archClasses, String agName) throws JasonException {
         // create a new infra arch
-        CentralisedAgArch agArch = newAgInstance();
+        CentralisedAgArch agArch = this.newAgInstance();
         agArch.setAgName(agName);
-        agArch.setEnvInfraTier(masRunner.getEnvironmentInfraTier());
-        agArch.setControlInfraTier(masRunner.getControllerInfraTier());
-        masRunner.addAg(agArch);
+        agArch.setEnvInfraTier(this.masRunner.getEnvironmentInfraTier());
+        agArch.setControlInfraTier(this.masRunner.getControllerInfraTier());
+        this.masRunner.addAg(agArch);
 
-        agArch.createArchs(archClasses, source, masRunner);
+        agArch.createArchs(archClasses, source, this.masRunner);
 
-        startAgent(agName);
+        this.startAgent(agName);
         return agArch.getUserAgArch();
     }
 
+    @Override
     public Set<String> getAgentsNames() {
-        return masRunner.getAgs().keySet();
+        return this.masRunner.getAgs().keySet();
     }
 
+    @Override
     public int getAgentsQty() {
-        return masRunner.getAgs().keySet().size();
+        return this.masRunner.getAgs().keySet().size();
     }
 
+    @Override
     public boolean killAgent(String agName, String byAg) {
         logger.fine("Killing centralised agent " + agName);
-        CentralisedAgArch ag = masRunner.getAg(agName);
+        CentralisedAgArch ag = this.masRunner.getAg(agName);
         if (ag != null && ag.getTS().getAg().killAcc(byAg)) {
             ag.stopAg();
-            masRunner.delAg(agName);
+            this.masRunner.delAg(agName);
             return true;
         }
         return false;
     }
 
+    @Override
     public void stopMAS() throws Exception {
-        masRunner.finish();
+        this.masRunner.finish();
     }
 }

@@ -8,9 +8,11 @@ import jason.JasonException;
 import jason.asSemantics.ActionExec;
 import jason.asSyntax.Literal;
 import jason.environment.Environment;
+import jason.infra.centralised.BaseCentralisedMAS;
 import jason.infra.centralised.CentralisedAgArch;
 import jason.infra.centralised.CentralisedEnvironment;
-import jason.infra.centralised.BaseCentralisedMAS;
+import jason.infra.virtual.actuator.SimpleActuator;
+import jason.infra.virtual.sensor.SimpleSensor;
 
 public class TestArch extends CentralisedAgArch implements Runnable {
 
@@ -19,17 +21,18 @@ public class TestArch extends CentralisedAgArch implements Runnable {
     private Condition condition;
     private int cycle = 0;
 
-    private List<Literal> actions = new ArrayList<Literal>();
+    private List<Literal> actions = new ArrayList<>();
 
     StringBuilder output = new StringBuilder();
 
     public TestArch() {
-        this("ASUnitTest" + (nameCount++));
+        this("ASUnitTest" + nameCount++);
     }
 
     public TestArch(String agName) {
+        super(new SimpleSensor(), new SimpleActuator());
         try {
-            setAgName(agName);
+            this.setAgName(agName);
             BaseCentralisedMAS.getRunner().addAg(this);
         } catch (JasonException e) {
             e.printStackTrace();
@@ -37,34 +40,35 @@ public class TestArch extends CentralisedAgArch implements Runnable {
     }
 
     public int getCycle() {
-        return cycle;
+        return this.cycle;
     }
 
     public List<Literal> getActions() {
-        return actions;
+        return this.actions;
     }
 
     public void start(Condition c) {
-        condition = c;
-        cycle = 0;
-        actions.clear();
+        this.condition = c;
+        this.cycle = 0;
+        this.actions.clear();
         new Thread(this).start();
     }
 
-
+    @Override
     public void run() {
-        synchronized (condition) {
-            while (condition.test(this)) {
-                cycle++;
-                getTS().reasoningCycle();
-                if (getTS().canSleep())
+        synchronized (this.condition) {
+            while (this.condition.test(this)) {
+                this.cycle++;
+                this.getTS().reasoningCycle();
+                if (this.getTS().canSleep()) {
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                }
             }
-            condition.notifyAll();
+            this.condition.notifyAll();
         }
     }
 
@@ -73,7 +77,7 @@ public class TestArch extends CentralisedAgArch implements Runnable {
             CentralisedEnvironment infraEnv = new CentralisedEnvironment(null, BaseCentralisedMAS.getRunner());
             infraEnv.setUserEnvironment(env);
             env.setEnvironmentInfraTier(infraEnv);
-            setEnvInfraTier(infraEnv);
+            this.setEnvInfraTier(infraEnv);
         } catch (JasonException e) {
             e.printStackTrace();
         }
@@ -81,34 +85,35 @@ public class TestArch extends CentralisedAgArch implements Runnable {
 
     @Override
     public Collection<Literal> perceive() {
-        //System.out.println(super.perceive()+"*"+getEnvInfraTier());
-        if (getEnvInfraTier() != null)
+        // System.out.println(super.perceive()+"*"+getEnvInfraTier());
+        if (this.getEnvInfraTier() != null) {
             return super.perceive();
-        else
+        } else {
             return null;
+        }
     }
 
     @Override
-    public void act(ActionExec action) { //, List<ActionExec> feedback) {
-        actions.add(action.getActionTerm());
-        if (getEnvInfraTier() != null) {
-            super.act(action); //, feedback); //env.scheduleAction(getAgName(), action.getActionTerm(), action);
+    public void act(ActionExec action) { // , List<ActionExec> feedback) {
+        this.actions.add(action.getActionTerm());
+        if (this.getEnvInfraTier() != null) {
+            super.act(action); // , feedback); //env.scheduleAction(getAgName(), action.getActionTerm(), action);
         } else {
             action.setResult(true);
-            actionExecuted(action); //feedback.add(action);
+            this.actionExecuted(action); // feedback.add(action);
         }
     }
 
     public void print(String s) {
         System.out.println(s);
-        output.append(s+"\n");
+        this.output.append(s + "\n");
     }
 
     public StringBuilder getOutput() {
-        return output;
+        return this.output;
     }
 
     public void clearOutput() {
-        output = new StringBuilder();
+        this.output = new StringBuilder();
     }
 }

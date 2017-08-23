@@ -1,9 +1,9 @@
 package jason.infra.virtual.actuator;
 
-import jason.asSyntax.Literal;
+import jason.asSemantics.ActionExec;
 
 public interface Actuator {
 
-	boolean act(Literal action);
+    boolean act(ActionExec action);
 
 }
