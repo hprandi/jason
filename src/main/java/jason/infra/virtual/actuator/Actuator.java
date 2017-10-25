@@ -4,6 +4,6 @@ import jason.asSemantics.ActionExec;
 
 public interface Actuator {
 
-    boolean act(ActionExec action);
+    void act(ActionExec action);
 
 }

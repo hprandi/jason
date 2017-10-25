@@ -9,9 +9,8 @@ public class SimpleActuator implements Actuator {
     protected Logger logger = Logger.getLogger(SimpleActuator.class.getName());
 
     @Override
-    public boolean act(ActionExec action) {
+    public void act(ActionExec action) {
         this.logger.severe("Executing action: " + action.toString());
-        return true;
     }
 
 }
