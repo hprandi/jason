@@ -1,0 +1,10 @@
+MAS testproject {
+
+	infrastructure: Centralised
+
+	agents:
+		r1 r1;
+
+	aslSourcePath:
+		"src/asl";
+}

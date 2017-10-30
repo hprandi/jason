@@ -1,0 +1,10 @@
+MAS awareness_lemming {
+
+	infrastructure: Centralised
+
+	agents:
+		lemming lemming;
+
+	aslSourcePath:
+		"src/asl";
+}
